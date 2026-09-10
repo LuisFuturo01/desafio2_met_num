@@ -70,16 +70,17 @@ h1, h2, h3, h4, .brand {
   letter-spacing: -0.02em;
 }
 
+/* HEADER RESPONSIVE */
 header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
 }
-[data-theme="dark"] header { background: rgba(15, 23, 42, 0.92); }
+[data-theme="dark"] header { background: rgba(15, 23, 42, 0.94); }
 
 .nav-container {
   max-width: 1200px;
@@ -87,15 +88,19 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
+  padding: 10px 16px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
+
 .brand {
   font-weight: 800;
   font-size: 1.1rem;
   color: var(--primary);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  white-space: nowrap;
 }
 .brand-tag {
   background: var(--primary);
@@ -107,17 +112,34 @@ header {
   text-transform: uppercase;
 }
 
-nav { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+nav {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+nav::-webkit-scrollbar { display: none; }
+
 nav a {
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 8px;
   text-decoration: none;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
+  white-space: nowrap;
   transition: 0.2s;
 }
-nav a:hover { background: var(--accent-glow); color: var(--primary); }
+nav a:hover, nav a:focus { background: var(--accent-glow); color: var(--primary); }
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
 .theme-btn {
   background: transparent;
@@ -128,12 +150,13 @@ nav a:hover { background: var(--accent-glow); color: var(--primary); }
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 main {
   max-width: 1200px;
   margin: auto;
-  padding: 30px 20px 80px;
+  padding: 24px 16px 80px;
 }
 
 .card {
@@ -152,6 +175,8 @@ main {
   border-bottom: 1px solid var(--border);
   padding-bottom: 12px;
   margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 .card-header h2 { margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--text); }
 .badge {
@@ -164,49 +189,89 @@ main {
   font-weight: 700;
 }
 
-/* Modal Flotante Movible */
-.draggable-modal {
+/* ESFERA FLOTANTE ARRASTRABLE (DRAGGABLE SPHERE BUTTON) */
+.floating-sphere-btn {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 380px;
-  z-index: 1000;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  box-shadow: 0 10px 28px rgba(67, 56, 202, 0.45);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: move;
+  user-select: none;
+  touch-action: none;
+  border: 2.5px solid rgba(255, 255, 255, 0.9);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.floating-sphere-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 14px 35px rgba(67, 56, 202, 0.6);
+}
+.sphere-icon { font-size: 22px; line-height: 1; pointer-events: none; }
+.sphere-tooltip { font-size: 8.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; pointer-events: none; margin-top: 1px; }
+
+/* MODAL CENTRADO EN PANTALLA CON BACKDROP */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: none;
+}
+.modal-dialog {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 440px;
   background: var(--card);
   border: 1.5px solid var(--primary);
-  border-radius: 12px;
-  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  z-index: 10001;
+  display: none;
   overflow: hidden;
-  transition: box-shadow 0.2s;
+  animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.modal-header {
+@keyframes modalPop {
+  from { opacity: 0; transform: translate(-50%, -45%) scale(0.92); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.modal-header-dialog {
   background: var(--primary);
   color: white;
-  padding: 9px 14px;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: move;
+  padding: 12px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  user-select: none;
+  font-size: 14px;
 }
-.modal-controls button {
+.modal-close-btn {
   background: rgba(255,255,255,0.2);
   border: 0;
   color: white;
-  border-radius: 4px;
-  padding: 2px 7px;
-  font-size: 11px;
+  border-radius: 50%;
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
   cursor: pointer;
   font-weight: 800;
+  transition: 0.2s;
 }
-.modal-controls button:hover {
-  background: rgba(255,255,255,0.4);
-}
-.modal-body {
-  padding: 14px;
-  font-size: 12.5px;
-  max-height: 400px;
+.modal-close-btn:hover { background: rgba(255,255,255,0.4); }
+.modal-body-dialog {
+  padding: 18px;
+  font-size: 13px;
+  max-height: 75vh;
   overflow-y: auto;
 }
 
@@ -218,8 +283,8 @@ main {
   padding: 24px;
   margin-bottom: 28px;
 }
-.banner-box h1 { font-size: 1.75rem; margin: 0 0 10px; color: var(--text); }
-.banner-box p { color: var(--muted); font-size: 14.5px; margin: 0 0 14px; }
+.banner-box h1 { font-size: 1.6rem; margin: 0 0 10px; color: var(--text); }
+.banner-box p { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
 .case-statement {
   background: var(--card);
   border: 1px solid var(--border);
@@ -293,7 +358,7 @@ button.danger { background: var(--bad); color: white; }
 .matrix-row {
   display: grid;
   gap: 8px;
-  grid-template-columns: repeat(var(--n), minmax(55px, 1fr));
+  grid-template-columns: repeat(var(--n), minmax(50px, 1fr));
 }
 .matrix-row input, .vector-column input {
   text-align: center;
@@ -312,7 +377,7 @@ button.danger { background: var(--bad); color: white; }
   padding: 14px 18px;
   border-radius: 8px;
   margin: 12px 0;
-  font-size: 15px;
+  font-size: 14.5px;
   overflow-x: auto;
 }
 
@@ -367,14 +432,36 @@ td:first-child, th:first-child { text-align: left; }
   margin-top: 14px;
 }
 
-.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
-.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 
 .footer { text-align: center; color: var(--muted); padding: 30px; font-size: 13px; border-top: 1px solid var(--border); }
 
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 8px 12px;
+  }
+  .brand { font-size: 0.95rem; }
+  .brand-tag { font-size: 9px; padding: 2px 6px; }
+  nav {
+    width: 100%;
+    order: 3;
+    justify-content: flex-start;
+    border-top: 1px solid var(--border);
+    padding-top: 6px;
+    margin-top: 4px;
+  }
+  nav a { font-size: 11.5px; padding: 4px 8px; }
+  .square-system-wrapper {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .banner-box h1 { font-size: 1.35rem; }
+}
+
 @media print {
-  header, .actions, .theme-btn, .draggable-modal { display: none !important; }
+  header, .actions, .theme-btn, .floating-sphere-btn, .modal-backdrop, .modal-dialog { display: none !important; }
   body { background: white; color: black; }
   .card { border: none; box-shadow: none; padding: 0; }
 }
@@ -387,6 +474,9 @@ td:first-child, th:first-child { text-align: left; }
     <span>MÉTODOS NUMÉRICOS</span>
     <span class="brand-tag">UMSA FINANZAS</span>
   </div>
+  <div class="header-controls">
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Modo Oscuro</button>
+  </div>
   <nav>
     <a href="#enunciado">Enunciado</a>
     <a href="#errores">1. Errores</a>
@@ -394,22 +484,25 @@ td:first-child, th:first-child { text-align: left; }
     <a href="#sistemas">3. Sistemas Lineales</a>
     <a href="#procedimiento">4. Pasos y Operaciones</a>
     <a href="#conclusiones">5. Diagnóstico</a>
-    <button class="secondary" style="font-size:12px; padding:4px 10px;" onclick="abrirModalIntegrantes()">👥 Integrantes</button>
+    <a href="javascript:void(0)" onclick="abrirModalIntegrantes()" style="color:var(--primary); font-weight:700;">👥 Integrantes</a>
   </nav>
-  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Modo Oscuro</button>
 </div></header>
 
-<!-- MODAL FLOTANTE MOVIBLE -->
-<div id="modalIntegrantes" class="draggable-modal">
-  <div id="modalHeader" class="modal-header">
-    <span>🖐️ INTEGRANTES DEL GRUPO (Arrastra aquí)</span>
-    <div class="modal-controls">
-      <button onclick="toggleMinimizeModal()" title="Minimizar">_</button>
-      <button onclick="cerrarModal()" title="Cerrar">✕</button>
-    </div>
+<!-- ESFERA FLOTANTE ARRASTRABLE (DRAGGABLE SPHERE BUTTON) -->
+<div id="floatingSphereBtn" class="floating-sphere-btn" title="Arrastra la esfera o haz clic para ver Integrantes">
+  <span class="sphere-icon">👥</span>
+  <span class="sphere-tooltip">Grupo</span>
+</div>
+
+<!-- MODAL CENTRADO EN PANTALLA Y BACKDROP -->
+<div id="modalBackdrop" class="modal-backdrop" onclick="cerrarModalIntegrantes()"></div>
+<div id="modalIntegrantes" class="modal-dialog">
+  <div class="modal-header-dialog">
+    <span style="font-weight:700;">🎓 INTEGRANTES DEL GRUPO (UMSA)</span>
+    <button class="modal-close-btn" onclick="cerrarModalIntegrantes()" title="Cerrar">✕</button>
   </div>
-  <div id="modalBody" class="modal-body">
-    <div style="font-weight:800; margin-bottom:6px; color:var(--primary);">INTEGRANTES DEL GRUPO:</div>
+  <div class="modal-body-dialog">
+    <div style="font-weight:800; margin-bottom:8px; color:var(--primary);">NÓMINA DE INTEGRANTES:</div>
     <div class="scroll">
       <table>
         <thead>
@@ -444,10 +537,16 @@ td:first-child, th:first-child { text-align: left; }
       </table>
     </div>
 
-    <div style="margin-top:12px; font-size:12px; line-height:1.5;">
+    <div style="margin-top:14px; font-size:12px; line-height:1.5;">
       <p style="margin:4px 0;"><b>📂 REPOSITORIO GITHUB:</b><br>
         <a href="https://github.com/LuisFuturo01/desafio2_met_num" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:none;">github.com/LuisFuturo01/desafio2_met_num ↗</a>
       </p>
+      <p style="margin:6px 0 0;"><b>🌐 SITIO WEB EN VERCEL:</b><br>
+        <a href="https://desafio2-met-num.vercel.app/" target="_blank" style="color:var(--secondary); font-weight:700; text-decoration:none;">desafio2-met-num.vercel.app ↗</a>
+      </p>
+    </div>
+  </div>
+</div>
       <p style="margin:6px 0 0;"><b>🌐 SITIO WEB EN VERCEL:</b><br>
         <a href="https://desafio2-met-num.vercel.app/" target="_blank" style="color:var(--secondary); font-weight:700; text-decoration:none;">desafio2-met-num.vercel.app ↗</a>
       </p>
@@ -685,15 +784,17 @@ function actualizarDiagnosticoEnTiempoReal() {
   const box = document.getElementById("conclusionBox");
   if (!box) return;
 
-  const cond = liveState.matrixCond || Infinity;
+  const cond = liveState.matrixCond;
   let diagSensibilidad = "";
 
-  if (cond > 500) {
+  if (!Number.isFinite(cond) || isNaN(cond) || cond > 500) {
     diagSensibilidad = `
       <div style="border-left:4px solid var(--bad); padding-left:12px; margin-top:10px;">
-        <b style="color:var(--bad)">⚠️ Diagnóstico de Mal Condicionamiento Extremo (Matriz ${liveState.matrixDimension}×${liveState.matrixDimension}):</b>
+        <b style="color:var(--bad)">⚠️ Diagnóstico de Mal Condicionamiento / Sensibilidad (Matriz ${liveState.matrixDimension}×${liveState.matrixDimension}):</b>
         <p style="margin:4px 0 0; font-size:13px;">
-          El número de condición es elevadísimo (κ ≈ ${fmt(cond, 0)}). Pequeñas variaciones de apenas <b>0.001</b> en el vector de recursos <i>b</i> distorsionan drásticamente los resultados de la asignación presupuestaria <i>x</i>.
+          ${!Number.isFinite(cond) || isNaN(cond) 
+            ? 'La matriz actual es singular o indeterminada. El sistema no posee solución única o las iteraciones no convergen.'
+            : `El número de condición es elevado (κ ≈ ${fmt(cond, 2)}). Pequeñas variaciones de <b>0.001</b> en el vector de recursos <i>b</i> producen desvíos drásticos en la asignación <i>x</i>.`}
         </p>
       </div>
     `;
@@ -702,7 +803,7 @@ function actualizarDiagnosticoEnTiempoReal() {
       <div style="border-left:4px solid var(--good); padding-left:12px; margin-top:10px;">
         <b style="color:var(--good)">✅ Diagnóstico de Estabilidad Matricial (Matriz ${liveState.matrixDimension}×${liveState.matrixDimension}):</b>
         <p style="margin:4px 0 0; font-size:13px;">
-          La matriz cuadrada es diagonal dominante (κ ≈ ${fmt(cond, 2)}). Gauss-Seidel converge velozmente en <b>${liveState.matrixSeidelIt || 0} iteraciones</b> frente a ${liveState.matrixJacobiIt || 0} de Jacobi.
+          La matriz cuadrada es bien condicionada (κ ≈ ${fmt(cond, 2)}). Gauss-Seidel converge velozmente en <b>${liveState.matrixSeidelIt || 0} iteraciones</b> frente a ${liveState.matrixJacobiIt || 0} de Jacobi.
         </p>
       </div>
     `;
@@ -722,83 +823,86 @@ function actualizarDiagnosticoEnTiempoReal() {
 }
 
 // ---------------------------
-// MODAL FLOTANTE MOVIBLE (DRAGGABLE JS)
+// ESFERA FLOTANTE ARRASTRABLE & MODAL INTEGRANTES
 // ---------------------------
 function abrirModalIntegrantes() {
-  const modal = document.getElementById("modalIntegrantes");
-  const body = document.getElementById("modalBody");
-  modal.style.display = "block";
-  body.style.display = "block";
+  document.getElementById("modalBackdrop").style.display = "block";
+  document.getElementById("modalIntegrantes").style.display = "block";
 }
 
-function cerrarModal() {
+function cerrarModalIntegrantes() {
+  document.getElementById("modalBackdrop").style.display = "none";
   document.getElementById("modalIntegrantes").style.display = "none";
 }
 
-function toggleMinimizeModal() {
-  const body = document.getElementById("modalBody");
-  if (body.style.display === "none") {
-    body.style.display = "block";
-  } else {
-    body.style.display = "none";
-  }
-}
+function makeSphereDraggable(sphereEl) {
+  let startX = 0, startY = 0;
+  let initialLeft = 0, initialTop = 0;
+  let isDragging = false;
+  let hasMoved = false;
 
-function makeDraggable(modalEl, headerEl) {
-  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  headerEl.onmousedown = dragMouseDown;
-  headerEl.ontouchstart = dragTouchStart;
+  sphereEl.addEventListener('mousedown', onPointerDown);
+  sphereEl.addEventListener('touchstart', onPointerDown, { passive: false });
 
-  function dragMouseDown(e) {
-    e = e || window.event;
-    e.preventDefault();
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    document.onmousemove = elementDrag;
-  }
+  function onPointerDown(e) {
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    modalEl.style.top = (modalEl.offsetTop - pos2) + "px";
-    modalEl.style.left = (modalEl.offsetLeft - pos1) + "px";
-    modalEl.style.bottom = "auto";
-    modalEl.style.right = "auto";
+    startX = clientX;
+    startY = clientY;
+
+    const rect = sphereEl.getBoundingClientRect();
+    initialLeft = rect.left;
+    initialTop = rect.top;
+
+    hasMoved = false;
+    isDragging = true;
+
+    document.addEventListener('mousemove', onPointerMove);
+    document.addEventListener('touchmove', onPointerMove, { passive: false });
+    document.addEventListener('mouseup', onPointerUp);
+    document.addEventListener('touchend', onPointerUp);
   }
 
-  function closeDragElement() {
-    document.onmouseup = null;
-    document.onmousemove = null;
+  function onPointerMove(e) {
+    if (!isDragging) return;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+    const dx = clientX - startX;
+    const dy = clientY - startY;
+
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+      hasMoved = true;
+    }
+
+    if (hasMoved) {
+      if (e.cancelable) e.preventDefault();
+      let newLeft = initialLeft + dx;
+      let newTop = initialTop + dy;
+
+      const maxLeft = window.innerWidth - sphereEl.offsetWidth - 10;
+      const maxTop = window.innerHeight - sphereEl.offsetHeight - 10;
+      newLeft = Math.max(10, Math.min(newLeft, maxLeft));
+      newTop = Math.max(10, Math.min(newTop, maxTop));
+
+      sphereEl.style.left = newLeft + 'px';
+      sphereEl.style.top = newTop + 'px';
+      sphereEl.style.bottom = 'auto';
+      sphereEl.style.right = 'auto';
+    }
   }
 
-  function dragTouchStart(e) {
-    const touch = e.touches[0];
-    pos3 = touch.clientX;
-    pos4 = touch.clientY;
-    document.ontouchend = closeTouchDrag;
-    document.ontouchmove = touchDrag;
-  }
+  function onPointerUp(e) {
+    isDragging = false;
+    document.removeEventListener('mousemove', onPointerMove);
+    document.removeEventListener('touchmove', onPointerMove);
+    document.removeEventListener('mouseup', onPointerUp);
+    document.removeEventListener('touchend', onPointerUp);
 
-  function touchDrag(e) {
-    const touch = e.touches[0];
-    pos1 = pos3 - touch.clientX;
-    pos2 = pos4 - touch.clientY;
-    pos3 = touch.clientX;
-    pos4 = touch.clientY;
-    modalEl.style.top = (modalEl.offsetTop - pos2) + "px";
-    modalEl.style.left = (modalEl.offsetLeft - pos1) + "px";
-    modalEl.style.bottom = "auto";
-    modalEl.style.right = "auto";
-  }
-
-  function closeTouchDrag() {
-    document.ontouchend = null;
-    document.ontouchmove = null;
+    if (!hasMoved) {
+      abrirModalIntegrantes();
+    }
   }
 }
 
@@ -1530,7 +1634,7 @@ window.onload = () => {
   sincronizarConMatriz();
   calcularTaylorWord();
   resolverSistemas();
-  makeDraggable(document.getElementById("modalIntegrantes"), document.getElementById("modalHeader"));
+  makeSphereDraggable(document.getElementById("floatingSphereBtn"));
 };
 </script>
 </body>
