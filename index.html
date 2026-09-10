@@ -65,7 +65,7 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-h1, h2, h3, .brand {
+h1, h2, h3, h4, .brand {
   font-family: 'Outfit', 'Inter', sans-serif;
   letter-spacing: -0.02em;
 }
@@ -231,7 +231,7 @@ button.danger { background: var(--bad); color: white; }
 
 .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
 
-/* Dynamic Strictly Square Matrix Layout */
+/* Square Matrix Layout */
 .square-system-wrapper {
   display: grid;
   grid-template-columns: minmax(240px, 1fr) auto minmax(90px, 120px);
@@ -270,9 +270,23 @@ button.danger { background: var(--bad); color: white; }
   overflow-x: auto;
 }
 
+.step-card {
+  background: var(--card-inner);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 10px;
+}
+.step-title {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 13.5px;
+  margin-bottom: 6px;
+}
+
 /* Tables & Results */
 table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-th, td { padding: 9px 11px; border-bottom: 1px solid var(--border); text-align: right; }
+th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; }
 th { background: var(--card-inner); text-align: center; font-weight: 700; color: var(--muted); font-size: 11px; text-transform: uppercase; }
 td:first-child, th:first-child { text-align: left; }
 .scroll { overflow-x: auto; }
@@ -332,7 +346,7 @@ td:first-child, th:first-child { text-align: left; }
     <a href="#errores">1. Errores</a>
     <a href="#taylor">2. Taylor</a>
     <a href="#sistemas">3. Sistemas Lineales</a>
-    <a href="#comparacion">4. Comparación</a>
+    <a href="#procedimiento">4. Pasos y Procedimiento</a>
     <a href="#conclusiones">5. Diagnóstico</a>
   </nav>
   <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Modo Oscuro</button>
@@ -343,12 +357,12 @@ td:first-child, th:first-child { text-align: left; }
 <!-- ENUNCIADO OFICIAL -->
 <section id="enunciado" class="banner-box">
   <h1>Desafío Integrador • Área Financiera (Duración 90 min)</h1>
-  <p>Herramienta interactiva para la evaluación de sensibilidad financiera, propagación de errores contables, estimación de capital por polinomios de Taylor y resolución de sistemas lineales cuadrados 3×3 y 4×4.</p>
+  <p>Herramienta interactiva para la evaluación de sensibilidad financiera, propagación de errores contables, estimación de capital por polinomios de Taylor y resolución paso a paso de sistemas lineales cuadrados 3×3 y 4×4.</p>
 
   <div class="case-statement">
     <b>📋 Enunciado del Ejercicio Integrador (Evaluación 90 min):</b>
     <div style="margin-top:6px;">
-      "Ejercicio integrador en el área financiera que incluye cálculo de errores (absoluto, relativo, porcentual), aproximación de Taylor ($t_0$) y métodos numéricos para resolver sistemas de ecuaciones lineales cuadrados $3 \times 3$ y $4 \times 4$ (Factorización LU, Jacobi y Gauss-Seidel) con datos dinámicos manipulables por teclado en tiempo real y síntesis de conclusiones."
+      "Ejercicio integrador en el área financiera que incluye cálculo de errores, aproximación de Taylor ($t_0$) y métodos numéricos para resolver sistemas de ecuaciones lineales cuadrados $3 \times 3$ y $4 \times 4$ (Factorización LU, Jacobi y Gauss-Seidel) con desglose de procedimiento paso a paso, número de iteraciones dinámico en tiempo real y síntesis de conclusiones."
     </div>
   </div>
 </section>
@@ -439,7 +453,7 @@ td:first-child, th:first-child { text-align: left; }
     <h2>Parte III – Distribución de Recursos Financieros (Sistemas Lineales Cuadrados $N \times N$)</h2>
     <span class="badge">Módulo 3</span>
   </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">La matriz de coeficientes $A$ es estrictamente cuadrada ($N \times N$) con vector $b$ de dimensión $N \times 1$. Edita los valores por teclado en tiempo real.</p>
+  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">La matriz de coeficientes $A$ es estrictamente cuadrada ($N \times N$) con vector $b$ ($N \times 1$). Edita los valores por teclado en tiempo real.</p>
   
   <div class="grid3">
     <div>
@@ -478,20 +492,20 @@ td:first-child, th:first-child { text-align: left; }
   </div>
 </section>
 
-<!-- PARTE IV: COMPARACIÓN Y GRÁFICO -->
-<section class="card" id="comparacion">
+<!-- PARTE IV: PROCEDIMIENTO Y PASOS DETALLADOS METODOS NUMERICOS -->
+<section class="card" id="procedimiento">
   <div class="card-header">
-    <h2>Parte IV – Resultados, Gráficos & Comparación de Métodos</h2>
+    <h2>Parte IV – Desglose Paso a Paso, Procedimiento & Iteraciones en Tiempo Real</h2>
     <span class="badge">Módulo 4</span>
   </div>
 
   <div class="grid2">
     <div>
-      <h3>Factorización Directa $PA = LU$</h3>
-      <div id="resLU"></div>
+      <h3>Procedimiento Paso a Paso: Factorización $PA = LU$</h3>
+      <div id="pasosLU"></div>
     </div>
     <div>
-      <h3>Resumen Comparativo</h3>
+      <h3>Resumen Comparativo & Condicionamiento</h3>
       <div id="resComparacion"></div>
     </div>
   </div>
@@ -501,14 +515,14 @@ td:first-child, th:first-child { text-align: left; }
     <svg id="convergenceSvg" width="100%" height="100%" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
   </div>
 
-  <h3 style="margin-top:18px;">Detalle Iterativo Paso a Paso</h3>
+  <h3 style="margin-top:18px;">Procedimiento e Iteraciones Dinámicas en Tiempo Real</h3>
   <div class="grid2">
     <div>
-      <h4>Método de Jacobi ($x^{(0)} = \mathbf{0}$)</h4>
+      <h4>Método de Jacobi (Ecuación & Iteraciones)</h4>
       <div id="resJacobi"></div>
     </div>
     <div>
-      <h4>Método de Gauss-Seidel ($x^{(0)} = \mathbf{0}$)</h4>
+      <h4>Método de Gauss-Seidel (Ecuación & Iteraciones)</h4>
       <div id="resSeidel"></div>
     </div>
   </div>
@@ -568,7 +582,7 @@ function toggleTheme() {
 }
 
 // ---------------------------
-// PARTE 1: ERRORES CON GRÁFICO SVG
+// PARTE 1: ERRORES
 // ---------------------------
 function agregarFilaError() {
   const tbody = document.getElementById("bodyErrores");
@@ -681,7 +695,7 @@ function calcularParteErrores() {
 }
 
 // ---------------------------
-// PARTE 2: TAYLOR CON GRÁFICO SVG
+// PARTE 2: TAYLOR
 // ---------------------------
 function renderChartTaylor(arr, valExacto) {
   const svg = document.getElementById("svgChartTaylor");
@@ -887,14 +901,19 @@ function getMatrizUI() {
   return { A, b };
 }
 
-function factorizacionLU(A_orig, b_orig) {
+// ---------------------------
+// FACTORIZACIÓN LU PASO A PASO
+// ---------------------------
+function factorizacionLU_Pasos(A_orig, b_orig) {
   let n = A_orig.length;
   let A = A_orig.map(r => r.slice());
   let b = b_orig.slice();
   let P = Array.from({length: n}, (_, i) => i);
   let L = Array.from({length: n}, (_, i) => Array.from({length: n}, (_, j) => i === j ? 1 : 0));
+  let pasos = [];
 
   for (let k = 0; k < n; k++) {
+    // Pivoteo parcial
     let maxVal = Math.abs(A[k][k]);
     let maxIdx = k;
     for (let i = k + 1; i < n; i++) {
@@ -903,21 +922,37 @@ function factorizacionLU(A_orig, b_orig) {
         maxIdx = i;
       }
     }
+
+    let intermSwapped = false;
     if (maxIdx !== k) {
+      intermSwapped = true;
       [A[k], A[maxIdx]] = [A[maxIdx], A[k]];
       [P[k], P[maxIdx]] = [P[maxIdx], P[k]];
       for (let j = 0; j < k; j++) {
         [L[k][j], L[maxIdx][j]] = [L[maxIdx][j], L[k][j]];
       }
     }
+
+    let multsStep = [];
     for (let i = k + 1; i < n; i++) {
       let factor = A[i][k] / A[k][k];
       L[i][k] = factor;
+      multsStep.push({ fila: i + 1, col: k + 1, factor });
       for (let j = k; j < n; j++) {
         A[i][j] -= factor * A[k][j];
       }
     }
+
+    pasos.push({
+      etapa: k + 1,
+      pivoteCol: k + 1,
+      sePermuto: intermSwapped,
+      filaPermutada: maxIdx + 1,
+      multiplicadores: multsStep,
+      matrizA_parcial: A.map(r => r.slice())
+    });
   }
+
   let U = A;
   let Pb = P.map(idx => b[idx]);
   let y = Array(n).fill(0);
@@ -932,9 +967,12 @@ function factorizacionLU(A_orig, b_orig) {
     for (let j = i + 1; j < n; j++) sum += U[i][j] * x[j];
     x[i] = (y[i] - sum) / U[i][i];
   }
-  return { L, U, P, y, x };
+  return { L, U, P, y, x, pasos };
 }
 
+// ---------------------------
+// SOLVER ITERATIVO PASO A PASO (Jacobi & Gauss-Seidel)
+// ---------------------------
 function solverIterativo(A, b, metodo, tol, maxIt) {
   let n = A.length;
   let x = Array(n).fill(0);
@@ -1053,19 +1091,39 @@ function resolverSistemas() {
   const tol = parseFloat(document.getElementById("sysTol").value) || 1e-6;
   const maxIt = parseInt(document.getElementById("sysMaxIt").value) || 50;
 
-  const lu = factorizacionLU(A, b);
+  const lu = factorizacionLU_Pasos(A, b);
   const jac = solverIterativo(A, b, "jacobi", tol, maxIt);
   const gs = solverIterativo(A, b, "seidel", tol, maxIt);
   const cond = calcularCondicion(A);
 
-  document.getElementById("resLU").innerHTML = `
+  // Presentación LU con Procedimiento Paso a Paso
+  let pasosLuHtml = lu.pasos.map((p, idx) => {
+    let multsTxt = p.multiplicadores.length > 0 
+      ? p.multiplicadores.map(m => `m_{${m.fila}${m.col}} = ${fmt(m.factor, 4)}`).join(", ")
+      : "Ninguno (Etapa final)";
+    return `
+      <div class="step-card">
+        <div class="step-title">Etapa Eliminación ${p.etapa} (Columna ${p.pivoteCol}):</div>
+        ${p.sePermuto ? `<p style="margin:2px 0; color:var(--warn); font-size:12px">🔄 Pivoteo: Intercambio Fila ${p.etapa} con Fila ${p.filaPermutada}</p>` : ''}
+        <p style="margin:2px 0; font-size:12px">Multiplicadores calculados: $${multsTxt}$</p>
+      </div>
+    `;
+  }).join("");
+
+  document.getElementById("pasosLU").innerHTML = `
     ${vectorFormat(lu.x)}
-    <p style="font-size:12px; margin-bottom:4px"><b>Matriz $U$ (Triangular Superior):</b></p>
+    <div style="margin-top:10px;">
+      <b>Desglose del Procedimiento $PA = LU$:</b>
+      ${pasosLuHtml}
+    </div>
+    <p style="font-size:12px; margin-top:10px; margin-bottom:4px"><b>Matriz $U$ (Triangular Superior):</b></p>
     ${miniTablaMatriz(lu.U)}
     <p style="font-size:12px; margin:6px 0 4px"><b>Matriz $L$ (Triangular Inferior):</b></p>
     ${miniTablaMatriz(lu.L)}
+    <p style="font-size:12px; margin-top:6px; color:var(--muted)">Sustitución $Ly = Pb \implies y = [${lu.y.map(v=>fmt(v,2)).join(", ")}]$</p>
   `;
 
+  // Resumen comparativo con número de iteraciones dinámico
   document.getElementById("resComparacion").innerHTML = `
     <div class="scroll">
       <table>
@@ -1073,7 +1131,7 @@ function resolverSistemas() {
           <tr>
             <th>Método</th>
             ${Array.from({length: N}, (_, i) => `<th>$x_${i+1}$</th>`).join("")}
-            <th>Iter.</th>
+            <th>Iteraciones</th>
             <th>Estado</th>
           </tr>
         </thead>
@@ -1081,25 +1139,25 @@ function resolverSistemas() {
           <tr>
             <td><b>LU Directo</b></td>
             ${lu.x.map(v => `<td>${fmt(v, 4)}</td>`).join("")}
-            <td>1</td>
+            <td>1 paso</td>
             <td><span class="pill pill-good">Exacto</span></td>
           </tr>
           <tr>
             <td><b>Jacobi</b></td>
             ${jac.x.map(v => `<td>${fmt(v, 4)}</td>`).join("")}
-            <td>${jac.rows.length}</td>
+            <td><b>${jac.rows.length}</b> iter.</td>
             <td><span class="pill ${jac.conv ? 'pill-good' : 'pill-warn'}">${jac.conv ? 'Convergió' : 'Máx Iter'}</span></td>
           </tr>
           <tr>
             <td><b>Gauss-Seidel</b></td>
             ${gs.x.map(v => `<td>${fmt(v, 4)}</td>`).join("")}
-            <td>${gs.rows.length}</td>
+            <td><b>${gs.rows.length}</b> iter.</td>
             <td><span class="pill ${gs.conv ? 'pill-good' : 'pill-warn'}">${gs.conv ? 'Convergió' : 'Máx Iter'}</span></td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div style="margin-top:10px; font-size:12px;">
+    <div style="margin-top:12px; font-size:12px;">
       <b>Número de Condición $\kappa_\infty(A)$:</b> 
       <b class="${cond > 500 ? 'pill-bad' : 'pill-good'}">${Number.isFinite(cond) ? fmt(cond, 2) : 'Infinito (Singular)'}</b>
       ${cond > 500 ? '⚠️ Alta Sensibilidad' : '✅ Estable'}
@@ -1108,21 +1166,27 @@ function resolverSistemas() {
 
   renderChartConvergencia(jac.rows, gs.rows);
 
-  function renderDetalle(res, titulo) {
+  // Render Detalle Iterativo Completo con Ecuaciones
+  function renderDetalleIterativo(res, titulo, formulaEq) {
     return `
       <div class="result-box">
-        <p style="margin:0 0 6px"><b>${titulo}</b>: <span class="${res.conv ? 'pill-good' : 'pill-warn'}">${res.conv ? 'CONVERGIÓ' : 'NO CONVERGIÓ'}</span> (${res.rows.length} iteraciones)</p>
-        <div class="scroll" style="max-height:180px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <b>${titulo}</b>
+          <span class="${res.conv ? 'pill pill-good' : 'pill pill-warn'}">${res.conv ? `CONVERGIÓ EN ${res.rows.length} ITER.` : `LÍMITE (${res.rows.length})`}</span>
+        </div>
+        <p style="font-size:11.5px; color:var(--muted); margin:4px 0 8px;">Fórmula: $${formulaEq}$</p>
+        
+        <div class="scroll" style="max-height:220px;">
           <table>
             <thead>
               <tr>
-                <th>#</th>
-                ${Array.from({length: N}, (_, i) => `<th>$x_${i+1}$</th>`).join("")}
-                <th>Error ($\infty$)</th>
+                <th>k</th>
+                ${Array.from({length: N}, (_, i) => `<th>$x_${i+1}^{(k)}$</th>`).join("")}
+                <th>Error $\|x^{(k)} - x^{(k-1)}\|_\infty$</th>
               </tr>
             </thead>
             <tbody>
-              ${res.rows.slice(0, 15).map(r => `
+              ${res.rows.map(r => `
                 <tr>
                   <td>${r.it}</td>
                   ${r.x.map(v => `<td>${fmt(v, 4)}</td>`).join("")}
@@ -1136,8 +1200,11 @@ function resolverSistemas() {
     `;
   }
 
-  document.getElementById("resJacobi").innerHTML = renderDetalle(jac, "Jacobi");
-  document.getElementById("resSeidel").innerHTML = renderDetalle(gs, "Gauss-Seidel");
+  const formulaJac = "x_i^{(k)} = \\frac{1}{a_{ii}} \\left( b_i - \\sum_{j \\neq i} a_{ij} x_j^{(k-1)} \\right)";
+  const formulaSeidel = "x_i^{(k)} = \\frac{1}{a_{ii}} \\left( b_i - \\sum_{j < i} a_{ij} x_j^{(k)} - \\sum_{j > i} a_{ij} x_j^{(k-1)} \\right)";
+
+  document.getElementById("resJacobi").innerHTML = renderDetalleIterativo(jac, "Método de Jacobi", formulaJac);
+  document.getElementById("resSeidel").innerHTML = renderDetalleIterativo(gs, "Método de Gauss-Seidel", formulaSeidel);
 
   let diagSensibilidad = "";
   if (cond > 500) {
@@ -1145,7 +1212,7 @@ function resolverSistemas() {
       <div style="border-left:4px solid var(--bad); padding-left:12px; margin-top:10px;">
         <b style="color:var(--bad)">⚠️ Diagnóstico de Mal Condicionamiento (Caso 6.3 / Perturbado):</b>
         <p style="margin:4px 0 0; font-size:13px;">
-          La matriz cuadrada posee $\kappa \approx ${fmt(cond, 0)}$. Una variación insignificante de <b>0.001</b> en $b_3$ genera cambios drásticos en los resultados del presupuesto $x$.
+          La matriz cuadrada posee $\kappa \approx ${fmt(cond, 0)}$. Una variación de <b>0.001</b> en $b_3$ genera cambios drásticos en los resultados del presupuesto $x$.
         </p>
       </div>
     `;
@@ -1154,7 +1221,7 @@ function resolverSistemas() {
       <div style="border-left:4px solid var(--good); padding-left:12px; margin-top:10px;">
         <b style="color:var(--good)">✅ Diagnóstico de Estabilidad Matricial ($N \times N$):</b>
         <p style="margin:4px 0 0; font-size:13px;">
-          La matriz cuadrada es bien condicionada ($\kappa \approx ${fmt(cond, 2)}$). Gauss-Seidel converge en <b>${gs.rows.length} iteraciones</b> frente a ${jac.rows.length} de Jacobi.
+          La matriz cuadrada es diagonal dominante ($\kappa \approx ${fmt(cond, 2)}$). Gauss-Seidel converge en <b>${gs.rows.length} iteraciones</b> frente a ${jac.rows.length} de Jacobi.
         </p>
       </div>
     `;
