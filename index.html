@@ -362,7 +362,7 @@ td:first-child, th:first-child { text-align: left; }
   <div class="case-statement">
     <b>📋 Enunciado del Ejercicio Integrador (Evaluación 90 min):</b>
     <div style="margin-top:6px;">
-      "Ejercicio integrador en el área financiera que incluye cálculo de errores, aproximación de Taylor ($t_0$) y métodos numéricos para resolver sistemas de ecuaciones lineales cuadrados $3 \times 3$ y $4 \times 4$ (Factorización LU, Jacobi y Gauss-Seidel) con desglose de procedimiento paso a paso, número de iteraciones dinámico en tiempo real y síntesis de conclusiones."
+      "Ejercicio integrador en el área financiera que incluye cálculo de errores, aproximación de Taylor ($t_0$) y métodos numéricos para resolver sistemas de ecuaciones lineales cuadrados $3 \times 3$ y $4 \times 4$ (Factorización LU, Jacobi y Gauss-Seidel) con sincronización total entre la teoría de errores y los recursos del sistema $A \cdot x = b$, datos dinámicos manipulables por teclado y síntesis de conclusiones."
     </div>
   </div>
 </section>
@@ -370,46 +370,33 @@ td:first-child, th:first-child { text-align: left; }
 <!-- PARTE I: TEORÍA DE ERRORES -->
 <section class="card" id="errores">
   <div class="card-header">
-    <h2>Parte I – Teoría de Errores en Registros Financieros</h2>
+    <h2>Parte I – Teoría de Errores en Registros Financieros (Sincronizado)</h2>
     <span class="badge">Módulo 1</span>
   </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">Evaluación de discrepancias entre los valores reales de referencia ($x$) versus registrados ($x_{aprox}$) en Bolivianos (Bs.). Edita por teclado en tiempo real.</p>
+  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+    <p style="color:var(--muted); font-size:13.5px; margin:0;">
+      Evaluación de errores contables entre los requerimientos de recursos reales del sistema $A \cdot x = b$ ($x_{real}$) vs los valores contables registrados ($x_{aprox}$) en miles de Bolivianos (Bs.).
+    </p>
+    <span class="pill pill-good" id="syncStatusBadge">🔄 Sincronizado con Sistema $A \cdot x = b$</span>
+  </div>
   
   <div class="scroll">
     <table>
       <thead>
         <tr>
-          <th style="text-align:left">Concepto Financiero</th>
-          <th>Referencia Real $x$ (Bs)</th>
-          <th>Registrado $x_{aprox}$ (Bs)</th>
+          <th style="text-align:left">Departamento / Rubro</th>
+          <th>Recurso Real Referencia $x$ (Bs)</th>
+          <th>Monto Registrado $x_{aprox}$ (Bs)</th>
           <th>Acciones</th>
         </tr>
       </thead>
-      <tbody id="bodyErrores">
-        <tr>
-          <td><input type="text" value="Ingreso diario" class="concepto-input" oninput="calcularParteErrores()"></td>
-          <td><input type="number" value="12500" step="any" class="ref-input" oninput="calcularParteErrores()"></td>
-          <td><input type="number" value="12420" step="any" class="reg-input" oninput="calcularParteErrores()"></td>
-          <td><button class="secondary" style="padding:3px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" value="Costo operativo" class="concepto-input" oninput="calcularParteErrores()"></td>
-          <td><input type="number" value="7800" step="any" class="ref-input" oninput="calcularParteErrores()"></td>
-          <td><input type="number" value="7860" step="any" class="reg-input" oninput="calcularParteErrores()"></td>
-          <td><button class="secondary" style="padding:3px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" value="Utilidad estimada" class="concepto-input" oninput="calcularParteErrores()"></td>
-          <td><input type="number" value="4700" step="any" class="ref-input" oninput="calcularParteErrores()"></td>
-          <td><input type="number" value="4560" step="any" class="reg-input" oninput="calcularParteErrores()"></td>
-          <td><button class="secondary" style="padding:3px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
-        </tr>
-      </tbody>
+      <tbody id="bodyErrores"></tbody>
     </table>
   </div>
 
   <div class="actions">
-    <button class="secondary" onclick="agregarFilaError()">➕ Añadir Concepto</button>
+    <button class="secondary" onclick="agregarFilaError()">➕ Añadir Concepto Extra</button>
+    <button class="secondary" onclick="sincronizarConMatriz()">🔄 Re-sincronizar con Sistema $A \cdot x = b$</button>
   </div>
 
   <h3>Gráfico de Errores Porcentuales por Concepto ($E_p\%$)</h3>
@@ -453,7 +440,7 @@ td:first-child, th:first-child { text-align: left; }
     <h2>Parte III – Distribución de Recursos Financieros (Sistemas Lineales Cuadrados $N \times N$)</h2>
     <span class="badge">Módulo 3</span>
   </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">La matriz de coeficientes $A$ es estrictamente cuadrada ($N \times N$) con vector $b$ ($N \times 1$). Edita los valores por teclado en tiempo real.</p>
+  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">La matriz de coeficientes $A$ es estrictamente cuadrada ($N \times N$) con vector $b$ ($N \times 1$). Edita los valores por teclado en tiempo real para sincronizar todo el problema.</p>
   
   <div class="grid3">
     <div>
@@ -551,6 +538,7 @@ td:first-child, th:first-child { text-align: left; }
 let N = 3;
 let currentA = [[10, 2, 1], [1, 9, 2], [2, 1, 8]];
 let currentB = [29, 25, 28];
+let deptNames = ["Operaciones ($x_1$)", "Comercialización ($x_2$)", "Tecnología ($x_3$)", "Innovación ($x_4$)"];
 
 function fmt(x, d = 6) {
   if (!Number.isFinite(x)) return "—";
@@ -582,13 +570,38 @@ function toggleTheme() {
 }
 
 // ---------------------------
-// PARTE 1: ERRORES
+// PARTE 1: TEORÍA DE ERRORES (SINCRONIZADO CON SISTEMAS LINEALES)
 // ---------------------------
+function sincronizarConMatriz() {
+  const tbody = document.getElementById("bodyErrores");
+  tbody.innerHTML = "";
+  
+  // Usamos el vector b del sistema A*x = b como valor de referencia real (x_ref)
+  // y generamos un valor contable registrado registrado con pequeño desvío aleatorio/simulado (x_aprox)
+  for (let i = 0; i < N; i++) {
+    const vRef = currentB[i] !== undefined ? currentB[i] * 1000 : (i + 1) * 10000;
+    // Variación del desvío contable contable en el problema
+    let factorDev = i === 2 ? 0.97 : i === 0 ? 0.9936 : 1.0077;
+    const vReg = Math.round(vRef * factorDev);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="text" value="${deptNames[i] || 'Departamento ' + (i+1)}" class="concepto-input" oninput="calcularParteErrores()"></td>
+      <td><input type="number" value="${vRef}" step="any" class="ref-input" oninput="calcularParteErrores()"></td>
+      <td><input type="number" value="${vReg}" step="any" class="reg-input" oninput="calcularParteErrores()"></td>
+      <td><button class="secondary" style="padding:3px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  }
+  calcularParteErrores();
+}
+
 function agregarFilaError() {
   const tbody = document.getElementById("bodyErrores");
+  const count = tbody.children.length;
   const tr = document.createElement("tr");
   tr.innerHTML = `
-    <td><input type="text" value="Nuevo Concepto" class="concepto-input" oninput="calcularParteErrores()"></td>
+    <td><input type="text" value="Rubro Adicional (${count+1})" class="concepto-input" oninput="calcularParteErrores()"></td>
     <td><input type="number" value="5000" step="any" class="ref-input" oninput="calcularParteErrores()"></td>
     <td><input type="number" value="4950" step="any" class="reg-input" oninput="calcularParteErrores()"></td>
     <td><button class="secondary" style="padding:3px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
@@ -617,7 +630,7 @@ function renderChartErrores(rows) {
     return `
       <rect x="${x}" y="${y}" width="${barWidth}" height="${h}" fill="${color}" rx="4" />
       <text x="${x + barWidth/2}" y="${y - 6}" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="700">${fmt(r.ep, 2)}%</text>
-      <text x="${x + barWidth/2}" y="158" text-anchor="middle" fill="var(--muted)" font-size="10">${r.concepto.substring(0, 12)}</text>
+      <text x="${x + barWidth/2}" y="158" text-anchor="middle" fill="var(--muted)" font-size="10">${r.concepto.substring(0, 14)}</text>
     `;
   }).join("");
 
@@ -661,7 +674,7 @@ function calcularParteErrores() {
         <table>
           <thead>
             <tr>
-              <th style="text-align:left">Concepto</th>
+              <th style="text-align:left">Departamento / Rubro</th>
               <th>Ref. Real $x$ (Bs)</th>
               <th>Registrado $x_{aprox}$ (Bs)</th>
               <th>Error Absoluto $E_a$</th>
@@ -686,7 +699,8 @@ function calcularParteErrores() {
         </table>
       </div>
       <div style="margin-top:12px; font-size:13.5px;">
-        <p style="margin:4px 0">• <b>Mayor Desvío Contable:</b> <b>${maxItem}</b> presenta el desvío más alto con un <b>${fmt(maxPorc, 4)}%</b>.</p>
+        <p style="margin:4px 0">• <b>Mayor Desvío Contable Registrado:</b> El rubro <b>${maxItem}</b> presenta la mayor imprecisión con un <b>${fmt(maxPorc, 4)}%</b> de error porcentual.</p>
+        <p style="margin:4px 0">• <b>Conexión con el Sistema de Recursos:</b> Este error contable distorsiona directamente el vector de requerimientos financieros $b$ del sistema $A \cdot x = b$.</p>
       </div>
     </div>
   `;
@@ -815,6 +829,7 @@ function cambiarDimensionMatriz() {
     currentB = [29, 25, 28];
   }
   renderInputsMatriz();
+  sincronizarConMatriz();
   resolverSistemas();
 }
 
@@ -834,7 +849,7 @@ function renderInputsMatriz() {
       inp.type = "number"; inp.step = "any";
       inp.id = `a_${i}_${j}`;
       inp.value = currentA[i] && currentA[i][j] !== undefined ? currentA[i][j] : 0;
-      inp.oninput = resolverSistemas;
+      inp.oninput = () => { syncFromMatrizUI(); resolverSistemas(); };
       rowA.appendChild(inp);
     }
     contA.appendChild(rowA);
@@ -845,9 +860,16 @@ function renderInputsMatriz() {
     inp.type = "number"; inp.step = "any";
     inp.id = `b_${i}`;
     inp.value = currentB[i] !== undefined ? currentB[i] : 0;
-    inp.oninput = resolverSistemas;
+    inp.oninput = () => { syncFromMatrizUI(); resolverSistemas(); };
     contB.appendChild(inp);
   }
+}
+
+function syncFromMatrizUI() {
+  const { A, b } = getMatrizUI();
+  currentA = A;
+  currentB = b;
+  sincronizarConMatriz();
 }
 
 function cargarCaso(tipo) {
@@ -884,6 +906,7 @@ function cargarCaso(tipo) {
   }
   document.getElementById("btnPreset4x4").style.display = N === 4 ? "inline-flex" : "none";
   renderInputsMatriz();
+  sincronizarConMatriz();
   resolverSistemas();
 }
 
@@ -901,9 +924,6 @@ function getMatrizUI() {
   return { A, b };
 }
 
-// ---------------------------
-// FACTORIZACIÓN LU PASO A PASO
-// ---------------------------
 function factorizacionLU_Pasos(A_orig, b_orig) {
   let n = A_orig.length;
   let A = A_orig.map(r => r.slice());
@@ -913,7 +933,6 @@ function factorizacionLU_Pasos(A_orig, b_orig) {
   let pasos = [];
 
   for (let k = 0; k < n; k++) {
-    // Pivoteo parcial
     let maxVal = Math.abs(A[k][k]);
     let maxIdx = k;
     for (let i = k + 1; i < n; i++) {
@@ -970,9 +989,6 @@ function factorizacionLU_Pasos(A_orig, b_orig) {
   return { L, U, P, y, x, pasos };
 }
 
-// ---------------------------
-// SOLVER ITERATIVO PASO A PASO (Jacobi & Gauss-Seidel)
-// ---------------------------
 function solverIterativo(A, b, metodo, tol, maxIt) {
   let n = A.length;
   let x = Array(n).fill(0);
@@ -1096,16 +1112,15 @@ function resolverSistemas() {
   const gs = solverIterativo(A, b, "seidel", tol, maxIt);
   const cond = calcularCondicion(A);
 
-  // Presentación LU con Procedimiento Paso a Paso
   let pasosLuHtml = lu.pasos.map((p, idx) => {
     let multsTxt = p.multiplicadores.length > 0 
       ? p.multiplicadores.map(m => `m_{${m.fila}${m.col}} = ${fmt(m.factor, 4)}`).join(", ")
-      : "Ninguno (Etapa final)";
+      : "Etapa final";
     return `
       <div class="step-card">
         <div class="step-title">Etapa Eliminación ${p.etapa} (Columna ${p.pivoteCol}):</div>
         ${p.sePermuto ? `<p style="margin:2px 0; color:var(--warn); font-size:12px">🔄 Pivoteo: Intercambio Fila ${p.etapa} con Fila ${p.filaPermutada}</p>` : ''}
-        <p style="margin:2px 0; font-size:12px">Multiplicadores calculados: $${multsTxt}$</p>
+        <p style="margin:2px 0; font-size:12px">Multiplicadores: $${multsTxt}$</p>
       </div>
     `;
   }).join("");
@@ -1113,7 +1128,7 @@ function resolverSistemas() {
   document.getElementById("pasosLU").innerHTML = `
     ${vectorFormat(lu.x)}
     <div style="margin-top:10px;">
-      <b>Desglose del Procedimiento $PA = LU$:</b>
+      <b>Procedimiento $PA = LU$:</b>
       ${pasosLuHtml}
     </div>
     <p style="font-size:12px; margin-top:10px; margin-bottom:4px"><b>Matriz $U$ (Triangular Superior):</b></p>
@@ -1123,7 +1138,6 @@ function resolverSistemas() {
     <p style="font-size:12px; margin-top:6px; color:var(--muted)">Sustitución $Ly = Pb \implies y = [${lu.y.map(v=>fmt(v,2)).join(", ")}]$</p>
   `;
 
-  // Resumen comparativo con número de iteraciones dinámico
   document.getElementById("resComparacion").innerHTML = `
     <div class="scroll">
       <table>
@@ -1166,7 +1180,6 @@ function resolverSistemas() {
 
   renderChartConvergencia(jac.rows, gs.rows);
 
-  // Render Detalle Iterativo Completo con Ecuaciones
   function renderDetalleIterativo(res, titulo, formulaEq) {
     return `
       <div class="result-box">
@@ -1230,7 +1243,7 @@ function resolverSistemas() {
   document.getElementById("conclusionBox").innerHTML = `
     <div class="result-box">
       <h3 style="margin-top:0">Síntesis Ejecutiva Integradora (Evaluación 90 min)</h3>
-      <p style="margin:6px 0">1. <b>Auditoría de Errores:</b> Controla desvíos contables en ingresos, costos y utilidad.</p>
+      <p style="margin:6px 0">1. <b>Auditoría de Errores:</b> Sincronizada con los montos del sistema $A \cdot x = b$.</p>
       <p style="margin:6px 0">2. <b>Taylor de Capital Continuo:</b> El polinomio de Orden 3 estima el interés continuo con precisión de centavos.</p>
       <p style="margin:6px 0">3. <b>Distribución de Recursos ($N \times N = ${N} \times ${N}$):</b></p>
       ${diagSensibilidad}
@@ -1242,7 +1255,7 @@ function resolverSistemas() {
 
 window.onload = () => {
   renderInputsMatriz();
-  calcularParteErrores();
+  sincronizarConMatriz();
   calcularTaylorWord();
   resolverSistemas();
 };
