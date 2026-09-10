@@ -164,6 +164,52 @@ main {
   font-weight: 700;
 }
 
+/* Modal Flotante Movible */
+.draggable-modal {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 380px;
+  z-index: 1000;
+  background: var(--card);
+  border: 1.5px solid var(--primary);
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.modal-header {
+  background: var(--primary);
+  color: white;
+  padding: 9px 14px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: move;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+.modal-controls button {
+  background: rgba(255,255,255,0.2);
+  border: 0;
+  color: white;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: 800;
+}
+.modal-controls button:hover {
+  background: rgba(255,255,255,0.4);
+}
+.modal-body {
+  padding: 14px;
+  font-size: 12.5px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 /* Banner del Enunciado */
 .banner-box {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(2, 132, 199, 0.05));
@@ -328,7 +374,7 @@ td:first-child, th:first-child { text-align: left; }
 .footer { text-align: center; color: var(--muted); padding: 30px; font-size: 13px; border-top: 1px solid var(--border); }
 
 @media print {
-  header, .actions, .theme-btn { display: none !important; }
+  header, .actions, .theme-btn, .draggable-modal { display: none !important; }
   body { background: white; color: black; }
   .card { border: none; box-shadow: none; padding: 0; }
 }
@@ -348,21 +394,78 @@ td:first-child, th:first-child { text-align: left; }
     <a href="#sistemas">3. Sistemas Lineales</a>
     <a href="#procedimiento">4. Pasos y Operaciones</a>
     <a href="#conclusiones">5. Diagnóstico</a>
+    <button class="secondary" style="font-size:12px; padding:4px 10px;" onclick="abrirModalIntegrantes()">👥 Integrantes</button>
   </nav>
   <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Modo Oscuro</button>
 </div></header>
+
+<!-- MODAL FLOTANTE MOVIBLE -->
+<div id="modalIntegrantes" class="draggable-modal">
+  <div id="modalHeader" class="modal-header">
+    <span>🖐️ INTEGRANTES DEL GRUPO (Arrastra aquí)</span>
+    <div class="modal-controls">
+      <button onclick="toggleMinimizeModal()" title="Minimizar">_</button>
+      <button onclick="cerrarModal()" title="Cerrar">✕</button>
+    </div>
+  </div>
+  <div id="modalBody" class="modal-body">
+    <div style="font-weight:800; margin-bottom:6px; color:var(--primary);">INTEGRANTES DEL GRUPO:</div>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left">NOMBRE</th>
+            <th>CI</th>
+            <th>RU</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. Callisaya Sumi Saúl Walter</td>
+            <td><b>15074779</b></td>
+            <td><b>1885982</b></td>
+          </tr>
+          <tr>
+            <td>2. Zarate Camargo Ignacio Josue</td>
+            <td><b>12392989</b></td>
+            <td><b>1886051</b></td>
+          </tr>
+          <tr>
+            <td>3. Zeballos Quiroz Luis Alejandro</td>
+            <td><b>12896709</b></td>
+            <td><b>1886052</b></td>
+          </tr>
+          <tr>
+            <td>4. González Herrera Jhoel Percy</td>
+            <td><b>9990880</b></td>
+            <td><b>1886116</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:12px; font-size:12px; line-height:1.5;">
+      <p style="margin:4px 0;"><b>📂 REPOSITORIO GITHUB:</b><br>
+        <a href="https://github.com/LuisFuturo01/desafio2_met_num" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:none;">github.com/LuisFuturo01/desafio2_met_num ↗</a>
+      </p>
+      <p style="margin:6px 0 0;"><b>🌐 SITIO WEB EN VERCEL:</b><br>
+        <a href="https://desafio2-met-num.vercel.app/" target="_blank" style="color:var(--secondary); font-weight:700; text-decoration:none;">desafio2-met-num.vercel.app ↗</a>
+      </p>
+    </div>
+  </div>
+</div>
 
 <main>
 
 <!-- ENUNCIADO OFICIAL -->
 <section id="enunciado" class="banner-box">
   <h1>Desafío Integrador • Área Financiera (Duración 90 min)</h1>
-  <p>Herramienta interactiva para la evaluación de sensibilidad financiera, propagación de errores contables, estimación de capital por polinomios de Taylor y resolución paso a paso con operaciones fila explícitas de sistemas lineales cuadrados 3×3 y 4×4.</p>
+  <p>Herramienta interactiva para la evaluación de sensibilidad financiera, propagación de errores contables, estimación de capital mediante Series de Taylor y resolución paso a paso con operaciones fila explícitas de sistemas lineales cuadrados 3×3 y 4×4.</p>
 
   <div class="case-statement">
     <b>📋 Enunciado del Ejercicio Integrador (Evaluación 90 min):</b>
     <div style="margin-top:6px;">
-      "Ejercicio integrador en el área financiera que incluye cálculo de errores, aproximación de Taylor (<i>t</i><sub>0</sub>) y métodos numéricos para resolver sistemas de ecuaciones lineales cuadrados 3×3 y 4×4 (Factorización LU, Jacobi y Gauss-Seidel) con operaciones fila explícitas, ecuaciones de sustitución y recurrencia paso a paso, datos dinámicos manipulables por teclado y síntesis de conclusiones."
+      "Ejercicio integrador en el área financiera que incluye cálculo de errores, aproximación por Series de Taylor (<i>t</i><sub>0</sub>) y métodos numéricos para resolver sistemas de ecuaciones lineales cuadrados 3×3 y 4×4 (Factorización LU, Jacobi y Gauss-Seidel) con diagnóstico de sensibilidad en tiempo real, operaciones fila explícitas y datos dinámicos manipulables por teclado."
     </div>
   </div>
 </section>
@@ -398,16 +501,19 @@ td:first-child, th:first-child { text-align: left; }
   <div id="resultadoErrores"></div>
 </section>
 
-<!-- PARTE II: TAYLOR -->
+<!-- PARTE II: SERIES DE TAYLOR -->
 <section class="card" id="taylor">
   <div class="card-header">
-    <h2>Parte II – Aproximación de Capital mediante Polinomios de Taylor</h2>
+    <h2>Parte II – Aproximación de Capital mediante Series de Taylor</h2>
     <span class="badge">Módulo 2</span>
   </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">Estimación del modelo de crecimiento de capital continuo <i>C</i>(<i>t</i>) = <i>C</i><sub>0</sub> · <i>e</i><sup><i>r·t</i></sup>, expandido en <i>t</i><sub>0</sub> para evaluar en <i>t</i>.</p>
+  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">Estimación del modelo de crecimiento de capital continuo $C(t) = C_0 \cdot e^{r \cdot t}$ mediante la Serie infinita de Taylor expandida alrededor del punto base $t_0$ para evaluar a $t$.</p>
   
   <div class="math-box">
-    <i>C</i>(<i>t</i>) ≈ <i>C</i>(<i>t</i><sub>0</sub>) + <i>C</i>'(<i>t</i><sub>0</sub>)(<i>t</i> - <i>t</i><sub>0</sub>) + (<i>C</i>''(<i>t</i><sub>0</sub>)/2!)(<i>t</i> - <i>t</i><sub>0</sub>)² + (<i>C</i>'''(<i>t</i><sub>0</sub>)/3!)(<i>t</i> - <i>t</i><sub>0</sub>)³ + (<i>C</i><sup>(4)</sup>(<i>t</i><sub>0</sub>)/4!)(<i>t</i> - <i>t</i><sub>0</sub>)⁴
+    $$C(t) \approx C(t_0) + C'(t_0)(t - t_0) + \frac{C''(t_0)}{2!}(t - t_0)^2 + \frac{C'''(t_0)}{3!}(t - t_0)^3 + \frac{C^{(4)}(t_0)}{4!}(t - t_0)^4$$
+    <div style="font-size:12px; color:var(--muted); margin-top:4px;">
+      Fórmula General de Serie de Taylor: $$C(t) = \sum_{n=0}^{\infty} \frac{C^{(n)}(t_0)}{n!} (t - t_0)^n$$
+    </div>
   </div>
 
   <div class="grid4">
@@ -417,7 +523,7 @@ td:first-child, th:first-child { text-align: left; }
     <div><label>Tiempo a Evaluar t (años)</label><input id="taylor_t" type="number" value="1.5" step="0.1" oninput="calcularTaylorWord()"></div>
   </div>
 
-  <h3>Gráfico de Convergencia de los Órdenes de Taylor</h3>
+  <h3>Gráfico de Convergencia de la Serie de Taylor (Truncamiento n=0 a n=4)</h3>
   <div class="chart-box">
     <svg id="svgChartTaylor" width="100%" height="100%" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
   </div>
@@ -431,7 +537,7 @@ td:first-child, th:first-child { text-align: left; }
     <h2>Parte III – Distribución de Recursos Financieros (Sistemas Lineales Cuadrados <i>N</i> × <i>N</i>)</h2>
     <span class="badge">Módulo 3</span>
   </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">La matriz de coeficientes <i>A</i> es estrictamente cuadrada (<i>N</i> × <i>N</i>) con vector <i>b</i> (<i>N</i> × 1). Edita los valores por teclado en tiempo real para actualizar el problema de forma integral.</p>
+  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">La matriz de coeficientes <i>A</i> es estrictamente cuadrada (<i>N</i> × <i>N</i>) con vector <i>b</i> (<i>N</i> × 1). Edita los valores por teclado en tiempo real para actualizar todo el modelo.</p>
   
   <div class="grid3">
     <div>
@@ -509,7 +615,7 @@ td:first-child, th:first-child { text-align: left; }
 <!-- PARTE V: CONCLUSIONES -->
 <section class="card" id="conclusiones">
   <div class="card-header">
-    <h2>Parte V – Integración Final & Diagnóstico Financiero de Sensibilidad</h2>
+    <h2>Parte V – Integración Final & Diagnóstico Financiero de Sensibilidad en Tiempo Real</h2>
     <span class="badge">Módulo 5</span>
   </div>
   <div id="conclusionBox"></div>
@@ -530,6 +636,18 @@ let N = 3;
 let currentA = [[10, 2, 1], [1, 9, 2], [2, 1, 8]];
 let currentB = [29, 25, 28];
 let deptNames = ["Operaciones (x1)", "Comercialización (x2)", "Tecnología (x3)", "Innovación y Desarrollo (x4)"];
+
+// Global Live State para actualización en tiempo real del diagnóstico
+let liveState = {
+  errorMaxItem: "Tecnología (x3)",
+  errorMaxEp: 3.0,
+  taylorValExacto: 10778.84,
+  taylorEp3: 0.00017,
+  matrixCond: 1.5,
+  matrixJacobiIt: 6,
+  matrixSeidelIt: 4,
+  matrixDimension: 3
+};
 
 function fmt(x, d = 6) {
   if (!Number.isFinite(x)) return "—";
@@ -557,6 +675,130 @@ function toggleTheme() {
   } else {
     body.setAttribute("data-theme", "dark");
     btn.innerHTML = "☀️ Modo Claro";
+  }
+}
+
+// ---------------------------
+// DIAGNÓSTICO EN TIEMPO REAL (PARTE V)
+// ---------------------------
+function actualizarDiagnosticoEnTiempoReal() {
+  const box = document.getElementById("conclusionBox");
+  if (!box) return;
+
+  const cond = liveState.matrixCond || Infinity;
+  let diagSensibilidad = "";
+
+  if (cond > 500) {
+    diagSensibilidad = `
+      <div style="border-left:4px solid var(--bad); padding-left:12px; margin-top:10px;">
+        <b style="color:var(--bad)">⚠️ Diagnóstico de Mal Condicionamiento Extremo (Matriz ${liveState.matrixDimension}×${liveState.matrixDimension}):</b>
+        <p style="margin:4px 0 0; font-size:13px;">
+          El número de condición es elevadísimo (κ ≈ ${fmt(cond, 0)}). Pequeñas variaciones de apenas <b>0.001</b> en el vector de recursos <i>b</i> distorsionan drásticamente los resultados de la asignación presupuestaria <i>x</i>.
+        </p>
+      </div>
+    `;
+  } else {
+    diagSensibilidad = `
+      <div style="border-left:4px solid var(--good); padding-left:12px; margin-top:10px;">
+        <b style="color:var(--good)">✅ Diagnóstico de Estabilidad Matricial (Matriz ${liveState.matrixDimension}×${liveState.matrixDimension}):</b>
+        <p style="margin:4px 0 0; font-size:13px;">
+          La matriz cuadrada es diagonal dominante (κ ≈ ${fmt(cond, 2)}). Gauss-Seidel converge velozmente en <b>${liveState.matrixSeidelIt || 0} iteraciones</b> frente a ${liveState.matrixJacobiIt || 0} de Jacobi.
+        </p>
+      </div>
+    `;
+  }
+
+  box.innerHTML = `
+    <div class="result-box">
+      <h3 style="margin-top:0">Síntesis Ejecutiva Integradora en Tiempo Real (Evaluación 90 min)</h3>
+      <p style="margin:6px 0">1. <b>Auditoría de Errores:</b> El desvío porcentual máximo registrado se presenta en <b>${liveState.errorMaxItem || 'N/A'}</b> con <b>${fmt(liveState.errorMaxEp || 0, 4)}%</b>.</p>
+      <p style="margin:6px 0">2. <b>Serie de Taylor de Capital Continuo:</b> La Serie de Taylor truncada en término <i>n</i>=3 estima el capital futuro continuo <i>C</i>(<i>t</i>) = Bs ${fmt(liveState.taylorValExacto || 10778.84, 2)} con un error insignificante de <b>${fmt(liveState.taylorEp3 || 0, 5)}%</b>.</p>
+      <p style="margin:6px 0">3. <b>Distribución de Recursos Financieros (Sistema ${liveState.matrixDimension}×${liveState.matrixDimension}):</b></p>
+      ${diagSensibilidad}
+    </div>
+  `;
+
+  triggerMathRender();
+}
+
+// ---------------------------
+// MODAL FLOTANTE MOVIBLE (DRAGGABLE JS)
+// ---------------------------
+function abrirModalIntegrantes() {
+  const modal = document.getElementById("modalIntegrantes");
+  const body = document.getElementById("modalBody");
+  modal.style.display = "block";
+  body.style.display = "block";
+}
+
+function cerrarModal() {
+  document.getElementById("modalIntegrantes").style.display = "none";
+}
+
+function toggleMinimizeModal() {
+  const body = document.getElementById("modalBody");
+  if (body.style.display === "none") {
+    body.style.display = "block";
+  } else {
+    body.style.display = "none";
+  }
+}
+
+function makeDraggable(modalEl, headerEl) {
+  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  headerEl.onmousedown = dragMouseDown;
+  headerEl.ontouchstart = dragTouchStart;
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    modalEl.style.top = (modalEl.offsetTop - pos2) + "px";
+    modalEl.style.left = (modalEl.offsetLeft - pos1) + "px";
+    modalEl.style.bottom = "auto";
+    modalEl.style.right = "auto";
+  }
+
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+
+  function dragTouchStart(e) {
+    const touch = e.touches[0];
+    pos3 = touch.clientX;
+    pos4 = touch.clientY;
+    document.ontouchend = closeTouchDrag;
+    document.ontouchmove = touchDrag;
+  }
+
+  function touchDrag(e) {
+    const touch = e.touches[0];
+    pos1 = pos3 - touch.clientX;
+    pos2 = pos4 - touch.clientY;
+    pos3 = touch.clientX;
+    pos4 = touch.clientY;
+    modalEl.style.top = (modalEl.offsetTop - pos2) + "px";
+    modalEl.style.left = (modalEl.offsetLeft - pos1) + "px";
+    modalEl.style.bottom = "auto";
+    modalEl.style.right = "auto";
+  }
+
+  function closeTouchDrag() {
+    document.ontouchend = null;
+    document.ontouchmove = null;
   }
 }
 
@@ -634,9 +876,11 @@ function calcularParteErrores() {
     rows.push({ concepto: c, vRef, vReg, ea, er, ep });
   }
 
+  liveState.errorMaxItem = maxItem;
+  liveState.errorMaxEp = maxPorc;
+
   renderChartErrores(rows);
 
-  // Desglose de fórmulas y cálculos paso a paso para la Teoría de Errores
   let desglosePasosHtml = rows.map((r, idx) => `
     <div class="step-card">
       <div class="step-title">Paso a Paso (${r.concepto}):</div>
@@ -687,11 +931,11 @@ function calcularParteErrores() {
     </div>
   `;
   document.getElementById("resultadoErrores").innerHTML = html;
-  triggerMathRender();
+  actualizarDiagnosticoEnTiempoReal();
 }
 
 // ---------------------------
-// PARTE 2: TAYLOR
+// PARTE 2: SERIES DE TAYLOR
 // ---------------------------
 function renderChartTaylor(arr, valExacto) {
   const svg = document.getElementById("svgChartTaylor");
@@ -708,7 +952,7 @@ function renderChartTaylor(arr, valExacto) {
   let nodesHtml = points.map(p => `
     <circle cx="${p.x}" cy="${p.y}" r="5" fill="var(--primary)"/>
     <text x="${p.x}" y="${p.y - 10}" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="700">${fmt(p.item.valor, 2)}</text>
-    <text x="${p.x}" y="158" text-anchor="middle" fill="var(--muted)" font-size="10">Ord ${p.item.orden.split(" ")[1]}</text>
+    <text x="${p.x}" y="158" text-anchor="middle" fill="var(--muted)" font-size="10">Térm ${p.item.orden.split(" ")[1]}</text>
   `).join("");
 
   svg.innerHTML = `
@@ -733,42 +977,74 @@ function calcularTaylorWord() {
   const d3f_t0 = (r ** 3) * f_t0;
   const d4f_t0 = (r ** 4) * f_t0;
 
-  const T0 = f_t0;
-  const T1 = T0 + df_t0 * dt;
-  const T2 = T1 + (d2f_t0 / 2) * (dt ** 2);
-  const T3 = T2 + (d3f_t0 / 6) * (dt ** 3);
-  const T4 = T3 + (d4f_t0 / 24) * (dt ** 4);
+  const term0 = f_t0;
+  const term1 = df_t0 * dt;
+  const term2 = (d2f_t0 / 2) * (dt ** 2);
+  const term3 = (d3f_t0 / 6) * (dt ** 3);
+  const term4 = (d4f_t0 / 24) * (dt ** 4);
+
+  const T0 = term0;
+  const T1 = T0 + term1;
+  const T2 = T1 + term2;
+  const T3 = T2 + term3;
+  const T4 = T3 + term4;
 
   const arr = [
-    { orden: "Orden 0 (Constante)", valor: T0 },
-    { orden: "Orden 1 (Lineal)", valor: T1 },
-    { orden: "Orden 2 (Cuadrático)", valor: T2 },
-    { orden: "Orden 3 (Cúbico)", valor: T3 },
-    { orden: "Orden 4 (Cuártico)", valor: T4 }
-  ].map(item => {
-    const ea = Math.abs(valExacto - item.valor);
+    { orden: "n=0 (Base t₀)", termVal: term0, sumaVal: T0, formula: `C(t₀)` },
+    { orden: "n=1 (Lineal)", termVal: term1, sumaVal: T1, formula: `C'(t₀) · (t - t₀)` },
+    { orden: "n=2 (Cuadrático)", termVal: term2, sumaVal: T2, formula: `[C''(t₀) / 2!] · (t - t₀)²` },
+    { orden: "n=3 (Cúbico)", termVal: term3, sumaVal: T3, formula: `[C'''(t₀) / 3!] · (t - t₀)³` },
+    { orden: "n=4 (Cuártico)", termVal: term4, sumaVal: T4, formula: `[C^{(4)}(t₀) / 4!] · (t - t₀)⁴` }
+  ].map((item, idx) => {
+    const valor = item.sumaVal;
+    const ea = Math.abs(valExacto - valor);
     const er = valExacto !== 0 ? ea / valExacto : 0;
     const ep = er * 100;
     const prec = Math.max(0, 100 - ep);
-    return { ...item, ea, er, ep, prec };
+    return { ...item, valor, ea, er, ep, prec, idx };
   });
 
+  liveState.taylorValExacto = valExacto;
+  liveState.taylorEp3 = arr[3].ep;
+
   renderChartTaylor(arr, valExacto);
+
+  let pasosDetalleHtml = `
+    <div class="step-card">
+      <div class="step-title">1. Evaluación de Derivadas de C(t) = C₀ · e^{r·t} en t₀ = ${t0}:</div>
+      <p style="margin:2px 0; font-size:12.5px">• <b>Derivada 0:</b> <i>C</i>(${t0}) = ${C0} · <i>e</i><sup>${r}×${t0}</sup> = <b>Bs ${fmt(f_t0, 6)}</b></p>
+      <p style="margin:2px 0; font-size:12.5px">• <b>Derivada 1:</b> <i>C</i>'(${t0}) = ${r} × ${fmt(f_t0, 4)} = <b>${fmt(df_t0, 6)}</b></p>
+      <p style="margin:2px 0; font-size:12.5px">• <b>Derivada 2:</b> <i>C</i>''(${t0}) = ${r}² × ${fmt(f_t0, 4)} = <b>${fmt(d2f_t0, 6)}</b></p>
+      <p style="margin:2px 0; font-size:12.5px">• <b>Derivada 3:</b> <i>C</i>'''(${t0}) = ${r}³ × ${fmt(f_t0, 4)} = <b>${fmt(d3f_t0, 6)}</b></p>
+      <p style="margin:2px 0; font-size:12.5px">• <b>Derivada 4:</b> <i>C</i><sup>(4)</sup>(${t0}) = ${r}⁴ × ${fmt(f_t0, 4)} = <b>${fmt(d4f_t0, 6)}</b></p>
+    </div>
+
+    <div class="step-card" style="margin-top:10px;">
+      <div class="step-title">2. Desarrollo y Suma Término a Término de la Serie de Taylor (Δt = ${fmt(dt, 2)}):</div>
+      <p style="margin:3px 0; font-size:12.5px">• <b>n = 0:</b> <i>C</i><sub>0</sub> = ${fmt(T0, 6)} Bs &nbsp;|&nbsp; <i>E</i><sub>p</sub> = ${fmt(arr[0].ep, 4)}%</p>
+      <p style="margin:3px 0; font-size:12.5px">• <b>n = 1:</b> <i>C</i><sub>0</sub> + (${fmt(df_t0, 4)} × ${fmt(dt, 2)}) = ${fmt(T0, 4)} + ${fmt(term1, 4)} = <b>${fmt(T1, 6)} Bs</b> &nbsp;|&nbsp; <i>E</i><sub>p</sub> = ${fmt(arr[1].ep, 4)}%</p>
+      <p style="margin:3px 0; font-size:12.5px">• <b>n = 2:</b> <i>C</i><sub>1</sub> + [(${fmt(d2f_t0, 4)} / 2) × ${fmt(dt, 2)}²] = ${fmt(T1, 4)} + ${fmt(term2, 4)} = <b>${fmt(T2, 6)} Bs</b> &nbsp;|&nbsp; <i>E</i><sub>p</sub> = ${fmt(arr[2].ep, 4)}%</p>
+      <p style="margin:3px 0; font-size:12.5px">• <b>n = 3:</b> <i>C</i><sub>2</sub> + [(${fmt(d3f_t0, 4)} / 6) × ${fmt(dt, 2)}³] = ${fmt(T2, 4)} + ${fmt(term3, 4)} = <b>${fmt(T3, 6)} Bs</b> &nbsp;|&nbsp; <i>E</i><sub>p</sub> = ${fmt(arr[3].ep, 6)}%</p>
+      <p style="margin:3px 0; font-size:12.5px">• <b>n = 4:</b> <i>C</i><sub>3</sub> + [(${fmt(d4f_t0, 4)} / 24) × ${fmt(dt, 2)}⁴] = ${fmt(T3, 4)} + ${fmt(term4, 6)} = <b>${fmt(T4, 6)} Bs</b> &nbsp;|&nbsp; <i>E</i><sub>p</sub> = ${fmt(arr[4].ep, 6)}%</p>
+    </div>
+  `;
 
   let html = `
     <div class="result-box">
       <div style="display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
-        <div>Valor Exacto Continuo <i>C</i>(${t}): <b style="font-size:1.05em; color:var(--primary)">Bs ${fmt(valExacto, 6)}</b></div>
-        <div style="color:var(--muted); font-size:13px;"><i>t</i><sub>0</sub> = ${t0} años (Δ<i>t</i> = ${fmt(dt, 2)})</div>
+        <div>Valor Exacto Continuo <i>C</i>(${t}) = <i>C</i><sub>0</sub> · <i>e</i><sup><i>r·t</i></sup>: <b style="font-size:1.05em; color:var(--primary)">Bs ${fmt(valExacto, 6)}</b></div>
+        <div style="color:var(--muted); font-size:13px;">Punto base <i>t</i><sub>0</sub> = ${t0} años &nbsp;|&nbsp; Δ<i>t</i> = (<i>t</i> - <i>t</i><sub>0</sub>) = ${fmt(dt, 2)}</div>
       </div>
       
       <div class="scroll">
         <table>
           <thead>
             <tr>
-              <th style="text-align:left">Orden Taylor</th>
-              <th>Valor Estimado (Bs)</th>
+              <th style="text-align:left">Orden n de la Serie de Taylor</th>
+              <th>Término ΔC<sub>n</sub> (Bs)</th>
+              <th>Valor Acumulado Estimado (Bs)</th>
               <th>Error Absoluto (<i>E</i><sub>a</sub>) (Bs)</th>
+              <th>Error Relativo (<i>E</i><sub>r</sub>)</th>
               <th>Error Porcentual (<i>E</i><sub>p</sub>%)</th>
             </tr>
           </thead>
@@ -776,18 +1052,23 @@ function calcularTaylorWord() {
             ${arr.map(item => `
               <tr>
                 <td><b>${item.orden}</b></td>
-                <td>Bs ${fmt(item.valor, 6)}</td>
+                <td>+Bs ${fmt(item.termVal, 6)}</td>
+                <td><b>Bs ${fmt(item.valor, 6)}</b></td>
                 <td>Bs ${fmt(item.ea, 6)}</td>
-                <td><b>${fmt(item.ep, 6)}%</b></td>
+                <td>${fmt(item.er, 8)}</td>
+                <td><b class="${item.ep > 1 ? 'pill-warn' : 'pill-good'}">${fmt(item.ep, 6)}%</b></td>
               </tr>
             `).join("")}
           </tbody>
         </table>
       </div>
+
+      <h4 style="margin-top:14px; margin-bottom:4px;">Desarrollo Matemático Paso a Paso por Serie de Taylor:</h4>
+      ${pasosDetalleHtml}
     </div>
   `;
   document.getElementById("resultadoTaylor").innerHTML = html;
-  triggerMathRender();
+  actualizarDiagnosticoEnTiempoReal();
 }
 
 // ---------------------------
@@ -906,9 +1187,6 @@ function getMatrizUI() {
   return { A, b };
 }
 
-// ---------------------------
-// FACTORIZACIÓN LU CON OPERACIONES FILA EXPLÍCITAS PASO A PASO
-// ---------------------------
 function factorizacionLU_Pasos(A_orig, b_orig) {
   let n = A_orig.length;
   let A = A_orig.map(r => r.slice());
@@ -1100,7 +1378,11 @@ function resolverSistemas() {
   const gs = solverIterativo(A, b, "seidel", tol, maxIt);
   const cond = calcularCondicion(A);
 
-  // Desglose de operaciones fila e intermedias para LU
+  liveState.matrixCond = cond;
+  liveState.matrixJacobiIt = jac.rows.length;
+  liveState.matrixSeidelIt = gs.rows.length;
+  liveState.matrixDimension = N;
+
   let pasosLuHtml = lu.pasos.map((p, idx) => {
     let multsTxt = p.multiplicadores.length > 0 
       ? p.multiplicadores.map(m => `<i>m</i><sub>${m.fila}${m.col}}</sub> = ${fmt(m.factor, 4)}`).join(", ")
@@ -1122,7 +1404,6 @@ function resolverSistemas() {
     `;
   }).join("");
 
-  // Desglose explícito de Sustituciones Hacia Adelante y Hacia Atrás
   let sustitucionAdelanteTxt = lu.y.map((val, i) => `<i>y</i><sub>${i+1}</sub> = ${fmt(val, 4)}`).join(" &nbsp;|&nbsp; ");
   let sustitucionAtrasTxt = lu.x.map((val, i) => `<i>x</i><sub>${i+1}</sub> = ${fmt(val, 4)}`).join(" &nbsp;|&nbsp; ");
 
@@ -1241,38 +1522,7 @@ function resolverSistemas() {
   document.getElementById("resJacobi").innerHTML = renderDetalleIterativo(jac, "Método de Jacobi", formulaJac, despejesJacTxt);
   document.getElementById("resSeidel").innerHTML = renderDetalleIterativo(gs, "Método de Gauss-Seidel", formulaSeidel, despejesSeidelTxt);
 
-  let diagSensibilidad = "";
-  if (cond > 500) {
-    diagSensibilidad = `
-      <div style="border-left:4px solid var(--bad); padding-left:12px; margin-top:10px;">
-        <b style="color:var(--bad)">⚠️ Diagnóstico de Mal Condicionamiento (Caso 6.3 / Perturbado):</b>
-        <p style="margin:4px 0 0; font-size:13px;">
-          La matriz cuadrada posee κ ≈ ${fmt(cond, 0)}. Una variación de <b>0.001</b> en <i>b</i><sub>3</sub> genera cambios drásticos en los resultados del presupuesto <i>x</i>.
-        </p>
-      </div>
-    `;
-  } else {
-    diagSensibilidad = `
-      <div style="border-left:4px solid var(--good); padding-left:12px; margin-top:10px;">
-        <b style="color:var(--good)">✅ Diagnóstico de Estabilidad Matricial (<i>N</i> × <i>N</i>):</b>
-        <p style="margin:4px 0 0; font-size:13px;">
-          La matriz cuadrada es diagonal dominante (κ ≈ ${fmt(cond, 2)}). Gauss-Seidel converge en <b>${gs.rows.length} iteraciones</b> frente a ${jac.rows.length} de Jacobi.
-        </p>
-      </div>
-    `;
-  }
-
-  document.getElementById("conclusionBox").innerHTML = `
-    <div class="result-box">
-      <h3 style="margin-top:0">Síntesis Ejecutiva Integradora (Evaluación 90 min)</h3>
-      <p style="margin:6px 0">1. <b>Auditoría de Errores:</b> Sincronizada con los montos del sistema <i>A</i> · <i>x</i> = <i>b</i>.</p>
-      <p style="margin:6px 0">2. <b>Taylor de Capital Continuo:</b> El polinomio de Orden 3 estima el interés continuo con precisión de centavos.</p>
-      <p style="margin:6px 0">3. <b>Distribución de Recursos (<i>N</i> × <i>N</i> = ${N} × ${N}):</b></p>
-      ${diagSensibilidad}
-    </div>
-  `;
-
-  triggerMathRender();
+  actualizarDiagnosticoEnTiempoReal();
 }
 
 window.onload = () => {
@@ -1280,6 +1530,7 @@ window.onload = () => {
   sincronizarConMatriz();
   calcularTaylorWord();
   resolverSistemas();
+  makeDraggable(document.getElementById("modalIntegrantes"), document.getElementById("modalHeader"));
 };
 </script>
 </body>
