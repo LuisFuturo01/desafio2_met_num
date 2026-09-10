@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-<!-- KaTeX for Beautiful Math Equation Rendering -->
+<!-- KaTeX for Math Equation Rendering -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="triggerMathRender()"></script>
@@ -31,7 +31,7 @@
   --warn: #b45309;
   --warn-bg: #fef3c7;
   --accent-glow: rgba(99, 102, 241, 0.12);
-  --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
 }
 
 [data-theme="dark"] {
@@ -70,19 +70,16 @@ h1, h2, h3, .brand {
   letter-spacing: -0.02em;
 }
 
-/* Header & Navigation */
 header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   box-shadow: 0 2px 10px rgba(0,0,0,0.03);
 }
-[data-theme="dark"] header {
-  background: rgba(15, 23, 42, 0.9);
-}
+[data-theme="dark"] header { background: rgba(15, 23, 42, 0.92); }
 
 .nav-container {
   max-width: 1200px;
@@ -133,7 +130,6 @@ nav a:hover { background: var(--accent-glow); color: var(--primary); }
   font-weight: 600;
 }
 
-/* Main Container */
 main {
   max-width: 1200px;
   margin: auto;
@@ -168,29 +164,24 @@ main {
   font-weight: 700;
 }
 
-/* Hero & Narrative Case Box */
-.narrative-box {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06), rgba(2, 132, 199, 0.04));
-  border: 1px solid rgba(99, 102, 241, 0.2);
+/* Banner del Enunciado */
+.banner-box {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(2, 132, 199, 0.05));
+  border: 1.5px solid rgba(99, 102, 241, 0.25);
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 28px;
 }
-.narrative-box h1 { font-size: 1.8rem; margin: 0 0 10px; color: var(--text); }
-.narrative-box p { color: var(--muted); font-size: 14.5px; margin: 0 0 14px; }
-.case-details {
+.banner-box h1 { font-size: 1.75rem; margin: 0 0 10px; color: var(--text); }
+.banner-box p { color: var(--muted); font-size: 14.5px; margin: 0 0 14px; }
+.case-statement {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
   font-size: 13.5px;
+  line-height: 1.6;
 }
-.case-details grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-
-/* Grid Layouts */
-.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
-.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
 
 /* Form Controls */
 label {
@@ -240,17 +231,35 @@ button.danger { background: var(--bad); color: white; }
 
 .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
 
-/* Dynamic Matrix Grid */
-.matrix-container { margin: 12px 0; overflow-x: auto; }
-.matrix-grid { display: grid; gap: 8px; }
-.matrix-row { display: grid; gap: 8px; grid-template-columns: repeat(var(--n), minmax(65px, 1fr)); }
-.matrix-grid input {
+/* Dynamic Strictly Square Matrix Layout */
+.square-system-wrapper {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) auto minmax(90px, 120px);
+  gap: 16px;
+  align-items: center;
+  margin: 16px 0;
+  overflow-x: auto;
+}
+.matrix-square-grid {
+  display: grid;
+  gap: 8px;
+}
+.matrix-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(var(--n), minmax(55px, 1fr));
+}
+.matrix-row input, .vector-column input {
   text-align: center;
   font-family: 'Fira Code', monospace;
   font-weight: 600;
 }
+.vector-column {
+  display: grid;
+  gap: 8px;
+}
 
-/* Formatted Math Box */
+/* Math Display */
 .math-box {
   background: var(--card-inner);
   border-left: 4px solid var(--secondary);
@@ -261,14 +270,13 @@ button.danger { background: var(--bad); color: white; }
   overflow-x: auto;
 }
 
-/* Tables */
+/* Tables & Results */
 table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
 th, td { padding: 9px 11px; border-bottom: 1px solid var(--border); text-align: right; }
 th { background: var(--card-inner); text-align: center; font-weight: 700; color: var(--muted); font-size: 11px; text-transform: uppercase; }
 td:first-child, th:first-child { text-align: left; }
 .scroll { overflow-x: auto; }
 
-/* Status Indicators */
 .pill {
   display: inline-block;
   padding: 3px 8px;
@@ -288,21 +296,7 @@ td:first-child, th:first-child { text-align: left; }
   margin-top: 14px;
 }
 
-/* Progress bar for Taylor */
-.progress-bar {
-  background: var(--border);
-  border-radius: 999px;
-  height: 6px;
-  width: 100%;
-  overflow: hidden;
-  margin-top: 4px;
-}
-.progress-fill {
-  background: linear-gradient(90deg, var(--primary), var(--secondary));
-  height: 100%;
-}
-
-/* Canvas SVG Chart */
+/* SVG Graphic Boxes */
 .chart-box {
   width: 100%;
   height: 200px;
@@ -312,6 +306,10 @@ td:first-child, th:first-child { text-align: left; }
   padding: 10px;
   margin-top: 14px;
 }
+
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
 
 .footer { text-align: center; color: var(--muted); padding: 30px; font-size: 13px; border-top: 1px solid var(--border); }
 
@@ -342,18 +340,15 @@ td:first-child, th:first-child { text-align: left; }
 
 <main>
 
-<!-- CASO DE ESTUDIO / ENUNCIADO -->
-<section id="enunciado" class="narrative-box">
-  <h1>Desafío Integrador: Análisis Numérico de Sensibilidad y Recursos</h1>
-  <p>Plataforma interactiva para evaluar la estabilidad financiera de la empresa frente a errores contables, proyección continua de capital mediante polinomios de Taylor y análisis matricial de asignación de recursos en <b>3×3</b> y <b>4×4</b>.</p>
+<!-- ENUNCIADO OFICIAL -->
+<section id="enunciado" class="banner-box">
+  <h1>Desafío Integrador • Área Financiera (Duración 90 min)</h1>
+  <p>Herramienta interactiva para la evaluación de sensibilidad financiera, propagación de errores contables, estimación de capital por polinomios de Taylor y resolución de sistemas lineales cuadrados 3×3 y 4×4.</p>
 
-  <div class="case-details">
-    <b>📌 Planteamiento Financiero del Caso:</b>
-    <div style="margin-top:6px; line-height:1.6;">
-      • <b>Parte I (Teoría de Errores):</b> Auditoría sobre variaciones entre montos reales ($x$) vs. registrados ($x_{aprox}$) en Ingreso Diario, Costo Operativo y Utilidad.<br>
-      • <b>Parte II (Polinomios de Taylor):</b> Estimación de crecimiento continuo de capital $C(t) = C_0 \cdot e^{r \cdot t}$ expandido en el año base $t_0 = 1$ para evaluar a $t = 1.5$ años.<br>
-      • <b>Parte III & IV (Sistemas Lineales $A \cdot x = b$):</b> Asignación presupuestaria entre departamentos ($x_1$ = Operaciones, $x_2$ = Comercialización, $x_3$ = Tecnología, $x_4$ = Innovación) mediante Factorización $PA=LU$, Jacobi y Gauss-Seidel ($\text{Tol} = 10^{-6}, x^{(0)}=\mathbf{0}$). Evaluando estabilidad en casos Ideales (6.1), Bajo Estrés (6.2) y Mal Condicionados (6.3).<br>
-      ⚡ <i>Todas las tablas y valores se recalculan en tiempo real al editar cualquier celda.</i>
+  <div class="case-statement">
+    <b>📋 Enunciado del Ejercicio Integrador (Evaluación 90 min):</b>
+    <div style="margin-top:6px;">
+      "Ejercicio integrador en el área financiera que incluye cálculo de errores (absoluto, relativo, porcentual), aproximación de Taylor ($t_0$) y métodos numéricos para resolver sistemas de ecuaciones lineales cuadrados $3 \times 3$ y $4 \times 4$ (Factorización LU, Jacobi y Gauss-Seidel) con datos dinámicos manipulables por teclado en tiempo real y síntesis de conclusiones."
     </div>
   </div>
 </section>
@@ -364,7 +359,7 @@ td:first-child, th:first-child { text-align: left; }
     <h2>Parte I – Teoría de Errores en Registros Financieros</h2>
     <span class="badge">Módulo 1</span>
   </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">Evaluación de discrepancias entre los valores de referencia reales ($x$) y los registrados ($x_{aprox}$) en Bolivianos (Bs.). Realiza cambios en las celdas para actualizar en tiempo real.</p>
+  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">Evaluación de discrepancias entre los valores reales de referencia ($x$) versus registrados ($x_{aprox}$) en Bolivianos (Bs.). Edita por teclado en tiempo real.</p>
   
   <div class="scroll">
     <table>
@@ -398,9 +393,14 @@ td:first-child, th:first-child { text-align: left; }
       </tbody>
     </table>
   </div>
-  
+
   <div class="actions">
-    <button class="secondary" onclick="agregarFilaError()">➕ Añadir Concepto Financiero</button>
+    <button class="secondary" onclick="agregarFilaError()">➕ Añadir Concepto</button>
+  </div>
+
+  <h3>Gráfico de Errores Porcentuales por Concepto ($E_p\%$)</h3>
+  <div class="chart-box">
+    <svg id="svgChartErrores" width="100%" height="100%" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
   </div>
 
   <div id="resultadoErrores"></div>
@@ -412,7 +412,7 @@ td:first-child, th:first-child { text-align: left; }
     <h2>Parte II – Aproximación de Capital mediante Polinomios de Taylor</h2>
     <span class="badge">Módulo 2</span>
   </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">Modelo de crecimiento continuo $C(t) = C_0 \cdot e^{r \cdot t}$, expandido alrededor del punto base $t_0$ para estimar en $t$.</p>
+  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">Estimación del modelo de crecimiento de capital continuo $C(t) = C_0 \cdot e^{r \cdot t}$, expandido en $t_0$ para evaluar en $t$.</p>
   
   <div class="math-box">
     $$C(t) \approx C(t_0) + C'(t_0)(t - t_0) + \frac{C''(t_0)}{2!}(t - t_0)^2 + \frac{C'''(t_0)}{3!}(t - t_0)^3 + \frac{C^{(4)}(t_0)}{4!}(t - t_0)^4$$
@@ -422,51 +422,66 @@ td:first-child, th:first-child { text-align: left; }
     <div><label>Capital Inicial $C_0$ (Bs)</label><input id="taylor_C0" type="number" value="10000" oninput="calcularTaylorWord()"></div>
     <div><label>Tasa continua $r$</label><input id="taylor_r" type="number" value="0.05" step="0.005" oninput="calcularTaylorWord()"></div>
     <div><label>Punto Expansión $t_0$ (años)</label><input id="taylor_t0" type="number" value="1" step="0.1" oninput="calcularTaylorWord()"></div>
-    <div><label>Tiempo Evaluar $t$ (años)</label><input id="taylor_t" type="number" value="1.5" step="0.1" oninput="calcularTaylorWord()"></div>
+    <div><label>Tiempo a Evaluar $t$ (años)</label><input id="taylor_t" type="number" value="1.5" step="0.1" oninput="calcularTaylorWord()"></div>
+  </div>
+
+  <h3>Gráfico de Convergencia de los Órdenes de Taylor</h3>
+  <div class="chart-box">
+    <svg id="svgChartTaylor" width="100%" height="100%" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
   </div>
 
   <div id="resultadoTaylor"></div>
 </section>
 
-<!-- PARTE III: SISTEMAS LINEALES -->
+<!-- PARTE III: SISTEMAS LINEALES CUADRADOS -->
 <section class="card" id="sistemas">
   <div class="card-header">
-    <h2>Parte III – Distribución de Recursos Financieros (Sistemas Lineales $A \cdot x = b$)</h2>
+    <h2>Parte III – Distribución de Recursos Financieros (Sistemas Lineales Cuadrados $N \times N$)</h2>
     <span class="badge">Módulo 3</span>
   </div>
+  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">La matriz de coeficientes $A$ es estrictamente cuadrada ($N \times N$) con vector $b$ de dimensión $N \times 1$. Edita los valores por teclado en tiempo real.</p>
   
   <div class="grid3">
     <div>
-      <label>Dimensión de Matriz</label>
+      <label>Dimensión Cuadrada ($N \times N$)</label>
       <select id="matrixSizeSelect" onchange="cambiarDimensionMatriz()">
         <option value="3" selected>3 × 3 (Operaciones, Comercial, Tecnología)</option>
         <option value="4">4 × 4 (Operaciones, Comercial, Tecnología, Innovación)</option>
       </select>
     </div>
-    <div><label>Tolerancia iterativa ($\text{Tol}$)</label><input type="number" id="sysTol" value="0.000001" step="any" oninput="resolverSistemas()"></div>
+    <div><label>Tolerancia ($\text{Tol}$)</label><input type="number" id="sysTol" value="0.000001" step="any" oninput="resolverSistemas()"></div>
     <div><label>Máx. Iteraciones</label><input type="number" id="sysMaxIt" value="50" oninput="resolverSistemas()"></div>
   </div>
 
   <div class="actions" style="margin-top:14px;">
-    <b>Cargar Casos Preconfigurados:</b>
-    <button class="secondary" onclick="cargarCaso('ideal')">🟢 Caso Ideal (6.1)</button>
-    <button class="secondary" onclick="cargarCaso('estres')">🔵 Caso Bajo Estrés (6.2)</button>
-    <button class="warning" onclick="cargarCaso('mal_condicionado')">🟠 Caso Mal Condicionado (6.3)</button>
-    <button class="danger" onclick="cargarCaso('mal_condicionado_pert')">🔴 6.3 Perturbado ($b_3 = 6.003$)</button>
+    <b>Cargar Casos del Desafío:</b>
+    <button class="secondary" onclick="cargarCaso('ideal')">🟢 Caso Ideal 3×3 (6.1)</button>
+    <button class="secondary" onclick="cargarCaso('estres')">🔵 Caso Estrés 3×3 (6.2)</button>
+    <button class="warning" onclick="cargarCaso('mal_condicionado')">🟠 Mal Condicionado 3×3 (6.3)</button>
+    <button class="danger" onclick="cargarCaso('mal_condicionado_pert')">🔴 6.3 Perturbado ($b_3=6.003$)</button>
     <button class="secondary" id="btnPreset4x4" style="display:none;" onclick="cargarCaso('ejemplo4x4')">🟣 Ejemplo 4×4</button>
   </div>
 
-  <h3 style="margin-top:16px;">Matriz de Coeficientes $A$</h3>
-  <div id="containerA" class="matrix-container"></div>
-
-  <h3>Vector de Términos Independientes $b$</h3>
-  <div id="containerB" class="matrix-container"></div>
+  <div style="margin-top:18px;">
+    <b>Estructura Matricial Cuadrada ($A \cdot x = b$):</b>
+    <div class="square-system-wrapper">
+      <div>
+        <label id="lblMatA">Matriz Cuadrada $A$ ($N \times N$)</label>
+        <div id="containerA" class="matrix-square-grid"></div>
+      </div>
+      <div style="font-size:1.5rem; font-weight:800; color:var(--muted)">× $x$ =</div>
+      <div>
+        <label>Vector $b$ ($N \times 1$)</label>
+        <div id="containerB" class="vector-column"></div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- PARTE IV: COMPARACIÓN Y GRÁFICO -->
 <section class="card" id="comparacion">
   <div class="card-header">
-    <h2>Parte IV – Resultados y Comparación de Métodos Numéricos</h2>
+    <h2>Parte IV – Resultados, Gráficos & Comparación de Métodos</h2>
     <span class="badge">Módulo 4</span>
   </div>
 
@@ -476,12 +491,12 @@ td:first-child, th:first-child { text-align: left; }
       <div id="resLU"></div>
     </div>
     <div>
-      <h3>Resumen Comparativo de Métodos</h3>
+      <h3>Resumen Comparativo</h3>
       <div id="resComparacion"></div>
     </div>
   </div>
 
-  <h3>Gráfico de Convergencia Iterativa (Norma Error vs Iteración)</h3>
+  <h3>Gráfico de Convergencia Iterativa (Jacobi vs. Gauss-Seidel)</h3>
   <div class="chart-box">
     <svg id="convergenceSvg" width="100%" height="100%" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
   </div>
@@ -553,13 +568,13 @@ function toggleTheme() {
 }
 
 // ---------------------------
-// PARTE 1: ERRORES
+// PARTE 1: ERRORES CON GRÁFICO SVG
 // ---------------------------
 function agregarFilaError() {
   const tbody = document.getElementById("bodyErrores");
   const tr = document.createElement("tr");
   tr.innerHTML = `
-    <td><input type="text" value="Nuevo Proyecto" class="concepto-input" oninput="calcularParteErrores()"></td>
+    <td><input type="text" value="Nuevo Concepto" class="concepto-input" oninput="calcularParteErrores()"></td>
     <td><input type="number" value="5000" step="any" class="ref-input" oninput="calcularParteErrores()"></td>
     <td><input type="number" value="4950" step="any" class="reg-input" oninput="calcularParteErrores()"></td>
     <td><button class="secondary" style="padding:3px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
@@ -571,6 +586,31 @@ function agregarFilaError() {
 function eliminarFilaError(btn) {
   btn.closest("tr").remove();
   calcularParteErrores();
+}
+
+function renderChartErrores(rows) {
+  const svg = document.getElementById("svgChartErrores");
+  if (!rows || rows.length === 0) return;
+  
+  const maxEp = Math.max(...rows.map(r => r.ep), 1);
+  const barWidth = Math.min(80, (500 / rows.length) - 20);
+
+  let barsHtml = rows.map((r, i) => {
+    const x = 70 + i * (500 / rows.length);
+    const h = (r.ep / maxEp) * 120;
+    const y = 140 - h;
+    const color = r.ep > 2 ? 'var(--bad)' : r.ep > 1 ? 'var(--warn)' : 'var(--good)';
+    return `
+      <rect x="${x}" y="${y}" width="${barWidth}" height="${h}" fill="${color}" rx="4" />
+      <text x="${x + barWidth/2}" y="${y - 6}" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="700">${fmt(r.ep, 2)}%</text>
+      <text x="${x + barWidth/2}" y="158" text-anchor="middle" fill="var(--muted)" font-size="10">${r.concepto.substring(0, 12)}</text>
+    `;
+  }).join("");
+
+  svg.innerHTML = `
+    <line x1="50" y1="140" x2="570" y2="140" stroke="var(--border)"/>
+    ${barsHtml}
+  `;
 }
 
 function calcularParteErrores() {
@@ -598,6 +638,8 @@ function calcularParteErrores() {
 
     rows.push({ concepto: c, vRef, vReg, ea, er, ep });
   }
+
+  renderChartErrores(rows);
 
   let html = `
     <div class="result-box">
@@ -629,9 +671,8 @@ function calcularParteErrores() {
           </tbody>
         </table>
       </div>
-      <div style="margin-top:12px; font-size:13.5px; line-height:1.5;">
-        <p style="margin:4px 0">• <b>Rubro con Mayor Desvío:</b> <b>${maxItem}</b> presenta el mayor porcentaje de error con <b>${fmt(maxPorc, 4)}%</b>.</p>
-        <p style="margin:4px 0">• <b>Impacto Financiero:</b> Una distorsión porcentual alta en los registros contables desvía la proyección real del margen operativo y el presupuesto disponible.</p>
+      <div style="margin-top:12px; font-size:13.5px;">
+        <p style="margin:4px 0">• <b>Mayor Desvío Contable:</b> <b>${maxItem}</b> presenta el desvío más alto con un <b>${fmt(maxPorc, 4)}%</b>.</p>
       </div>
     </div>
   `;
@@ -640,8 +681,33 @@ function calcularParteErrores() {
 }
 
 // ---------------------------
-// PARTE 2: TAYLOR
+// PARTE 2: TAYLOR CON GRÁFICO SVG
 // ---------------------------
+function renderChartTaylor(arr, valExacto) {
+  const svg = document.getElementById("svgChartTaylor");
+  if (!arr || arr.length === 0) return;
+
+  const points = arr.map((item, i) => {
+    const x = 70 + i * 110;
+    const y = 140 - Math.min(120, (item.prec / 100) * 120);
+    return { x, y, item };
+  });
+
+  const polyPoints = points.map(p => `${p.x},${p.y}`).join(" ");
+
+  let nodesHtml = points.map(p => `
+    <circle cx="${p.x}" cy="${p.y}" r="5" fill="var(--primary)"/>
+    <text x="${p.x}" y="${p.y - 10}" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="700">${fmt(p.item.valor, 2)}</text>
+    <text x="${p.x}" y="158" text-anchor="middle" fill="var(--muted)" font-size="10">Ord ${p.item.orden.split(" ")[1]}</text>
+  `).join("");
+
+  svg.innerHTML = `
+    <line x1="50" y1="140" x2="570" y2="140" stroke="var(--border)"/>
+    <polyline points="${polyPoints}" fill="none" stroke="var(--primary)" stroke-width="2.5"/>
+    ${nodesHtml}
+  `;
+}
+
 function calcularTaylorWord() {
   const C0 = parseFloat(document.getElementById("taylor_C0").value) || 10000;
   const r = parseFloat(document.getElementById("taylor_r").value) || 0.05;
@@ -677,6 +743,8 @@ function calcularTaylorWord() {
     return { ...item, ea, er, ep, prec };
   });
 
+  renderChartTaylor(arr, valExacto);
+
   let html = `
     <div class="result-box">
       <div style="display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
@@ -692,7 +760,6 @@ function calcularTaylorWord() {
               <th>Valor Estimado (Bs)</th>
               <th>Error Absoluto $E_a$ (Bs)</th>
               <th>Error Porcentual $E_p\%$</th>
-              <th style="width:160px">Precisión</th>
             </tr>
           </thead>
           <tbody>
@@ -702,20 +769,11 @@ function calcularTaylorWord() {
                 <td>Bs ${fmt(item.valor, 6)}</td>
                 <td>Bs ${fmt(item.ea, 6)}</td>
                 <td><b>${fmt(item.ep, 6)}%</b></td>
-                <td>
-                  <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${Math.min(100, Math.max(0, item.prec))}%;"></div>
-                  </div>
-                </td>
               </tr>
             `).join("")}
           </tbody>
         </table>
       </div>
-
-      <p style="margin-top:10px; font-size:13px; color:var(--muted)">
-        💡 <b>Conclusión Taylor:</b> Al truncar en <b>Orden 3</b>, la estimación alcanza un desvío de apenas <b>${fmt(arr[3].ep, 5)}%</b> respecto al crecimiento exponencial continuo.
-      </p>
     </div>
   `;
   document.getElementById("resultadoTaylor").innerHTML = html;
@@ -723,7 +781,7 @@ function calcularTaylorWord() {
 }
 
 // ---------------------------
-// PARTE 3: SISTEMAS LINEALES DIVERSIFICADOS (3x3 y 4x4)
+// PARTE 3: SISTEMAS LINEALES CUADRADOS (3x3 y 4x4)
 // ---------------------------
 function cambiarDimensionMatriz() {
   N = parseInt(document.getElementById("matrixSizeSelect").value);
@@ -750,8 +808,8 @@ function renderInputsMatriz() {
   const contA = document.getElementById("containerA");
   const contB = document.getElementById("containerB");
   contA.innerHTML = ""; contB.innerHTML = "";
-  contA.className = "matrix-grid"; contA.style.setProperty("--n", N);
-  contB.className = "matrix-grid"; contB.style.setProperty("--n", N);
+  contA.className = "matrix-square-grid"; contA.style.setProperty("--n", N);
+  contB.className = "vector-column";
 
   for (let i = 0; i < N; i++) {
     const rowA = document.createElement("div");
@@ -768,18 +826,14 @@ function renderInputsMatriz() {
     contA.appendChild(rowA);
   }
 
-  const rowB = document.createElement("div");
-  rowB.className = "matrix-row";
-  rowB.style.setProperty("--n", N);
   for (let i = 0; i < N; i++) {
     const inp = document.createElement("input");
     inp.type = "number"; inp.step = "any";
     inp.id = `b_${i}`;
     inp.value = currentB[i] !== undefined ? currentB[i] : 0;
     inp.oninput = resolverSistemas;
-    rowB.appendChild(inp);
+    contB.appendChild(inp);
   }
-  contB.appendChild(rowB);
 }
 
 function cargarCaso(tipo) {
@@ -833,7 +887,6 @@ function getMatrizUI() {
   return { A, b };
 }
 
-// Algoritmo General Factorización LU (N x N)
 function factorizacionLU(A_orig, b_orig) {
   let n = A_orig.length;
   let A = A_orig.map(r => r.slice());
@@ -882,7 +935,6 @@ function factorizacionLU(A_orig, b_orig) {
   return { L, U, P, y, x };
 }
 
-// Algoritmo General Iterativo (N x N)
 function solverIterativo(A, b, metodo, tol, maxIt) {
   let n = A.length;
   let x = Array(n).fill(0);
@@ -915,7 +967,6 @@ function solverIterativo(A, b, metodo, tol, maxIt) {
   return { x, rows, conv };
 }
 
-// Número de Condición General (N x N)
 function invertMatrix(A) {
   const n = A.length;
   let M = A.map((row, i) => row.concat(Array.from({length: n}, (_, j) => i === j ? 1 : 0)));
@@ -960,7 +1011,7 @@ function miniTablaMatriz(M) {
   return `<div class="scroll"><table><tbody>${M.map(r => `<tr>${r.map(v => `<td>${fmt(v, 4)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
-function renderChart(jacRows, gsRows) {
+function renderChartConvergencia(jacRows, gsRows) {
   const svg = document.getElementById("convergenceSvg");
   const maxIt = Math.max(jacRows.length, gsRows.length, 5);
   
@@ -1009,9 +1060,9 @@ function resolverSistemas() {
 
   document.getElementById("resLU").innerHTML = `
     ${vectorFormat(lu.x)}
-    <p style="font-size:12px; margin-bottom:4px"><b>Matriz U (Triangular Superior):</b></p>
+    <p style="font-size:12px; margin-bottom:4px"><b>Matriz $U$ (Triangular Superior):</b></p>
     ${miniTablaMatriz(lu.U)}
-    <p style="font-size:12px; margin:6px 0 4px"><b>Matriz L (Triangular Inferior):</b></p>
+    <p style="font-size:12px; margin:6px 0 4px"><b>Matriz $L$ (Triangular Inferior):</b></p>
     ${miniTablaMatriz(lu.L)}
   `;
 
@@ -1055,7 +1106,7 @@ function resolverSistemas() {
     </div>
   `;
 
-  renderChart(jac.rows, gs.rows);
+  renderChartConvergencia(jac.rows, gs.rows);
 
   function renderDetalle(res, titulo) {
     return `
@@ -1092,18 +1143,18 @@ function resolverSistemas() {
   if (cond > 500) {
     diagSensibilidad = `
       <div style="border-left:4px solid var(--bad); padding-left:12px; margin-top:10px;">
-        <b style="color:var(--bad)">⚠️ Diagnóstico de Mal Condicionamiento Extremo (Caso 6.3 / Perturbado):</b>
+        <b style="color:var(--bad)">⚠️ Diagnóstico de Mal Condicionamiento (Caso 6.3 / Perturbado):</b>
         <p style="margin:4px 0 0; font-size:13px;">
-          El número de condición es sumamente elevado ($\kappa \approx ${fmt(cond, 0)}$). Una variación diminuta de apenas <b>0.001</b> en los requerimientos presupuestarios $b_3$ produce un cambio drástico en las asignaciones de recursos departamentales.
+          La matriz cuadrada posee $\kappa \approx ${fmt(cond, 0)}$. Una variación insignificante de <b>0.001</b> en $b_3$ genera cambios drásticos en los resultados del presupuesto $x$.
         </p>
       </div>
     `;
   } else {
     diagSensibilidad = `
       <div style="border-left:4px solid var(--good); padding-left:12px; margin-top:10px;">
-        <b style="color:var(--good)">✅ Diagnóstico de Estabilidad Matricial (Caso Diagonal Dominante):</b>
+        <b style="color:var(--good)">✅ Diagnóstico de Estabilidad Matricial ($N \times N$):</b>
         <p style="margin:4px 0 0; font-size:13px;">
-          La matriz es diagonal dominante ($\kappa \approx ${fmt(cond, 2)}$). Gauss-Seidel converge velozmente en <b>${gs.rows.length} iteraciones</b> frente a ${jac.rows.length} de Jacobi.
+          La matriz cuadrada es bien condicionada ($\kappa \approx ${fmt(cond, 2)}$). Gauss-Seidel converge en <b>${gs.rows.length} iteraciones</b> frente a ${jac.rows.length} de Jacobi.
         </p>
       </div>
     `;
@@ -1111,10 +1162,10 @@ function resolverSistemas() {
 
   document.getElementById("conclusionBox").innerHTML = `
     <div class="result-box">
-      <h3 style="margin-top:0">Síntesis Ejecutiva del Desafío Financiero</h3>
-      <p style="margin:6px 0">1. <b>Auditoría de Errores:</b> Previene desvíos en el flujo de caja operativo provocados por imprecisiones contables.</p>
-      <p style="margin:6px 0">2. <b>Taylor de Capital Continuo:</b> El polinomio de Orden 3 simula el crecimiento financiero con error despreciable.</p>
-      <p style="margin:6px 0">3. <b>Asignación de Recursos ($N=${N}$):</b></p>
+      <h3 style="margin-top:0">Síntesis Ejecutiva Integradora (Evaluación 90 min)</h3>
+      <p style="margin:6px 0">1. <b>Auditoría de Errores:</b> Controla desvíos contables en ingresos, costos y utilidad.</p>
+      <p style="margin:6px 0">2. <b>Taylor de Capital Continuo:</b> El polinomio de Orden 3 estima el interés continuo con precisión de centavos.</p>
+      <p style="margin:6px 0">3. <b>Distribución de Recursos ($N \times N = ${N} \times ${N}$):</b></p>
       ${diagSensibilidad}
     </div>
   `;
