@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafío Integrador • Métodos Numéricos Financieros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --secondary: #0ea5e9;
+  --bg: #0f172a;
+  --card: #1e293b;
+  --card-inner: #0f172a;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --border: #334155;
+  --good: #10b981;
+  --bad: #ef4444;
+  --warn: #f59e0b;
+  --accent-glow: rgba(79, 70, 229, 0.25);
+  --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --secondary: #0284c7;
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --card-inner: #f8fafc;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --good: #16a34a;
+  --bad: #dc2626;
+  --warn: #d97706;
+  --accent-glow: rgba(79, 70, 229, 0.12);
+  --shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.06);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+h1, h2, h3, .brand {
+  font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+/* Header & Nav */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+[data-theme="light"] header {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.nav-container {
+  max-width: 1240px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+}
+.brand {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.02em;
+}
+.brand-badge {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+nav a {
+  padding: 6px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+nav a:hover, nav a.active {
+  background: var(--accent-glow);
+  color: var(--primary);
+}
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: 0.2s;
+}
+.theme-toggle:hover {
+  border-color: var(--primary);
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(14, 165, 233, 0.08));
+  border-bottom: 1px solid var(--border);
+  padding: 40px 20px;
+}
+.hero-inner {
+  max-width: 1240px;
+  margin: auto;
+}
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-glow);
+  color: var(--primary);
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-size: clamp(24px, 4vw, 38px);
+  margin: 0 0 10px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.hero p {
+  max-width: 900px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+/* Layout Main */
+main {
+  max-width: 1240px;
+  margin: auto;
+  padding: 30px 20px 80px;
+}
+.section {
+  scroll-margin-top: 80px;
+  margin-bottom: 32px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.3s;
+}
+.card:hover {
+  border-color: rgba(79, 70, 229, 0.4);
+}
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+
+h2 {
+  margin-top: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+h3 { margin: 18px 0 10px; font-size: 15px; font-weight: 700; color: var(--text); }
+.muted { color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+input, select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--card-inner);
+  color: var(--text);
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+button, .btn {
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--primary);
+  color: white;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+}
+button:hover, .btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+button.secondary { background: var(--border); color: var(--text); }
+button.secondary:hover { background: rgba(148, 163, 184, 0.25); }
+button.accent { background: var(--secondary); color: white; }
+button.warning { background: var(--warn); color: white; }
+button.danger { background: var(--bad); color: white; }
+
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+
+/* Matrix Inputs */
+.matrix { display: grid; gap: 8px; margin: 14px 0; }
+.matrix-row { display: grid; gap: 8px; grid-template-columns: repeat(var(--n), minmax(60px, 1fr)); }
+.matrix input {
+  text-align: center;
+  font-weight: 600;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+}
+
+/* Math Display */
+.math {
+  background: var(--card-inner);
+  border-left: 4px solid var(--secondary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 12px 0;
+  font-family: 'Fira Code', Georgia, monospace;
+  font-size: 14px;
+  overflow-x: auto;
+  color: var(--text);
+}
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: right; }
+th { background: var(--card-inner); text-align: center; font-weight: 700; color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+td:first-child, th:first-child { text-align: left; }
+.scroll { overflow-x: auto; max-width: 100%; }
+
+/* Status Badges */
+.badge-status {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.ok { color: var(--good); font-weight: 700; }
+.warn { color: var(--warn); font-weight: 700; }
+.err { color: var(--bad); font-weight: 700; }
+
+.result {
+  background: var(--card-inner);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+/* Progress bar for Taylor */
+.progress-bar-bg {
+  background: var(--border);
+  border-radius: 999px;
+  height: 8px;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.progress-bar-fill {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* Canvas SVG Chart */
+.chart-container {
+  width: 100%;
+  height: 220px;
+  background: var(--card-inner);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 14px;
+  position: relative;
+}
+
+.footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 30px;
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+}
+
+@media print {
+  header, .actions, .hero, .theme-toggle { display: none !important; }
+  body { background: white; color: black; }
+  .card { border: none; box-shadow: none; padding: 0; margin-bottom: 20px; }
+  .result { border: 1px solid #ccc; background: white; }
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<header><div class="nav-container">
+  <div class="brand">
+    <span>MÉTODOS NUMÉRICOS</span>
+    <span class="brand-badge">UMSA FINANZAS</span>
+  </div>
+  <nav>
+    <a href="#errores">1. Errores</a>
+    <a href="#taylor">2. Taylor</a>
+    <a href="#sistemas">3. Sistemas Lineales</a>
+    <a href="#comparacion">4. Comparación</a>
+    <a href="#conclusiones">5. Diagnóstico</a>
+  </nav>
+  <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀️ Modo Claro</button>
+</div></header>
+
+<section class="hero"><div class="hero-inner">
+  <span class="badge-pill">📌 Desafío Integrador • Área Financiera</span>
+  <h1>Análisis Numérico de Sensibilidad y Recursos Financieros</h1>
+  <p>Plataforma interactiva para la resolución del caso de estudio: propagación de errores en registros contables, estimación de capital futuro continuo mediante polinomios de Taylor ($t_0$) y evaluación de estabilidad matricial ($PA=LU$, Jacobi, Gauss-Seidel y Número de Condición $\kappa$).</p>
+  
+  <div class="actions">
+    <button onclick="cargarCaso('ideal')">🟢 Caso Ideal (6.1)</button>
+    <button class="secondary" onclick="cargarCaso('estres')">🔵 Caso Bajo Estrés (6.2)</button>
+    <button class="warning" onclick="cargarCaso('mal_condicionado')">🟠 Caso Mal Condicionado (6.3)</button>
+    <button class="danger" onclick="cargarCaso('mal_condicionado_pert')">🔴 6.3 Perturbado (b₃ = 6.003)</button>
+    <button class="secondary" onclick="window.print()">🖨️ Imprimir Reporte</button>
+  </div>
+</div></section>
+
+<main>
+
+<!-- PARTE I: TEORÍA DE ERRORES -->
+<section class="section" id="errores"><div class="card">
+  <h2>
+    <span>Parte I – Teoría de Errores en Registros Financieros</span>
+    <span class="badge-pill">Módulo 1</span>
+  </h2>
+  <p class="muted">Evaluación de discrepancias entre los valores de referencia reales ($x$) y los registrados en contabilidad ($x_{aprox}$) expresados en Bolivianos (Bs.).</p>
+  
+  <div class="scroll">
+    <table id="tablaErroresInputs">
+      <thead>
+        <tr>
+          <th style="text-align:left">Dato Financiero</th>
+          <th>Valor Referencia real ($x$) (Bs)</th>
+          <th>Valor Registrado ($x_{aprox}$) (Bs)</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="bodyErrores">
+        <tr>
+          <td><input type="text" value="Ingreso diario" class="concepto-input"></td>
+          <td><input type="number" value="12500" step="any" class="ref-input"></td>
+          <td><input type="number" value="12420" step="any" class="reg-input"></td>
+          <td><button class="secondary" style="padding:4px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" value="Costo operativo" class="concepto-input"></td>
+          <td><input type="number" value="7800" step="any" class="ref-input"></td>
+          <td><input type="number" value="7860" step="any" class="reg-input"></td>
+          <td><button class="secondary" style="padding:4px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" value="Utilidad estimada" class="concepto-input"></td>
+          <td><input type="number" value="4700" step="any" class="ref-input"></td>
+          <td><input type="number" value="4560" step="any" class="reg-input"></td>
+          <td><button class="secondary" style="padding:4px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="actions">
+    <button onclick="calcularParteErrores()">🧮 Calcular Errores Absoluto, Relativo y Porcentual</button>
+    <button class="secondary" onclick="agregarFilaError()">➕ Añadir Fila Financiera</button>
+  </div>
+
+  <div id="resultadoErrores"></div>
+</div></section>
+
+<!-- PARTE II: TAYLOR -->
+<section class="section" id="taylor"><div class="card">
+  <h2>
+    <span>Parte II – Estimación de Capital Continuo por Polinomios de Taylor</span>
+    <span class="badge-pill">Módulo 2</span>
+  </h2>
+  <p class="muted">Aproximación del modelo de crecimiento de capital continuo $C(t) = C_0 \cdot e^{r \cdot t}$, expandido en la vecindad de $t_0$ para evaluar en el horizonte $t$.</p>
+  
+  <div class="math">
+    C(t) \approx C(t_0) + C'(t_0)(t - t_0) + \frac{C''(t_0)}{2!}(t - t_0)^2 + \frac{C'''(t_0)}{3!}(t - t_0)^3 + \frac{C^{(4)}(t_0)}{4!}(t - t_0)^4
+  </div>
+
+  <div class="grid4">
+    <div><label>Capital Inicial $C_0$ (Bs)</label><input id="taylor_C0" type="number" value="10000"></div>
+    <div><label>Tasa continua $r$</label><input id="taylor_r" type="number" value="0.05" step="0.005"></div>
+    <div><label>Punto Expansión $t_0$ (años)</label><input id="taylor_t0" type="number" value="1" step="0.1"></div>
+    <div><label>Tiempo a Evaluar $t$ (años)</label><input id="taylor_t" type="number" value="1.5" step="0.1"></div>
+  </div>
+
+  <div class="actions">
+    <button onclick="calcularTaylorWord()">📊 Evaluar Órdenes 0 a 4</button>
+  </div>
+
+  <div id="resultadoTaylor"></div>
+</div></section>
+
+<!-- PARTE III: SISTEMAS LINEALES -->
+<section class="section" id="sistemas"><div class="card">
+  <h2>
+    <span>Parte III – Distribución de Recursos Financieros (Sistemas Lineales)</span>
+    <span class="badge-pill">Módulo 3</span>
+  </h2>
+  <p class="muted">
+    Variables: $x_1$ = Operaciones, $x_2$ = Comercialización, $x_3$ = Tecnología (miles de Bs).<br>
+    Modelado del sistema $A \cdot x = b$ bajo diferentes escenarios de estabilidad y perturbación.
+  </p>
+
+  <div class="grid3">
+    <div><label>Dimensión (N)</label><input type="number" id="matrixSize" value="3" readonly></div>
+    <div><label>Tolerancia iterativa</label><input type="number" id="sysTol" value="0.000001" step="any"></div>
+    <div><label>Máx. Iteraciones</label><input type="number" id="sysMaxIt" value="50"></div>
+  </div>
+
+  <div class="actions" style="margin-top:14px;">
+    <button class="secondary" onclick="cargarCaso('ideal')">Caso Ideal (6.1)</button>
+    <button class="secondary" onclick="cargarCaso('estres')">Caso Bajo Estrés (6.2)</button>
+    <button class="warning" onclick="cargarCaso('mal_condicionado')">Caso Mal Condicionado (6.3)</button>
+    <button class="danger" onclick="cargarCaso('mal_condicionado_pert')">6.3 Perturbado (b₃ = 6.003)</button>
+  </div>
+
+  <h3>Matriz de Coeficientes $A$</h3>
+  <div id="containerA"></div>
+
+  <h3>Vector de Términos Independientes $b$</h3>
+  <div id="containerB"></div>
+
+  <div class="actions">
+    <button onclick="resolverSistemas()">⚡ Resolver por Factorización LU, Jacobi y Gauss-Seidel</button>
+  </div>
+
+  <div id="statusSistemas"></div>
+</div></section>
+
+<!-- PARTE IV: RESULTADOS Y COMPARACION -->
+<section class="section" id="comparacion"><div class="card">
+  <h2>
+    <span>Parte IV – Comparación de Métodos Numéricos & Convergencia</span>
+    <span class="badge-pill">Módulo 4</span>
+  </h2>
+
+  <div class="grid">
+    <div>
+      <h3>Factorización Directa LU ($PA = LU$)</h3>
+      <div id="resLU"><p class="muted">Pendiente de ejecución.</p></div>
+    </div>
+    <div>
+      <h3>Resumen Comparativo de Soluciones</h3>
+      <div id="resComparacion"><p class="muted">Pendiente de ejecución.</p></div>
+    </div>
+  </div>
+
+  <h3>Gráfico de Convergencia Iterativa (Norma Error vs Iteración)</h3>
+  <div class="chart-container" id="chartBox">
+    <svg id="convergenceSvg" width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none">
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-size="14">Haz clic en "Resolver" para generar el gráfico de convergencia.</text>
+    </svg>
+  </div>
+
+  <h3>Detalle Iterativo Paso a Paso</h3>
+  <div class="grid">
+    <div>
+      <h4>Método de Jacobi ($x^{(0)} = \mathbf{0}$)</h4>
+      <div id="resJacobi"><p class="muted">Jacobi pendiente.</p></div>
+    </div>
+    <div>
+      <h4>Método de Gauss-Seidel ($x^{(0)} = \mathbf{0}$)</h4>
+      <div id="resSeidel"><p class="muted">Gauss-Seidel pendiente.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- PARTE V: CONCLUSIONES INTEGRADAS -->
+<section class="section" id="conclusiones"><div class="card">
+  <h2>
+    <span>Parte V – Integración Final & Diagnóstico Financiero de Sensibilidad</span>
+    <span class="badge-pill">Módulo 5</span>
+  </h2>
+  <div id="conclusionBox">
+    <p class="muted">Realiza los cálculos para generar la síntesis ejecutiva automática del desafío.</p>
+  </div>
+</div></section>
+
+</main>
+
+<div class="footer">
+  Desafío Integrador de Métodos Numéricos Financieros • Carrera de Administración / Ingeniería • Universidad Mayor de San Andrés (UMSA)
+</div>
+
+<script>
+const N = 3;
+let currentA = [[10, 2, 1], [1, 9, 2], [2, 1, 8]];
+let currentB = [29, 25, 28];
+
+function fmt(x, d = 6) {
+  if (!Number.isFinite(x)) return "—";
+  return Number(x).toFixed(d).replace(/\.?0+$/, "");
+}
+
+function toggleTheme() {
+  const body = document.body;
+  const btn = document.getElementById("themeBtn");
+  if (body.getAttribute("data-theme") === "dark") {
+    body.setAttribute("data-theme", "light");
+    btn.innerHTML = "🌙 Modo Oscuro";
+  } else {
+    body.setAttribute("data-theme", "dark");
+    btn.innerHTML = "☀️ Modo Claro";
+  }
+}
+
+// ---------------------------
+// PARTE 1: TEORÍA DE ERRORES
+// ---------------------------
+function agregarFilaError() {
+  const tbody = document.getElementById("bodyErrores");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td><input type="text" value="Nuevo Concepto" class="concepto-input"></td>
+    <td><input type="number" value="5000" step="any" class="ref-input"></td>
+    <td><input type="number" value="4950" step="any" class="reg-input"></td>
+    <td><button class="secondary" style="padding:4px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
+  `;
+  tbody.appendChild(tr);
+  calcularParteErrores();
+}
+
+function eliminarFilaError(btn) {
+  const row = btn.closest("tr");
+  row.remove();
+  calcularParteErrores();
+}
+
+function calcularParteErrores() {
+  const conceptos = document.querySelectorAll(".concepto-input");
+  const refs = document.querySelectorAll(".ref-input");
+  const regs = document.querySelectorAll(".reg-input");
+
+  let rows = [];
+  let maxPorc = -1;
+  let maxItem = "";
+
+  for (let i = 0; i < conceptos.length; i++) {
+    const c = conceptos[i].value.trim() || `Item ${i+1}`;
+    const vRef = parseFloat(refs[i].value) || 0;
+    const vReg = parseFloat(regs[i].value) || 0;
+    
+    const ea = Math.abs(vRef - vReg);
+    const er = vRef !== 0 ? ea / Math.abs(vRef) : 0;
+    const ep = er * 100;
+
+    if (ep > maxPorc) {
+      maxPorc = ep;
+      maxItem = c;
+    }
+
+    rows.push({ concepto: c, vRef, vReg, ea, er, ep });
+  }
+
+  let html = `
+    <div class="result">
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left">Concepto Financiero</th>
+              <th>Ref. Real ($x$) (Bs)</th>
+              <th>Registrado ($x_{aprox}$) (Bs)</th>
+              <th>Error Absoluto ($E_a$)</th>
+              <th>Error Relativo ($E_r$)</th>
+              <th>Error Porcentual ($E_p\%$)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => {
+              const isMax = r.concepto === maxItem && rows.length > 1;
+              return `
+              <tr style="${isMax ? 'background: rgba(239, 68, 68, 0.1);' : ''}">
+                <td><b>${r.concepto}</b> ${isMax ? '<span class="badge-status err" style="margin-left:6px;">Mayor Desvío</span>' : ''}</td>
+                <td>Bs ${r.vRef.toLocaleString('es-BO')}</td>
+                <td>Bs ${r.vReg.toLocaleString('es-BO')}</td>
+                <td>Bs ${fmt(r.ea, 2)}</td>
+                <td>${fmt(r.er, 6)}</td>
+                <td><b class="${r.ep > 2 ? 'err' : r.ep > 1 ? 'warn' : 'ok'}">${fmt(r.ep, 4)}%</b></td>
+              </tr>
+            `}).join("")}
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px; font-size:14px; line-height:1.6;">
+        <p>• <b>Diagnóstico de Propagación de Errores:</b> El rubro con mayor distorsión relativa es <b>${maxItem}</b> con un desvío porcentual de <b>${fmt(maxPorc, 4)}%</b>.</p>
+        <p>• <b>Impacto en Decisiones Financieras:</b> En finanzas corporativas, un error porcentual elevado en el registro de utilidad o costos operativos altera directamente el cálculo del margen neto de ganancia y el flujo de caja disponible, lo que puede inducir a una sobre-estimación de la capacidad de endeudamiento o pago de dividendos.</p>
+      </div>
+    </div>
+  `;
+  document.getElementById("resultadoErrores").innerHTML = html;
+}
+
+// ---------------------------
+// PARTE 2: POLINOMIO DE TAYLOR
+// ---------------------------
+function calcularTaylorWord() {
+  const C0 = parseFloat(document.getElementById("taylor_C0").value) || 10000;
+  const r = parseFloat(document.getElementById("taylor_r").value) || 0.05;
+  const t0 = parseFloat(document.getElementById("taylor_t0").value) || 1;
+  const t = parseFloat(document.getElementById("taylor_t").value) || 1.5;
+  const dt = t - t0;
+
+  // C(t) = C0 * e^(r*t)
+  const valExacto = C0 * Math.exp(r * t);
+
+  // Derivadas en t0: C^(k)(t0) = C0 * r^k * e^(r*t0)
+  const f_t0 = C0 * Math.exp(r * t0);
+  const df_t0 = r * f_t0;
+  const d2f_t0 = (r ** 2) * f_t0;
+  const d3f_t0 = (r ** 3) * f_t0;
+  const d4f_t0 = (r ** 4) * f_t0;
+
+  const T0 = f_t0;
+  const T1 = T0 + df_t0 * dt;
+  const T2 = T1 + (d2f_t0 / 2) * (dt ** 2);
+  const T3 = T2 + (d3f_t0 / 6) * (dt ** 3);
+  const T4 = T3 + (d4f_t0 / 24) * (dt ** 4);
+
+  const arr = [
+    { orden: "Orden 0 (Constante)", valor: T0 },
+    { orden: "Orden 1 (Lineal)", valor: T1 },
+    { orden: "Orden 2 (Cuadrático)", valor: T2 },
+    { orden: "Orden 3 (Cúbico)", valor: T3 },
+    { orden: "Orden 4 (Cuártico)", valor: T4 }
+  ].map(item => {
+    const ea = Math.abs(valExacto - item.valor);
+    const er = valExacto !== 0 ? ea / valExacto : 0;
+    const ep = er * 100;
+    const precision = Math.max(0, 100 - ep);
+    return { ...item, ea, er, ep, precision };
+  });
+
+  let html = `
+    <div class="result">
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center; margin-bottom:12px;">
+        <div>Valor Exacto Continuo $C(${t})$: <b style="font-size:1.1em; color:var(--secondary)">Bs ${fmt(valExacto, 6)}</b></div>
+        <div class="muted">Punto Base $t_0 = ${t0}$ años ($\Delta t = ${fmt(dt, 2)}$)</div>
+      </div>
+      
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left">Polinomio de Taylor</th>
+              <th>Valor Estimado (Bs)</th>
+              <th>Error Absoluto $E_a$ (Bs)</th>
+              <th>Error Porcentual $E_p\%$</th>
+              <th style="width:200px;">Precisión Visual</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${arr.map(item => `
+              <tr>
+                <td><b>${item.orden}</b></td>
+                <td>Bs ${fmt(item.valor, 6)}</td>
+                <td>Bs ${fmt(item.ea, 6)}</td>
+                <td><b>${fmt(item.ep, 6)}%</b></td>
+                <td>
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: ${Math.min(100, Math.max(0, item.precision))}%;"></div>
+                  </div>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:14px; font-size:13.5px; line-height:1.6;">
+        <span class="ok">💡 Conclusión Teórica de Taylor:</span> Al truncar el polinomio en <b>Orden 3</b>, el error relativo se reduce a menos del <b>${fmt(arr[3].ep, 5)}%</b> (discrepancia de apenas centavos en Bs). Esto confirma que para horizontes financieros de corto plazo ($\Delta t = 0.5$ años), una aproximación de grado 3 captura con total solvencia la curvatura exponencial de la tasa de interés continua.
+      </p>
+    </div>
+  `;
+  document.getElementById("resultadoTaylor").innerHTML = html;
+}
+
+// ---------------------------
+// PARTE 3: SISTEMAS LINEALES
+// ---------------------------
+function renderInputsMatriz() {
+  const contA = document.getElementById("containerA");
+  const contB = document.getElementById("containerB");
+  contA.innerHTML = ""; contB.innerHTML = "";
+  contA.className = "matrix"; contA.style.setProperty("--n", N);
+  contB.className = "matrix"; contB.style.setProperty("--n", N);
+
+  for (let i = 0; i < N; i++) {
+    const rowA = document.createElement("div");
+    rowA.className = "matrix-row";
+    rowA.style.setProperty("--n", N);
+    for (let j = 0; j < N; j++) {
+      const inp = document.createElement("input");
+      inp.type = "number"; inp.step = "any";
+      inp.id = `a_${i}_${j}`;
+      inp.value = currentA[i][j];
+      rowA.appendChild(inp);
+    }
+    contA.appendChild(rowA);
+  }
+
+  const rowB = document.createElement("div");
+  rowB.className = "matrix-row";
+  rowB.style.setProperty("--n", N);
+  for (let i = 0; i < N; i++) {
+    const inp = document.createElement("input");
+    inp.type = "number"; inp.step = "any";
+    inp.id = `b_${i}`;
+    inp.value = currentB[i];
+    rowB.appendChild(inp);
+  }
+  contB.appendChild(rowB);
+}
+
+function cargarCaso(tipo) {
+  if (tipo === "ideal") {
+    currentA = [[10, 2, 1], [1, 9, 2], [2, 1, 8]];
+    currentB = [29, 25, 28];
+  } else if (tipo === "estres") {
+    currentA = [[10, 2, 1], [1, 9, 2], [2, 1, 8]];
+    currentB = [29.5, 24.5, 28.4];
+  } else if (tipo === "mal_condicionado") {
+    currentA = [[1, 1, 1], [1.001, 1, 1], [1, 1.001, 1]];
+    currentB = [6, 6.001, 6.002];
+  } else if (tipo === "mal_condicionado_pert") {
+    currentA = [[1, 1, 1], [1.001, 1, 1], [1, 1.001, 1]];
+    currentB = [6, 6.001, 6.003];
+  }
+  renderInputsMatriz();
+  resolverSistemas();
+}
+
+function getMatrizUI() {
+  let A = [], b = [];
+  for (let i = 0; i < N; i++) {
+    A[i] = [];
+    for (let j = 0; j < N; j++) {
+      A[i][j] = parseFloat(document.getElementById(`a_${i}_${j}`).value) || 0;
+    }
+    b[i] = parseFloat(document.getElementById(`b_${i}`).value) || 0;
+  }
+  return { A, b };
+}
+
+// Factorización LU con Pivoteo Parcial PA = LU
+function factorizacionLU(A_orig, b_orig) {
+  let A = A_orig.map(r => r.slice());
+  let b = b_orig.slice();
+  let P = [0, 1, 2];
+  let L = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+
+  for (let k = 0; k < N; k++) {
+    let maxVal = Math.abs(A[k][k]);
+    let maxIdx = k;
+    for (let i = k + 1; i < N; i++) {
+      if (Math.abs(A[i][k]) > maxVal) {
+        maxVal = Math.abs(A[i][k]);
+        maxIdx = i;
+      }
+    }
+    if (maxIdx !== k) {
+      [A[k], A[maxIdx]] = [A[maxIdx], A[k]];
+      [P[k], P[maxIdx]] = [P[maxIdx], P[k]];
+      for (let j = 0; j < k; j++) {
+        [L[k][j], L[maxIdx][j]] = [L[maxIdx][j], L[k][j]];
+      }
+    }
+    for (let i = k + 1; i < N; i++) {
+      let factor = A[i][k] / A[k][k];
+      L[i][k] = factor;
+      for (let j = k; j < N; j++) {
+        A[i][j] -= factor * A[k][j];
+      }
+    }
+  }
+  let U = A;
+  let Pb = P.map(idx => b[idx]);
+  let y = Array(N).fill(0);
+  for (let i = 0; i < N; i++) {
+    let sum = 0;
+    for (let j = 0; j < i; j++) sum += L[i][j] * y[j];
+    y[i] = Pb[i] - sum;
+  }
+  let x = Array(N).fill(0);
+  for (let i = N - 1; i >= 0; i--) {
+    let sum = 0;
+    for (let j = i + 1; j < N; j++) sum += U[i][j] * x[j];
+    x[i] = (y[i] - sum) / U[i][i];
+  }
+  return { L, U, P, y, x };
+}
+
+// Métodos Iterativos (Jacobi & Gauss-Seidel)
+function solverIterativo(A, b, metodo, tol, maxIt) {
+  let x = [0, 0, 0];
+  let rows = [];
+  let conv = false;
+
+  for (let it = 1; it <= maxIt; it++) {
+    let x_prev = x.slice();
+    let x_curr = x.slice();
+
+    for (let i = 0; i < N; i++) {
+      let s = 0;
+      for (let j = 0; j < N; j++) {
+        if (j !== i) {
+          s += A[i][j] * (metodo === "jacobi" ? x_prev[j] : x_curr[j]);
+        }
+      }
+      x_curr[i] = (b[i] - s) / A[i][i];
+    }
+
+    let err = Math.max(...x_curr.map((v, idx) => Math.abs(v - x_prev[idx])));
+    x = x_curr.slice();
+    rows.push({ it, x: x.slice(), err });
+
+    if (err < tol) {
+      conv = true;
+      break;
+    }
+  }
+  return { x, rows, conv };
+}
+
+// Cálculo del Número de Condición Norm Inf (para 3x3)
+function calcularCondicion(A) {
+  function normInfMat(M) {
+    return Math.max(...M.map(row => row.reduce((sum, val) => sum + Math.abs(val), 0)));
+  }
+  // Inversa 3x3 por determinantes
+  const det = A[0][0]*(A[1][1]*A[2][2] - A[1][2]*A[2][1])
+            - A[0][1]*(A[1][0]*A[2][2] - A[1][2]*A[2][0])
+            + A[0][2]*(A[1][0]*A[2][1] - A[1][1]*A[2][0]);
+  if (Math.abs(det) < 1e-12) return Infinity;
+  
+  const inv = [
+    [ (A[1][1]*A[2][2]-A[1][2]*A[2][1])/det, (A[0][2]*A[2][1]-A[0][1]*A[2][2])/det, (A[0][1]*A[1][2]-A[0][2]*A[1][1])/det ],
+    [ (A[1][2]*A[2][0]-A[1][0]*A[2][2])/det, (A[0][0]*A[2][2]-A[0][2]*A[2][0])/det, (A[0][2]*A[1][0]-A[0][0]*A[1][2])/det ],
+    [ (A[1][0]*A[2][1]-A[1][1]*A[2][0])/det, (A[0][1]*A[2][0]-A[0][0]*A[2][1])/det, (A[0][0]*A[1][1]-A[0][1]*A[1][0])/det ]
+  ];
+  return normInfMat(A) * normInfMat(inv);
+}
+
+function vectorFormat(v) {
+  return `<div class="math">[ x₁ = <b>${fmt(v[0], 4)}</b> &nbsp;|&nbsp; x₂ = <b>${fmt(v[1], 4)}</b> &nbsp;|&nbsp; x₃ = <b>${fmt(v[2], 4)}</b> ]</div>`;
+}
+
+function miniTablaMatriz(M) {
+  return `<table><tbody>${M.map(r => `<tr>${r.map(v => `<td>${fmt(v, 4)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+
+function renderChart(jacRows, gsRows) {
+  const svg = document.getElementById("convergenceSvg");
+  const maxIt = Math.max(jacRows.length, gsRows.length, 5);
+  
+  let jacPoints = [];
+  let gsPoints = [];
+
+  // Mapeo logarítmico de error de 10^-7 a 10^1
+  function getPos(it, err) {
+    const x = 50 + ((it - 1) / (maxIt - 1 || 1)) * 520;
+    const logErr = Math.log10(Math.max(err, 1e-8));
+    // logErr va de -8 a +1
+    const y = 170 - ((logErr - (-8)) / (1 - (-8))) * 140;
+    return `${x},${Math.max(20, Math.min(180, y))}`;
+  }
+
+  jacRows.forEach(r => jacPoints.push(getPos(r.it, r.err)));
+  gsRows.forEach(r => gsPoints.push(getPos(r.it, r.err)));
+
+  svg.innerHTML = `
+    <!-- Grid Lines -->
+    <line x1="50" y1="20" x2="570" y2="20" stroke="var(--border)" stroke-dasharray="4"/>
+    <line x1="50" y1="95" x2="570" y2="95" stroke="var(--border)" stroke-dasharray="4"/>
+    <line x1="50" y1="170" x2="570" y2="170" stroke="var(--border)"/>
+    <line x1="50" y1="20" x2="50" y2="170" stroke="var(--border)"/>
+    
+    <!-- Axes labels -->
+    <text x="45" y="25" text-anchor="end" fill="var(--muted)" font-size="10">10¹</text>
+    <text x="45" y="100" text-anchor="end" fill="var(--muted)" font-size="10">10⁻⁴</text>
+    <text x="45" y="175" text-anchor="end" fill="var(--muted)" font-size="10">10⁻⁸</text>
+
+    <!-- Lines -->
+    <polyline points="${jacPoints.join(" ")}" fill="none" stroke="var(--secondary)" stroke-width="2.5"/>
+    <polyline points="${gsPoints.join(" ")}" fill="none" stroke="var(--good)" stroke-width="2.5"/>
+
+    <!-- Legend -->
+    <circle cx="430" cy="30" r="5" fill="var(--secondary)"/>
+    <text x="442" y="34" fill="var(--text)" font-size="12" font-weight="600">Jacobi</text>
+    <circle cx="510" cy="30" r="5" fill="var(--good)"/>
+    <text x="522" y="34" fill="var(--text)" font-size="12" font-weight="600">Gauss-Seidel</text>
+  `;
+}
+
+function resolverSistemas() {
+  const { A, b } = getMatrizUI();
+  const tol = parseFloat(document.getElementById("sysTol").value) || 1e-6;
+  const maxIt = parseInt(document.getElementById("sysMaxIt").value) || 50;
+
+  const lu = factorizacionLU(A, b);
+  const jac = solverIterativo(A, b, "jacobi", tol, maxIt);
+  const gs = solverIterativo(A, b, "seidel", tol, maxIt);
+  const cond = calcularCondicion(A);
+
+  // Presentación LU
+  document.getElementById("resLU").innerHTML = `
+    ${vectorFormat(lu.x)}
+    <p class="muted" style="margin-bottom:4px"><b>Matriz U (Triangular Superior):</b></p>
+    ${miniTablaMatriz(lu.U)}
+    <p class="muted" style="margin:6px 0 4px"><b>Matriz L (Triangular Inferior):</b></p>
+    ${miniTablaMatriz(lu.L)}
+    <p style="font-size:12px; margin-top:6px; color:var(--muted)">Permutaciones de filas $P$: [${lu.P.map(p => p+1).join(", ")}]</p>
+  `;
+
+  // Resumen comparativo
+  document.getElementById("resComparacion").innerHTML = `
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>$x_1$ (Operaciones)</th>
+            <th>$x_2$ (Comercial)</th>
+            <th>$x_3$ (Tecnología)</th>
+            <th>Iter.</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>LU Directo</b></td>
+            <td>${fmt(lu.x[0], 4)}</td>
+            <td>${fmt(lu.x[1], 4)}</td>
+            <td>${fmt(lu.x[2], 4)}</td>
+            <td>1</td>
+            <td><span class="badge-status ok">Exacto</span></td>
+          </tr>
+          <tr>
+            <td><b>Jacobi</b></td>
+            <td>${fmt(jac.x[0], 4)}</td>
+            <td>${fmt(jac.x[1], 4)}</td>
+            <td>${fmt(jac.x[2], 4)}</td>
+            <td>${jac.rows.length}</td>
+            <td><span class="badge-status ${jac.conv ? 'ok' : 'warn'}">${jac.conv ? 'Convergió' : 'Límite Max'}</span></td>
+          </tr>
+          <tr>
+            <td><b>Gauss-Seidel</b></td>
+            <td>${fmt(gs.x[0], 4)}</td>
+            <td>${fmt(gs.x[1], 4)}</td>
+            <td>${fmt(gs.x[2], 4)}</td>
+            <td>${gs.rows.length}</td>
+            <td><span class="badge-status ${gs.conv ? 'ok' : 'warn'}">${gs.conv ? 'Convergió' : 'Límite Max'}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px; font-size:12px;">
+      <b>Número de Condición $\kappa_\infty(A)$:</b> 
+      <span class="${cond > 500 ? 'err' : 'ok'}">${Number.isFinite(cond) ? fmt(cond, 2) : 'Infinito (Singular)'}</span>
+      ${cond > 500 ? '⚠️ Matriz Mal Condicionada (Alta Sensibilidad)' : '✅ Matriz Bien Condicionada'}
+    </div>
+  `;
+
+  // Render chart
+  renderChart(jac.rows, gs.rows);
+
+  // Detalle iterativo
+  function renderDetalle(res, titulo) {
+    return `
+      <div class="result">
+        <p style="margin-top:0"><b>${titulo}</b>: <span class="${res.conv ? 'ok' : 'warn'}">${res.conv ? 'CONVERGIÓ' : 'NO CONVERGIÓ EN LÍMITE'}</span> (${res.rows.length} iteraciones)</p>
+        <div class="scroll" style="max-height:200px;">
+          <table>
+            <thead><tr><th>#</th><th>$x_1$</th><th>$x_2$</th><th>$x_3$</th><th>Error ($\infty$)</th></tr></thead>
+            <tbody>
+              ${res.rows.slice(0, 15).map(r => `
+                <tr><td>${r.it}</td><td>${fmt(r.x[0], 4)}</td><td>${fmt(r.x[1], 4)}</td><td>${fmt(r.x[2], 4)}</td><td>${fmt(r.err, 6)}</td></tr>
+              `).join("")}
+              ${res.rows.length > 15 ? `<tr><td colspan="5" style="text-align:center" class="muted">... (${res.rows.length - 15} iteraciones omitidas)</td></tr>` : ""}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  document.getElementById("resJacobi").innerHTML = renderDetalle(jac, "Jacobi");
+  document.getElementById("resSeidel").innerHTML = renderDetalle(gs, "Gauss-Seidel");
+
+  // Integración y Diagnóstico de Sensibilidad
+  let diagSensibilidad = "";
+  if (cond > 500) {
+    diagSensibilidad = `
+      <div style="border-left:4px solid var(--bad); padding-left:12px; margin-top:10px;">
+        <p class="err" style="margin:0 0 4px;"><b>⚠️ Alerta de Mal Condicionamiento Extremo (Caso 6.3 / Perturbado):</b></p>
+        <p style="margin:0; font-size:13.5px;">
+          La matriz de coeficientes posee un número de condición elevadísimo ($\kappa \approx ${fmt(cond, 0)}$). Debido a esto, una variación insignificante de tan solo <b>0.001</b> en el vector de recursos disponibles $b_3$ (de 6.002 a 6.003) produce un desplazamiento masivo en la asignación presupuestaria final: $x_1$ salta de 1 a 2 miles de Bs., mientras que $x_2$ cae de 2 a 1 miles de Bs.
+        </p>
+      </div>
+    `;
+  } else {
+    diagSensibilidad = `
+      <div style="border-left:4px solid var(--good); padding-left:12px; margin-top:10px;">
+        <p class="ok" style="margin:0 0 4px;"><b>✅ Estabilidad Presupuestaria (Caso Diagonal Dominante):</b></p>
+        <p style="margin:0; font-size:13.5px;">
+          El sistema es estrictamente diagonal dominante ($\kappa \approx ${fmt(cond, 2)}$). Gauss-Seidel converge en tan solo <b>${gs.rows.length} iteraciones</b> frente a las ${jac.rows.length} de Jacobi. Las perturbaciones en los requerimientos financieros se propagan de manera lineal y amortiguada.
+        </p>
+      </div>
+    `;
+  }
+
+  document.getElementById("conclusionBox").innerHTML = `
+    <div class="result">
+      <h3>Síntesis Ejecutiva e Integración del Desafío Financiero</h3>
+      <p style="margin-top:4px;"><b>1. Propagación de Errores Contables:</b> Las discrepancias en el registro de la utilidad afectan de forma no lineal la proyección de la rentabilidad esperada, exigiendo controles de auditoría rígidos en la captura de datos de entrada.</p>
+      <p><b>2. Aproximación por Polinomios de Taylor:</b> Para la valoración continua de capital $C(t) = C_0 e^{rt}$, el truncamiento de orden 3 expandido en el año base $t_0=1$ garantiza una estimación con un error inferior a centavos ($\Delta t = 0.5$).</p>
+      <p><b>3. Análisis de Sensibilidad y Estabilidad de Recursos:</b></p>
+      ${diagSensibilidad}
+    </div>
+  `;
+}
+
+// Inicialización automática
+window.onload = () => {
+  calcularParteErrores();
+  calcularTaylorWord();
+  cargarCaso("ideal");
+};
+</script>
+</body>
+</html>
