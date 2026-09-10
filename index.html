@@ -346,7 +346,7 @@ td:first-child, th:first-child { text-align: left; }
     <a href="#errores">1. Errores</a>
     <a href="#taylor">2. Taylor</a>
     <a href="#sistemas">3. Sistemas Lineales</a>
-    <a href="#procedimiento">4. Pasos y Procedimiento</a>
+    <a href="#procedimiento">4. Pasos y Operaciones</a>
     <a href="#conclusiones">5. Diagnóstico</a>
   </nav>
   <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Modo Oscuro</button>
@@ -357,12 +357,12 @@ td:first-child, th:first-child { text-align: left; }
 <!-- ENUNCIADO OFICIAL -->
 <section id="enunciado" class="banner-box">
   <h1>Desafío Integrador • Área Financiera (Duración 90 min)</h1>
-  <p>Herramienta interactiva para la evaluación de sensibilidad financiera, propagación de errores contables, estimación de capital por polinomios de Taylor y resolución paso a paso de sistemas lineales cuadrados 3×3 y 4×4.</p>
+  <p>Herramienta interactiva para la evaluación de sensibilidad financiera, propagación de errores contables, estimación de capital por polinomios de Taylor y resolución paso a paso con operaciones fila explícitas de sistemas lineales cuadrados 3×3 y 4×4.</p>
 
   <div class="case-statement">
     <b>📋 Enunciado del Ejercicio Integrador (Evaluación 90 min):</b>
     <div style="margin-top:6px;">
-      "Ejercicio integrador en el área financiera que incluye cálculo de errores, aproximación de Taylor (<i>t</i><sub>0</sub>) y métodos numéricos para resolver sistemas de ecuaciones lineales cuadrados 3×3 y 4×4 (Factorización LU, Jacobi y Gauss-Seidel) con sincronización total entre la teoría de errores y los recursos del sistema <i>A</i> · <i>x</i> = <i>b</i>, datos dinámicos manipulables por teclado y síntesis de conclusiones."
+      "Ejercicio integrador en el área financiera que incluye cálculo de errores, aproximación de Taylor (<i>t</i><sub>0</sub>) y métodos numéricos para resolver sistemas de ecuaciones lineales cuadrados 3×3 y 4×4 (Factorización LU, Jacobi y Gauss-Seidel) con operaciones fila explícitas, ecuaciones de sustitución y recurrencia paso a paso, datos dinámicos manipulables por teclado y síntesis de conclusiones."
     </div>
   </div>
 </section>
@@ -370,15 +370,12 @@ td:first-child, th:first-child { text-align: left; }
 <!-- PARTE I: TEORÍA DE ERRORES -->
 <section class="card" id="errores">
   <div class="card-header">
-    <h2>Parte I – Teoría de Errores en Registros Financieros (Sincronizado)</h2>
+    <h2>Parte I – Teoría de Errores en Registros Financieros (Paso a Paso)</h2>
     <span class="badge">Módulo 1</span>
   </div>
-  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
-    <p style="color:var(--muted); font-size:13.5px; margin:0;">
-      Evaluación de errores contables entre los requerimientos de recursos reales del sistema <i>A</i> · <i>x</i> = <i>b</i> (<i>x</i><sub>real</sub>) vs los valores contables registrados (<i>x</i><sub>aprox</sub>) en miles de Bolivianos (Bs.).
-    </p>
-    <span class="pill pill-good" id="syncStatusBadge">🔄 Sincronizado con Sistema A · x = b</span>
-  </div>
+  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">
+    Evaluación de errores contables entre los requerimientos de recursos reales del sistema <i>A</i> · <i>x</i> = <i>b</i> (<i>x</i><sub>real</sub>) vs los valores contables registrados (<i>x</i><sub>aprox</sub>) en miles de Bolivianos (Bs.).
+  </p>
   
   <div class="scroll">
     <table>
@@ -387,16 +384,10 @@ td:first-child, th:first-child { text-align: left; }
           <th style="text-align:left">Departamento / Rubro</th>
           <th>Recurso Real <i>x</i> (Bs)</th>
           <th>Monto Registrado <i>x</i><sub>aprox</sub> (Bs)</th>
-          <th>Acciones</th>
         </tr>
       </thead>
       <tbody id="bodyErrores"></tbody>
     </table>
-  </div>
-
-  <div class="actions">
-    <button class="secondary" onclick="agregarFilaError()">➕ Añadir Concepto Extra</button>
-    <button class="secondary" onclick="sincronizarConMatriz()">🔄 Re-sincronizar con Sistema A · x = b</button>
   </div>
 
   <h3>Gráfico de Errores Porcentuales por Concepto (<i>E</i><sub>p</sub>%)</h3>
@@ -440,7 +431,7 @@ td:first-child, th:first-child { text-align: left; }
     <h2>Parte III – Distribución de Recursos Financieros (Sistemas Lineales Cuadrados <i>N</i> × <i>N</i>)</h2>
     <span class="badge">Módulo 3</span>
   </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">La matriz de coeficientes <i>A</i> es estrictamente cuadrada (<i>N</i> × <i>N</i>) con vector <i>b</i> (<i>N</i> × 1). Edita los valores por teclado en tiempo real para sincronizar todo el problema.</p>
+  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">La matriz de coeficientes <i>A</i> es estrictamente cuadrada (<i>N</i> × <i>N</i>) con vector <i>b</i> (<i>N</i> × 1). Edita los valores por teclado en tiempo real para actualizar el problema de forma integral.</p>
   
   <div class="grid3">
     <div>
@@ -479,16 +470,16 @@ td:first-child, th:first-child { text-align: left; }
   </div>
 </section>
 
-<!-- PARTE IV: PROCEDIMIENTO Y PASOS DETALLADOS METODOS NUMERICOS -->
+<!-- PARTE IV: PROCEDIMIENTO Y OPERACIONES FILA DETALLADAS METODOS NUMERICOS -->
 <section class="card" id="procedimiento">
   <div class="card-header">
-    <h2>Parte IV – Desglose Paso a Paso, Procedimiento & Iteraciones en Tiempo Real</h2>
+    <h2>Parte IV – Desglose Obligatorio Paso a Paso, Operaciones Fila & Sustituciones</h2>
     <span class="badge">Módulo 4</span>
   </div>
 
   <div class="grid2">
     <div>
-      <h3>Procedimiento Paso a Paso: Factorización <i>PA</i> = <i>LU</i></h3>
+      <h3>Procedimiento Paso a Paso & Operaciones Fila (<i>PA</i> = <i>LU</i>)</h3>
       <div id="pasosLU"></div>
     </div>
     <div>
@@ -570,7 +561,7 @@ function toggleTheme() {
 }
 
 // ---------------------------
-// PARTE 1: TEORÍA DE ERRORES (SINCRONIZADO CON SISTEMAS LINEALES)
+// PARTE 1: TEORÍA DE ERRORES CON PROCEDIMIENTO PASO A PASO EXPLÍCITO
 // ---------------------------
 function sincronizarConMatriz() {
   const tbody = document.getElementById("bodyErrores");
@@ -586,29 +577,9 @@ function sincronizarConMatriz() {
       <td><input type="text" value="${deptNames[i] || 'Departamento ' + (i+1)}" class="concepto-input" oninput="calcularParteErrores()"></td>
       <td><input type="number" value="${vRef}" step="any" class="ref-input" oninput="calcularParteErrores()"></td>
       <td><input type="number" value="${vReg}" step="any" class="reg-input" oninput="calcularParteErrores()"></td>
-      <td><button class="secondary" style="padding:3px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
     `;
     tbody.appendChild(tr);
   }
-  calcularParteErrores();
-}
-
-function agregarFilaError() {
-  const tbody = document.getElementById("bodyErrores");
-  const count = tbody.children.length;
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td><input type="text" value="Rubro Adicional (${count+1})" class="concepto-input" oninput="calcularParteErrores()"></td>
-    <td><input type="number" value="5000" step="any" class="ref-input" oninput="calcularParteErrores()"></td>
-    <td><input type="number" value="4950" step="any" class="reg-input" oninput="calcularParteErrores()"></td>
-    <td><button class="secondary" style="padding:3px 8px; font-size:11px" onclick="eliminarFilaError(this)">✕</button></td>
-  `;
-  tbody.appendChild(tr);
-  calcularParteErrores();
-}
-
-function eliminarFilaError(btn) {
-  btn.closest("tr").remove();
   calcularParteErrores();
 }
 
@@ -665,6 +636,16 @@ function calcularParteErrores() {
 
   renderChartErrores(rows);
 
+  // Desglose de fórmulas y cálculos paso a paso para la Teoría de Errores
+  let desglosePasosHtml = rows.map((r, idx) => `
+    <div class="step-card">
+      <div class="step-title">Paso a Paso (${r.concepto}):</div>
+      <p style="margin:2px 0; font-size:12.5px;">• <b>Error Absoluto:</b> <i>E</i><sub>a</sub> = |<i>x</i> - <i>x</i><sub>aprox</sub>| = |${r.vRef} - ${r.vReg}| = <b>Bs ${fmt(r.ea, 2)}</b></p>
+      <p style="margin:2px 0; font-size:12.5px;">• <b>Error Relativo:</b> <i>E</i><sub>r</sub> = <i>E</i><sub>a</sub> / |<i>x</i>| = ${fmt(r.ea, 2)} / ${r.vRef} = <b>${fmt(r.er, 6)}</b></p>
+      <p style="margin:2px 0; font-size:12.5px;">• <b>Error Porcentual:</b> <i>E</i><sub>p</sub>% = <i>E</i><sub>r</sub> × 100% = ${fmt(r.er, 6)} × 100% = <b>${fmt(r.ep, 4)}%</b></p>
+    </div>
+  `).join("");
+
   let html = `
     <div class="result-box">
       <div class="scroll">
@@ -695,6 +676,10 @@ function calcularParteErrores() {
           </tbody>
         </table>
       </div>
+
+      <h4 style="margin-top:14px; margin-bottom:4px;">Fórmulas y Procedimiento Aritmético Paso a Paso:</h4>
+      ${desglosePasosHtml}
+
       <div style="margin-top:12px; font-size:13.5px;">
         <p style="margin:4px 0">• <b>Mayor Desvío Contable Registrado:</b> El rubro <b>${maxItem}</b> presenta la mayor imprecisión con un <b>${fmt(maxPorc, 4)}%</b> de error porcentual.</p>
         <p style="margin:4px 0">• <b>Conexión con el Sistema de Recursos:</b> Este error contable distorsiona directamente el vector de requerimientos financieros <i>b</i> del sistema <i>A</i> · <i>x</i> = <i>b</i>.</p>
@@ -921,6 +906,9 @@ function getMatrizUI() {
   return { A, b };
 }
 
+// ---------------------------
+// FACTORIZACIÓN LU CON OPERACIONES FILA EXPLÍCITAS PASO A PASO
+// ---------------------------
 function factorizacionLU_Pasos(A_orig, b_orig) {
   let n = A_orig.length;
   let A = A_orig.map(r => r.slice());
@@ -950,10 +938,12 @@ function factorizacionLU_Pasos(A_orig, b_orig) {
     }
 
     let multsStep = [];
+    let opsFilaTxt = [];
     for (let i = k + 1; i < n; i++) {
       let factor = A[i][k] / A[k][k];
       L[i][k] = factor;
       multsStep.push({ fila: i + 1, col: k + 1, factor });
+      opsFilaTxt.push(`Fila_${i+1} ⟵ Fila_${i+1} - (${fmt(factor, 4)}) × Fila_${k+1}`);
       for (let j = k; j < n; j++) {
         A[i][j] -= factor * A[k][j];
       }
@@ -965,6 +955,7 @@ function factorizacionLU_Pasos(A_orig, b_orig) {
       sePermuto: intermSwapped,
       filaPermutada: maxIdx + 1,
       multiplicadores: multsStep,
+      operacionesFila: opsFilaTxt,
       matrizA_parcial: A.map(r => r.slice())
     });
   }
@@ -1109,30 +1100,50 @@ function resolverSistemas() {
   const gs = solverIterativo(A, b, "seidel", tol, maxIt);
   const cond = calcularCondicion(A);
 
+  // Desglose de operaciones fila e intermedias para LU
   let pasosLuHtml = lu.pasos.map((p, idx) => {
     let multsTxt = p.multiplicadores.length > 0 
       ? p.multiplicadores.map(m => `<i>m</i><sub>${m.fila}${m.col}}</sub> = ${fmt(m.factor, 4)}`).join(", ")
       : "Etapa final";
+    
+    let opsTxt = p.operacionesFila.length > 0
+      ? p.operacionesFila.map(op => `<div style="font-family:'Fira Code',monospace; font-size:12px; color:var(--primary); margin:2px 0;">⚙️ ${op}</div>`).join("")
+      : "<div style='font-size:12px; color:var(--muted)'>Sin operaciones fila en esta etapa</div>";
+
     return `
       <div class="step-card">
-        <div class="step-title">Etapa Eliminación ${p.etapa} (Columna ${p.pivoteCol}):</div>
-        ${p.sePermuto ? `<p style="margin:2px 0; color:var(--warn); font-size:12px">🔄 Pivoteo: Intercambio Fila ${p.etapa} con Fila ${p.filaPermutada}</p>` : ''}
-        <p style="margin:2px 0; font-size:12px">Multiplicadores: ${multsTxt}</p>
+        <div class="step-title">Etapa ${p.etapa} (Eliminación en Columna ${p.pivoteCol}):</div>
+        ${p.sePermuto ? `<p style="margin:2px 0; color:var(--warn); font-size:12px">🔄 Pivoteo Parcial: Intercambio Fila ${p.etapa} ↔ Fila ${p.filaPermutada}</p>` : ''}
+        <p style="margin:2px 0; font-size:12px"><b>Multiplicadores:</b> ${multsTxt}</p>
+        <div style="margin:4px 0;"><b>Operaciones Fila Aplicadas:</b>${opsTxt}</div>
+        <p style="margin:6px 0 2px; font-size:11px; color:var(--muted)">Matriz Parcial A<sup>(${p.etapa})</sup>:</p>
+        ${miniTablaMatriz(p.matrizA_parcial)}
       </div>
     `;
   }).join("");
 
+  // Desglose explícito de Sustituciones Hacia Adelante y Hacia Atrás
+  let sustitucionAdelanteTxt = lu.y.map((val, i) => `<i>y</i><sub>${i+1}</sub> = ${fmt(val, 4)}`).join(" &nbsp;|&nbsp; ");
+  let sustitucionAtrasTxt = lu.x.map((val, i) => `<i>x</i><sub>${i+1}</sub> = ${fmt(val, 4)}`).join(" &nbsp;|&nbsp; ");
+
   document.getElementById("pasosLU").innerHTML = `
     ${vectorFormat(lu.x)}
     <div style="margin-top:10px;">
-      <b>Procedimiento <i>PA</i> = <i>LU</i>:</b>
+      <b>Procedimiento y Operaciones Fila <i>PA</i> = <i>LU</i>:</b>
       ${pasosLuHtml}
     </div>
-    <p style="font-size:12px; margin-top:10px; margin-bottom:4px"><b>Matriz <i>U</i> (Triangular Superior):</b></p>
+    <div class="step-card">
+      <div class="step-title">Sustitución Hacia Adelante (<i>L</i> · <i>y</i> = <i>P</i> · <i>b</i>):</div>
+      <p style="font-size:12.5px; margin:2px 0;">Vector Intermedio <i>y</i>: [ ${sustitucionAdelanteTxt} ]</p>
+    </div>
+    <div class="step-card">
+      <div class="step-title">Sustitución Hacia Atrás (<i>U</i> · <i>x</i> = <i>y</i>):</div>
+      <p style="font-size:12.5px; margin:2px 0;">Vector Solución Final <i>x</i>: [ ${sustitucionAtrasTxt} ]</p>
+    </div>
+    <p style="font-size:12px; margin-top:10px; margin-bottom:4px"><b>Matriz Final <i>U</i> (Triangular Superior):</b></p>
     ${miniTablaMatriz(lu.U)}
-    <p style="font-size:12px; margin:6px 0 4px"><b>Matriz <i>L</i> (Triangular Inferior):</b></p>
+    <p style="font-size:12px; margin:6px 0 4px"><b>Matriz Final <i>L</i> (Triangular Inferior):</b></p>
     ${miniTablaMatriz(lu.L)}
-    <p style="font-size:12px; margin-top:6px; color:var(--muted)">Sustitución <i>Ly</i> = <i>Pb</i> ⟹ <i>y</i> = [${lu.y.map(v=>fmt(v,2)).join(", ")}]</p>
   `;
 
   document.getElementById("resComparacion").innerHTML = `
@@ -1177,16 +1188,27 @@ function resolverSistemas() {
 
   renderChartConvergencia(jac.rows, gs.rows);
 
-  function renderDetalleIterativo(res, titulo, formulaEq) {
+  function renderDetalleIterativo(res, titulo, formulaEq, despejesExplicit) {
+    let iter1Detail = "";
+    if (res.rows.length > 0) {
+      let r1 = res.rows[0];
+      iter1Detail = `<div class="step-card">
+        <div class="step-title">Sustitución Numérica Explícita (Iteración 1):</div>
+        ${r1.x.map((v, idx) => `<p style="margin:2px 0; font-size:12px;">• <i>x</i><sub>${idx+1}</sub><sup>(1)</sup> = ${fmt(v, 4)}</p>`).join("")}
+      </div>`;
+    }
+
     return `
       <div class="result-box">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <b>${titulo}</b>
           <span class="${res.conv ? 'pill pill-good' : 'pill pill-warn'}">${res.conv ? `CONVERGIÓ EN ${res.rows.length} ITER.` : `LÍMITE (${res.rows.length})`}</span>
         </div>
-        <p style="font-size:11.5px; color:var(--muted); margin:4px 0 8px;">Fórmula: ${formulaEq}</p>
+        <p style="font-size:11.5px; color:var(--muted); margin:4px 0 6px;">Fórmula General: ${formulaEq}</p>
+        ${despejesExplicit}
+        ${iter1Detail}
         
-        <div class="scroll" style="max-height:220px;">
+        <div class="scroll" style="max-height:220px; margin-top:8px;">
           <table>
             <thead>
               <tr>
@@ -1213,8 +1235,11 @@ function resolverSistemas() {
   const formulaJac = "<i>x</i><sub><i>i</i></sub><sup>(<i>k</i>)</sup> = (1 / <i>a</i><sub><i>ii</i></sub>) [ <i>b</i><sub><i>i</i></sub> - ∑<sub><i>j</i> ≠ <i>i</i></sub> <i>a</i><sub><i>ij</i></sub> <i>x</i><sub><i>j</i></sub><sup>(<i>k</i>-1)</sup> ]";
   const formulaSeidel = "<i>x</i><sub><i>i</i></sub><sup>(<i>k</i>)</sup> = (1 / <i>a</i><sub><i>ii</i></sub>) [ <i>b</i><sub><i>i</i></sub> - ∑<sub><i>j</i> &lt; <i>i</i></sub> <i>a</i><sub><i>ij</i></sub> <i>x</i><sub><i>j</i></sub><sup>(<i>k</i>)</sup> - ∑<sub><i>j</i> &gt; <i>i</i></sub> <i>a</i><sub><i>ij</i></sub> <i>x</i><sub><i>j</i></sub><sup>(<i>k</i>-1)</sup> ]";
 
-  document.getElementById("resJacobi").innerHTML = renderDetalleIterativo(jac, "Método de Jacobi", formulaJac);
-  document.getElementById("resSeidel").innerHTML = renderDetalleIterativo(gs, "Método de Gauss-Seidel", formulaSeidel);
+  let despejesJacTxt = `<div style="font-size:11.5px; color:var(--muted);"><b>Despejes por fila:</b><br>${Array.from({length: N}, (_, i) => `• <i>x</i><sub>${i+1}</sub><sup>(k)</sup> = (${b[i]} - ∑<sub>j≠${i+1}</sub> ${A[i][(i+1)%N]}<i>x</i><sub>j</sub><sup>(k-1)</sup>) / ${A[i][i]}`).slice(0, 3).join("<br>")}</div>`;
+  let despejesSeidelTxt = `<div style="font-size:11.5px; color:var(--muted);"><b>Despejes por fila:</b><br>${Array.from({length: N}, (_, i) => `• <i>x</i><sub>${i+1}</sub><sup>(k)</sup> = (${b[i]} - ∑<sub>j&lt;${i+1}</sub> ${A[i][0]}<i>x</i><sub>j</sub><sup>(k)</sup> - ∑<sub>j&gt;${i+1}</sub> ${A[i][(i+1)%N]}<i>x</i><sub>j</sub><sup>(k-1)</sup>) / ${A[i][i]}`).slice(0, 3).join("<br>")}</div>`;
+
+  document.getElementById("resJacobi").innerHTML = renderDetalleIterativo(jac, "Método de Jacobi", formulaJac, despejesJacTxt);
+  document.getElementById("resSeidel").innerHTML = renderDetalleIterativo(gs, "Método de Gauss-Seidel", formulaSeidel, despejesSeidelTxt);
 
   let diagSensibilidad = "";
   if (cond > 500) {
