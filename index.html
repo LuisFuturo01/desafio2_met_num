@@ -381,6 +381,77 @@ button.danger { background: var(--bad); color: white; }
   overflow-x: auto;
 }
 
+/* ESTILOS EXCEL FACTORIZACIÓN LU */
+.excel-lu-container {
+  background: var(--card-inner);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 12px;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: auto;
+}
+.excel-banner {
+  background: #dc2626;
+  color: white;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 4px;
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+.excel-grid-flex {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.excel-table {
+  border-collapse: collapse;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  background: var(--card);
+}
+.excel-table td, .excel-table th {
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  text-align: center;
+}
+.excel-cell-yellow {
+  background: #fef08a !important;
+  color: #0f172a !important;
+  font-weight: 700;
+}
+.excel-cell-blue {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+.excel-cell-grey {
+  background: rgba(148, 163, 184, 0.15) !important;
+  color: var(--muted) !important;
+}
+.excel-green-badge {
+  background: #16a34a;
+  color: white;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.excel-formula-row {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  color: #0284c7;
+  font-weight: 700;
+  padding-left: 8px;
+}
+
 .step-card {
   background: var(--card-inner);
   border: 1px solid var(--border);
@@ -1472,6 +1543,170 @@ function renderChartConvergencia(jacRows, gsRows) {
   `;
 }
 
+function renderExcelLU(lu, A_orig, b_orig) {
+  const n = A_orig.length;
+
+  let tableAHtml = `
+    <table class="excel-table">
+      <tbody>
+        ${A_orig.map((row, i) => `
+          <tr>
+            ${row.map(val => `<td class="excel-cell-yellow">${fmt(val, 4)}</td>`).join("")}
+            <td style="border:none; font-weight:700; color:var(--muted); padding-left:6px;">x${i+1}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+
+  let tableBHtml = `
+    <table class="excel-table">
+      <tbody>
+        ${b_orig.map(val => `<tr><td class="excel-cell-yellow">${fmt(val, 4)}</td></tr>`).join("")}
+      </tbody>
+    </table>
+  `;
+
+  let initBlock = `
+    <div style="margin-bottom:18px;">
+      <div class="excel-banner">FACTORIZACION LU</div>
+      <div class="excel-grid-flex" style="margin-top:10px;">
+        <div style="font-weight:800; color:var(--muted)">A =</div>
+        ${tableAHtml}
+        <div style="font-weight:800; color:var(--muted); margin-left:10px;">b =</div>
+        ${tableBHtml}
+      </div>
+      <div style="font-weight:700; color:var(--muted); font-size:13px; margin-top:4px;">A * x = b</div>
+    </div>
+  `;
+
+  let etapasHtml = lu.pasos.map((p, k) => {
+    let rowFormulas = {};
+    p.operacionesFila.forEach((op) => {
+      let match = op.match(/Fila_(\d+)\s*⟵\s*Fila_\d+\s*-\s*\(([^)]+)\)\s*×\s*Fila_(\d+)/);
+      if (match) {
+        let fTarget = match[1];
+        let multVal = match[2];
+        let fRef = match[3];
+        rowFormulas[parseInt(fTarget) - 1] = `f${fTarget} = f${fTarget} - (${multVal})*f${fRef}`;
+      }
+    });
+
+    let matrixRowsHtml = p.matrizA_parcial.map((row, i) => {
+      let cells = row.map((val, j) => {
+        let isZeroed = (j < p.etapa && i > j);
+        let cellClass = isZeroed ? "excel-cell-blue" : (i <= j && i < p.etapa ? "excel-cell-yellow" : "");
+        return `<td class="${cellClass}">${fmt(val, 4)}</td>`;
+      }).join("");
+
+      let fTxt = rowFormulas[i] ? `<span class="excel-formula-row">${rowFormulas[i]}</span>` : "";
+      return `<tr>${cells}<td style="border:none; text-align:left;">${fTxt}</td></tr>`;
+    }).join("");
+
+    return `
+      <div style="margin-bottom:16px;">
+        ${p.sePermuto ? `<div style="font-size:12px; color:var(--warn); margin-bottom:4px;">🔄 Pivoteo Parcial: Intercambio Fila ${p.etapa} ↔ Fila ${p.filaPermutada}</div>` : ''}
+        <table class="excel-table">
+          <tbody>
+            ${matrixRowsHtml}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }).join("");
+
+  let tableLHtml = `
+    <table class="excel-table">
+      <tbody>
+        ${lu.L.map((row, i) => `
+          <tr>
+            ${row.map((val, j) => {
+              let cls = i === j ? "excel-cell-yellow" : (i > j ? "excel-cell-blue" : "excel-cell-grey");
+              return `<td class="${cls}">${fmt(val, 4)}</td>`;
+            }).join("")}
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+
+  let tableUHtml = `
+    <table class="excel-table">
+      <tbody>
+        ${lu.U.map((row, i) => `
+          <tr>
+            ${row.map(val => `<td>${fmt(val, 4)}</td>`).join("")}
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+
+  let entoncesBlock = `
+    <div style="margin-top:20px; margin-bottom:16px;">
+      <h4 style="margin:0 0 10px; color:var(--text); font-weight:800;">ENTONCES TENEMOS :</h4>
+      <div class="excel-grid-flex">
+        <div>
+          <div style="font-weight:700; color:var(--muted); margin-bottom:4px;">L =</div>
+          ${tableLHtml}
+        </div>
+        <div style="margin-left:16px;">
+          <div style="font-weight:700; color:var(--muted); margin-bottom:4px;">U =</div>
+          ${tableUHtml}
+        </div>
+      </div>
+    </div>
+  `;
+
+  let tableYHtml = `
+    <table class="excel-table">
+      <tbody>
+        ${lu.y.map(val => `<tr><td style="font-weight:700;">${fmt(val, 4)}</td></tr>`).join("")}
+      </tbody>
+    </table>
+  `;
+
+  let lyBlock = `
+    <div style="margin-top:18px;">
+      <div class="excel-green-badge">Ly = b</div>
+      <div style="font-size:12.5px; margin:4px 0 8px; color:var(--muted);">y = Inv(L)*b &nbsp;|&nbsp; Sustitución hacia adelante</div>
+      <div class="excel-grid-flex">
+        <div style="font-weight:700; color:var(--muted)">y = Inv(L)*b</div>
+        ${tableYHtml}
+      </div>
+    </div>
+  `;
+
+  let tableXHtml = `
+    <table class="excel-table">
+      <tbody>
+        ${lu.x.map(val => `<tr><td class="excel-cell-yellow">${fmt(val, 4)}</td></tr>`).join("")}
+      </tbody>
+    </table>
+  `;
+
+  let uxBlock = `
+    <div style="margin-top:18px;">
+      <div class="excel-green-badge">Ux = y</div>
+      <div style="font-size:12.5px; margin:4px 0 8px; color:var(--muted);">x = inv(U)*y &nbsp;|&nbsp; Sustitución hacia atrás (Solución Final)</div>
+      <div class="excel-grid-flex">
+        <div style="font-weight:800; color:var(--text)">x = inv(U)*y</div>
+        ${tableXHtml}
+      </div>
+    </div>
+  `;
+
+  return `
+    <div class="excel-lu-container">
+      ${initBlock}
+      ${etapasHtml}
+      ${entoncesBlock}
+      ${lyBlock}
+      ${uxBlock}
+    </div>
+  `;
+}
+
 function resolverSistemas() {
   const { A, b } = getMatrizUI();
   const tol = parseFloat(document.getElementById("sysTol").value) || 1e-6;
@@ -1487,49 +1722,7 @@ function resolverSistemas() {
   liveState.matrixSeidelIt = gs.rows.length;
   liveState.matrixDimension = N;
 
-  let pasosLuHtml = lu.pasos.map((p, idx) => {
-    let multsTxt = p.multiplicadores.length > 0 
-      ? p.multiplicadores.map(m => `<i>m</i><sub>${m.fila}${m.col}}</sub> = ${fmt(m.factor, 4)}`).join(", ")
-      : "Etapa final";
-    
-    let opsTxt = p.operacionesFila.length > 0
-      ? p.operacionesFila.map(op => `<div style="font-family:'Fira Code',monospace; font-size:12px; color:var(--primary); margin:2px 0;">⚙️ ${op}</div>`).join("")
-      : "<div style='font-size:12px; color:var(--muted)'>Sin operaciones fila en esta etapa</div>";
-
-    return `
-      <div class="step-card">
-        <div class="step-title">Etapa ${p.etapa} (Eliminación en Columna ${p.pivoteCol}):</div>
-        ${p.sePermuto ? `<p style="margin:2px 0; color:var(--warn); font-size:12px">🔄 Pivoteo Parcial: Intercambio Fila ${p.etapa} ↔ Fila ${p.filaPermutada}</p>` : ''}
-        <p style="margin:2px 0; font-size:12px"><b>Multiplicadores:</b> ${multsTxt}</p>
-        <div style="margin:4px 0;"><b>Operaciones Fila Aplicadas:</b>${opsTxt}</div>
-        <p style="margin:6px 0 2px; font-size:11px; color:var(--muted)">Matriz Parcial A<sup>(${p.etapa})</sup>:</p>
-        ${miniTablaMatriz(p.matrizA_parcial)}
-      </div>
-    `;
-  }).join("");
-
-  let sustitucionAdelanteTxt = lu.y.map((val, i) => `<i>y</i><sub>${i+1}</sub> = ${fmt(val, 4)}`).join(" &nbsp;|&nbsp; ");
-  let sustitucionAtrasTxt = lu.x.map((val, i) => `<i>x</i><sub>${i+1}</sub> = ${fmt(val, 4)}`).join(" &nbsp;|&nbsp; ");
-
-  document.getElementById("pasosLU").innerHTML = `
-    ${vectorFormat(lu.x)}
-    <div style="margin-top:10px;">
-      <b>Procedimiento y Operaciones Fila <i>PA</i> = <i>LU</i>:</b>
-      ${pasosLuHtml}
-    </div>
-    <div class="step-card">
-      <div class="step-title">Sustitución Hacia Adelante (<i>L</i> · <i>y</i> = <i>P</i> · <i>b</i>):</div>
-      <p style="font-size:12.5px; margin:2px 0;">Vector Intermedio <i>y</i>: [ ${sustitucionAdelanteTxt} ]</p>
-    </div>
-    <div class="step-card">
-      <div class="step-title">Sustitución Hacia Atrás (<i>U</i> · <i>x</i> = <i>y</i>):</div>
-      <p style="font-size:12.5px; margin:2px 0;">Vector Solución Final <i>x</i>: [ ${sustitucionAtrasTxt} ]</p>
-    </div>
-    <p style="font-size:12px; margin-top:10px; margin-bottom:4px"><b>Matriz Final <i>U</i> (Triangular Superior):</b></p>
-    ${miniTablaMatriz(lu.U)}
-    <p style="font-size:12px; margin:6px 0 4px"><b>Matriz Final <i>L</i> (Triangular Inferior):</b></p>
-    ${miniTablaMatriz(lu.L)}
-  `;
+  document.getElementById("pasosLU").innerHTML = renderExcelLU(lu, A, b);
 
   document.getElementById("resComparacion").innerHTML = `
     <div class="scroll">
