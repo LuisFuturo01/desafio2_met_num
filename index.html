@@ -1,876 +1,1276 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Desafío Integrador • Métodos Numéricos Financieros (UMSA)</title>
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-<!-- KaTeX for Equation Rendering -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="triggerMathRender()"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafío Integrador • Métodos Numéricos Financieros (UMSA)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- KaTeX for Equation Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+        onload="triggerMathRender()"></script>
 
-<style>
-:root {
-  --primary: #4338ca;
-  --primary-light: #6366f1;
-  --secondary: #0284c7;
-  --bg: #f8fafc;
-  --card: #ffffff;
-  --card-inner: #f1f5f9;
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: #e2e8f0;
-  --good: #15803d;
-  --good-bg: #dcfce7;
-  --bad: #b91c1c;
-  --bad-bg: #fee2e2;
-  --warn: #b45309;
-  --warn-bg: #fef3c7;
-  --accent-glow: rgba(99, 102, 241, 0.12);
-  --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
-}
+    <style>
+        :root {
+            --primary: #4338ca;
+            --primary-light: #6366f1;
+            --secondary: #0284c7;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --card-inner: #f1f5f9;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --good: #15803d;
+            --good-bg: #dcfce7;
+            --bad: #b91c1c;
+            --bad-bg: #fee2e2;
+            --warn: #b45309;
+            --warn-bg: #fef3c7;
+            --accent-glow: rgba(99, 102, 241, 0.12);
+            --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
+        }
 
-[data-theme="dark"] {
-  --primary: #6366f1;
-  --primary-light: #818cf8;
-  --secondary: #38bdf8;
-  --bg: #0f172a;
-  --card: #1e293b;
-  --card-inner: #0f172a;
-  --text: #f8fafc;
-  --muted: #94a3b8;
-  --border: #334155;
-  --good: #4ade80;
-  --good-bg: rgba(22, 163, 74, 0.2);
-  --bad: #f87171;
-  --bad-bg: rgba(220, 38, 38, 0.2);
-  --warn: #fbbf24;
-  --warn-bg: rgba(217, 119, 6, 0.2);
-  --accent-glow: rgba(99, 102, 241, 0.25);
-  --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-}
+        [data-theme="dark"] {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #38bdf8;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --card-inner: #0f172a;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --border: #334155;
+            --good: #4ade80;
+            --good-bg: rgba(22, 163, 74, 0.2);
+            --bad: #f87171;
+            --bad-bg: rgba(220, 38, 38, 0.2);
+            --warn: #fbbf24;
+            --warn-bg: rgba(217, 119, 6, 0.2);
+            --accent-glow: rgba(99, 102, 241, 0.25);
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  transition: background-color 0.3s, color 0.3s;
-}
+        * {
+            box-sizing: border-box;
+        }
 
-h1, h2, h3, h4, .brand {
-  font-family: 'Outfit', 'Inter', sans-serif;
-  letter-spacing: -0.02em;
-}
+        html {
+            scroll-behavior: smooth;
+        }
 
-/* HEADER RESPONSIVE */
-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-}
-[data-theme="dark"] header { background: rgba(15, 23, 42, 0.94); }
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-.nav-container {
-  max-width: 1200px;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+        h1,
+        h2,
+        h3,
+        h4,
+        .brand {
+            font-family: 'Outfit', 'Inter', sans-serif;
+            letter-spacing: -0.02em;
+        }
 
-.brand {
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: var(--primary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-.brand-tag {
-  background: var(--primary);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 6px;
-  text-transform: uppercase;
-}
+        /* HEADER RESPONSIVE */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
 
-nav {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  overflow-x: auto;
-  padding-bottom: 2px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-nav::-webkit-scrollbar { display: none; }
+        [data-theme="dark"] header {
+            background: rgba(15, 23, 42, 0.94);
+        }
 
-nav a {
-  padding: 6px 10px;
-  border-radius: 8px;
-  text-decoration: none;
-  color: var(--muted);
-  font-size: 12.5px;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: 0.2s;
-}
-nav a:hover, nav a:focus { background: var(--accent-glow); color: var(--primary); }
+        .nav-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
 
-.header-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+        .brand {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
 
-.theme-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-}
+        .brand-tag {
+            background: var(--primary);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
 
-main {
-  max-width: 1200px;
-  margin: auto;
-  padding: 24px 16px 80px;
-}
+        nav {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
 
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 28px;
-  box-shadow: var(--shadow);
-}
+        nav::-webkit-scrollbar {
+            display: none;
+        }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 12px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.card-header h2 { margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--text); }
-.badge {
-  background: var(--accent-glow);
-  color: var(--primary);
-  border: 1px solid rgba(99, 102, 241, 0.2);
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-}
+        nav a {
+            padding: 6px 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 12.5px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
 
-/* ESFERA FLOTANTE ARRASTRABLE (DRAGGABLE SPHERE BUTTON) */
-.floating-sphere-btn {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: white;
-  box-shadow: 0 10px 28px rgba(67, 56, 202, 0.45);
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: move;
-  user-select: none;
-  touch-action: none;
-  border: 2.5px solid rgba(255, 255, 255, 0.9);
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-.floating-sphere-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 14px 35px rgba(67, 56, 202, 0.6);
-}
-.sphere-icon { font-size: 22px; line-height: 1; pointer-events: none; }
-.sphere-tooltip { font-size: 8.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; pointer-events: none; margin-top: 1px; }
+        nav a:hover,
+        nav a:focus {
+            background: var(--accent-glow);
+            color: var(--primary);
+        }
 
-/* MODAL CENTRADO EN PANTALLA CON BACKDROP */
-.modal-backdrop {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(4px);
-  z-index: 10000;
-  display: none;
-}
-.modal-dialog {
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 440px;
-  background: var(--card);
-  border: 1.5px solid var(--primary);
-  border-radius: 16px;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
-  z-index: 10001;
-  display: none;
-  overflow: hidden;
-  animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-@keyframes modalPop {
-  from { opacity: 0; transform: translate(-50%, -45%) scale(0.92); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-}
-.modal-header-dialog {
-  background: var(--primary);
-  color: white;
-  padding: 12px 18px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-}
-.modal-close-btn {
-  background: rgba(255,255,255,0.2);
-  border: 0;
-  color: white;
-  border-radius: 50%;
-  width: 28px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-  cursor: pointer;
-  font-weight: 800;
-  transition: 0.2s;
-}
-.modal-close-btn:hover { background: rgba(255,255,255,0.4); }
-.modal-body-dialog {
-  padding: 18px;
-  font-size: 13px;
-  max-height: 75vh;
-  overflow-y: auto;
-}
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-/* Banner del Enunciado */
-.banner-box {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(2, 132, 199, 0.05));
-  border: 1.5px solid rgba(99, 102, 241, 0.25);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 28px;
-}
-.banner-box h1 { font-size: 1.6rem; margin: 0 0 10px; color: var(--text); }
-.banner-box p { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
-.case-statement {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  font-size: 13.5px;
-  line-height: 1.6;
-}
+        .theme-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
 
-/* Form Controls */
-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-input, select {
-  width: 100%;
-  padding: 8px 11px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 14px;
-  background: var(--card-inner);
-  color: var(--text);
-  font-family: inherit;
-  transition: 0.2s;
-}
-input:focus, select:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
+        main {
+            max-width: 1200px;
+            margin: auto;
+            padding: 24px 16px 80px;
+        }
 
-button, .btn {
-  border: 0;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  background: var(--primary);
-  color: white;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-button:hover { background: var(--primary-light); opacity: 0.95; }
-button.secondary { background: var(--card-inner); color: var(--text); border: 1px solid var(--border); }
-button.warning { background: var(--warn); color: white; }
-button.danger { background: var(--bad); color: white; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow);
+        }
 
-.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
 
-/* Square Matrix Layout */
-.square-system-wrapper {
-  display: grid;
-  grid-template-columns: minmax(240px, 1fr) auto minmax(90px, 120px);
-  gap: 16px;
-  align-items: center;
-  margin: 16px 0;
-  overflow-x: auto;
-}
-.matrix-square-grid {
-  display: grid;
-  gap: 8px;
-}
-.matrix-row {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(var(--n), minmax(50px, 1fr));
-}
-.matrix-row input, .vector-column input {
-  text-align: center;
-  font-family: 'Fira Code', monospace;
-  font-weight: 600;
-}
-.vector-column {
-  display: grid;
-  gap: 8px;
-}
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+        }
 
-/* Math Display */
-.math-box {
-  background: var(--card-inner);
-  border-left: 4px solid var(--secondary);
-  padding: 14px 18px;
-  border-radius: 8px;
-  margin: 12px 0;
-  font-size: 14.5px;
-  overflow-x: auto;
-}
+        .badge {
+            background: var(--accent-glow);
+            color: var(--primary);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
 
-/* ESTILOS EXCEL FACTORIZACIÓN LU */
-.excel-lu-container {
-  background: var(--card-inner);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px;
-  margin-top: 12px;
-  font-family: 'Inter', system-ui, sans-serif;
-  overflow-x: auto;
-}
-.excel-banner {
-  background: #dc2626;
-  color: white;
-  font-weight: 800;
-  padding: 5px 12px;
-  border-radius: 4px;
-  display: inline-block;
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  margin-bottom: 12px;
-}
-.excel-grid-flex {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-.excel-table {
-  border-collapse: collapse;
-  font-family: 'Fira Code', monospace;
-  font-size: 13px;
-  background: var(--card);
-}
-.excel-table td, .excel-table th {
-  border: 1px solid var(--border);
-  padding: 6px 12px;
-  text-align: center;
-}
-.excel-cell-yellow {
-  background: #fef08a !important;
-  color: #0f172a !important;
-  font-weight: 700;
-}
-.excel-cell-blue {
-  background: #0284c7 !important;
-  color: #ffffff !important;
-  font-weight: 700;
-}
-.excel-cell-grey {
-  background: rgba(148, 163, 184, 0.15) !important;
-  color: var(--muted) !important;
-}
-.excel-green-badge {
-  background: #16a34a;
-  color: white;
-  font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  display: inline-block;
-  margin-bottom: 8px;
-}
-.excel-formula-row {
-  font-family: 'Fira Code', monospace;
-  font-size: 12px;
-  color: #0284c7;
-  font-weight: 700;
-  padding-left: 8px;
-}
+        /* ESFERA FLOTANTE ARRASTRABLE (DRAGGABLE SPHERE BUTTON) */
+        .floating-sphere-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 10px 28px rgba(67, 56, 202, 0.45);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: move;
+            user-select: none;
+            touch-action: none;
+            border: 2.5px solid rgba(255, 255, 255, 0.9);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
 
-.step-card {
-  background: var(--card-inner);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
-  margin-top: 10px;
-}
-.step-title {
-  font-weight: 700;
-  color: var(--primary);
-  font-size: 13.5px;
-  margin-bottom: 6px;
-}
+        .floating-sphere-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 14px 35px rgba(67, 56, 202, 0.6);
+        }
 
-/* Tables & Results */
-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; }
-th { background: var(--card-inner); text-align: center; font-weight: 700; color: var(--muted); font-size: 11px; text-transform: uppercase; }
-td:first-child, th:first-child { text-align: left; }
-.scroll { overflow-x: auto; }
+        .sphere-icon {
+            font-size: 22px;
+            line-height: 1;
+            pointer-events: none;
+        }
 
-.pill {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-}
-.pill-good { background: var(--good-bg); color: var(--good); }
-.pill-warn { background: var(--warn-bg); color: var(--warn); }
-.pill-bad { background: var(--bad-bg); color: var(--bad); }
+        .sphere-tooltip {
+            font-size: 8.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            pointer-events: none;
+            margin-top: 1px;
+        }
 
-.result-box {
-  background: var(--card-inner);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  margin-top: 14px;
-}
+        /* MODAL CENTRADO EN PANTALLA CON BACKDROP */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: none;
+        }
 
-/* SVG Graphic Boxes */
-.chart-box {
-  width: 100%;
-  height: 200px;
-  background: var(--card-inner);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px;
-  margin-top: 14px;
-}
+        .modal-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 440px;
+            background: var(--card);
+            border: 1.5px solid var(--primary);
+            border-radius: 16px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+            z-index: 10001;
+            display: none;
+            overflow: hidden;
+            animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
-.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -45%) scale(0.92);
+            }
 
-.footer { text-align: center; color: var(--muted); padding: 30px; font-size: 13px; border-top: 1px solid var(--border); }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
 
-@media (max-width: 768px) {
-  .nav-container {
-    padding: 8px 12px;
-  }
-  .brand { font-size: 0.95rem; }
-  .brand-tag { font-size: 9px; padding: 2px 6px; }
-  nav {
-    width: 100%;
-    order: 3;
-    justify-content: flex-start;
-    border-top: 1px solid var(--border);
-    padding-top: 6px;
-    margin-top: 4px;
-  }
-  nav a { font-size: 11.5px; padding: 4px 8px; }
-  .square-system-wrapper {
-    grid-template-columns: 1fr;
-    justify-items: center;
-  }
-  .banner-box h1 { font-size: 1.35rem; }
-}
+        .modal-header-dialog {
+            background: var(--primary);
+            color: white;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
 
-@media print {
-  header, .actions, .theme-btn, .floating-sphere-btn, .modal-backdrop, .modal-dialog { display: none !important; }
-  body { background: white; color: black; }
-  .card { border: none; box-shadow: none; padding: 0; }
-}
-</style>
+        .modal-close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 0;
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 800;
+            transition: 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .modal-body-dialog {
+            padding: 18px;
+            font-size: 13px;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        /* Banner del Enunciado */
+        .banner-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(2, 132, 199, 0.05));
+            border: 1.5px solid rgba(99, 102, 241, 0.25);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 28px;
+        }
+
+        .banner-box h1 {
+            font-size: 1.6rem;
+            margin: 0 0 10px;
+            color: var(--text);
+        }
+
+        .banner-box p {
+            color: var(--muted);
+            font-size: 14px;
+            margin: 0 0 14px;
+        }
+
+        .case-statement {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 13.5px;
+            line-height: 1.6;
+        }
+
+        /* Form Controls */
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px 11px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--card-inner);
+            color: var(--text);
+            font-family: inherit;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        button,
+        .btn {
+            border: 0;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button:hover {
+            background: var(--primary-light);
+            opacity: 0.95;
+        }
+
+        button.secondary {
+            background: var(--card-inner);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        button.warning {
+            background: var(--warn);
+            color: white;
+        }
+
+        button.danger {
+            background: var(--bad);
+            color: white;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        /* Square Matrix Layout */
+        .square-system-wrapper {
+            display: grid;
+            grid-template-columns: minmax(240px, 1fr) auto minmax(90px, 120px);
+            gap: 16px;
+            align-items: center;
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+
+        .matrix-square-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .matrix-row {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: repeat(var(--n), minmax(50px, 1fr));
+        }
+
+        .matrix-row input,
+        .vector-column input {
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+        }
+
+        .vector-column {
+            display: grid;
+            gap: 8px;
+        }
+
+        /* Math Display */
+        .math-box {
+            background: var(--card-inner);
+            border-left: 4px solid var(--secondary);
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin: 12px 0;
+            font-size: 14.5px;
+            overflow-x: auto;
+        }
+
+        /* ESTILOS FACTORIZACIÓN LU */
+        .excel-lu-container {
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 12px;
+            font-family: 'Inter', system-ui, sans-serif;
+            overflow-x: auto;
+        }
+
+        .excel-section-container {
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 12px;
+            font-family: 'Inter', system-ui, sans-serif;
+            overflow-x: auto;
+        }
+
+        /* ESTILOS EXCEL GENERALES Y MÉTODOS ITERATIVOS (JACOBI & GAUSS-SEIDEL) */
+        .excel-banner {
+            background: #dc2626;
+            color: white;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 13px;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .excel-banner-cyan {
+            background: #0284c7;
+            color: #ffffff;
+            font-weight: 800;
+            padding: 5px 14px;
+            border-radius: 6px;
+            display: inline-block;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+        }
+
+        .excel-banner-amber {
+            background: #ea580c;
+            color: #ffffff;
+            font-weight: 800;
+            padding: 5px 14px;
+            border-radius: 6px;
+            display: inline-block;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(234, 88, 12, 0.25);
+        }
+
+        .excel-banner-yellow {
+            background: #d97706;
+            color: #ffffff;
+            font-weight: 800;
+            padding: 5px 14px;
+            border-radius: 6px;
+            display: inline-block;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.25);
+        }
+
+        .excel-grid-flex {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .excel-table {
+            border-collapse: collapse;
+            font-family: 'Fira Code', monospace;
+            font-size: 12.5px;
+            background: var(--card);
+        }
+
+        .excel-table td,
+        .excel-table th {
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            text-align: center;
+        }
+
+        .excel-cell-yellow {
+            background: #fef08a !important;
+            color: #0f172a !important;
+            font-weight: 700;
+        }
+
+        .excel-cell-blue {
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            font-weight: 700;
+        }
+
+        .excel-cell-grey {
+            background: rgba(148, 163, 184, 0.15) !important;
+            color: var(--muted) !important;
+        }
+
+        .excel-cell-orange {
+            background: #fed7aa !important;
+            color: #7c2d12 !important;
+            font-weight: 800 !important;
+        }
+
+        [data-theme="dark"] .excel-cell-orange {
+            background: rgba(234, 88, 12, 0.35) !important;
+            color: #fdba74 !important;
+        }
+
+        .excel-cell-green {
+            background: #bbf7d0 !important;
+            color: #14532d !important;
+            font-weight: 800 !important;
+        }
+
+        [data-theme="dark"] .excel-cell-green {
+            background: rgba(34, 197, 94, 0.25) !important;
+            color: #86efac !important;
+        }
+
+        .excel-green-badge {
+            background: #16a34a;
+            color: white;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .excel-red-badge {
+            background: #dc2626;
+            color: white;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .excel-formula-row {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: #0284c7;
+            font-weight: 700;
+            padding-left: 8px;
+        }
+
+        .excel-iter-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .excel-highlight-text {
+            color: #ea580c;
+            font-weight: 800;
+        }
+
+        [data-theme="dark"] .excel-highlight-text {
+            color: #fb923c;
+        }
+
+        .excel-callout-didactic {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(2, 132, 199, 0.06));
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-size: 13px;
+        }
+
+        .step-card {
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 13.5px;
+            margin-bottom: 6px;
+        }
+
+        /* Tables & Results */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        th,
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: right;
+        }
+
+        th {
+            background: var(--card-inner);
+            text-align: center;
+            font-weight: 700;
+            color: var(--muted);
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        td:first-child,
+        th:first-child {
+            text-align: left;
+        }
+
+        .scroll {
+            overflow-x: auto;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .pill-good {
+            background: var(--good-bg);
+            color: var(--good);
+        }
+
+        .pill-warn {
+            background: var(--warn-bg);
+            color: var(--warn);
+        }
+
+        .pill-bad {
+            background: var(--bad-bg);
+            color: var(--bad);
+        }
+
+        .result-box {
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+
+        /* SVG Graphic Boxes */
+        .chart-box {
+            width: 100%;
+            height: 200px;
+            background: var(--card-inner);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 14px;
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .grid3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+        }
+
+        .grid4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--muted);
+            padding: 30px;
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 8px 12px;
+            }
+
+            .brand {
+                font-size: 0.95rem;
+            }
+
+            .brand-tag {
+                font-size: 9px;
+                padding: 2px 6px;
+            }
+
+            nav {
+                width: 100%;
+                order: 3;
+                justify-content: flex-start;
+                border-top: 1px solid var(--border);
+                padding-top: 6px;
+                margin-top: 4px;
+            }
+
+            nav a {
+                font-size: 11.5px;
+                padding: 4px 8px;
+            }
+
+            .square-system-wrapper {
+                grid-template-columns: 1fr;
+                justify-items: center;
+            }
+
+            .banner-box h1 {
+                font-size: 1.35rem;
+            }
+        }
+
+        @media print {
+
+            header,
+            .actions,
+            .theme-btn,
+            .floating-sphere-btn,
+            .modal-backdrop,
+            .modal-dialog {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .card {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+    </style>
 </head>
+
 <body data-theme="light">
 
-<header><div class="nav-container">
-  <div class="brand">
-    <span>MÉTODOS NUMÉRICOS</span>
-    <span class="brand-tag">UMSA FINANZAS</span>
-  </div>
-  <div class="header-controls">
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Modo Oscuro</button>
-  </div>
-  <nav>
-    <a href="#enunciado">Enunciado</a>
-    <a href="#errores">1. Errores</a>
-    <a href="#taylor">2. Taylor</a>
-    <a href="#sistemas">3. Sistemas Lineales</a>
-    <a href="#procedimiento">4. Pasos y Operaciones</a>
-    <a href="#conclusiones">5. Diagnóstico</a>
-    <a href="javascript:void(0)" onclick="abrirModalIntegrantes()" style="color:var(--primary); font-weight:700;">👥 Integrantes</a>
-  </nav>
-</div></header>
+    <header>
+        <div class="nav-container">
+            <div class="brand">
+                <span>MÉTODOS NUMÉRICOS</span>
+                <span class="brand-tag">UMSA FINANZAS</span>
+            </div>
+            <div class="header-controls">
+                <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Modo Oscuro</button>
+            </div>
+            <nav>
+                <a href="#enunciado">Enunciado</a>
+                <a href="#errores">1. Errores</a>
+                <a href="#taylor">2. Taylor</a>
+                <a href="#sistemas">3. Sistemas Lineales</a>
+                <a href="#procedimiento">4. Pasos y Operaciones</a>
+                <a href="#conclusiones">5. Diagnóstico</a>
+                <a href="javascript:void(0)" onclick="abrirModalIntegrantes()"
+                    style="color:var(--primary); font-weight:700;">👥 Integrantes</a>
+            </nav>
+        </div>
+    </header>
 
-<!-- ESFERA FLOTANTE ARRASTRABLE (DRAGGABLE SPHERE BUTTON) -->
-<div id="floatingSphereBtn" class="floating-sphere-btn" title="Arrastra la esfera o haz clic para ver Integrantes">
-  <span class="sphere-icon">👥</span>
-  <span class="sphere-tooltip">Grupo</span>
-</div>
-
-<!-- MODAL CENTRADO EN PANTALLA Y BACKDROP -->
-<div id="modalBackdrop" class="modal-backdrop" onclick="cerrarModalIntegrantes()"></div>
-<div id="modalIntegrantes" class="modal-dialog">
-  <div class="modal-header-dialog">
-    <span style="font-weight:700;">🎓 INTEGRANTES DEL GRUPO (UMSA)</span>
-    <button class="modal-close-btn" onclick="cerrarModalIntegrantes()" title="Cerrar">✕</button>
-  </div>
-  <div class="modal-body-dialog">
-    <div style="font-weight:800; margin-bottom:8px; color:var(--primary);">NÓMINA DE INTEGRANTES:</div>
-    <div class="scroll">
-      <table>
-        <thead>
-          <tr>
-            <th style="text-align:left">NOMBRE</th>
-            <th>CI</th>
-            <th>RU</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1. Callisaya Sumi Saúl Walter</td>
-            <td><b>15074779</b></td>
-            <td><b>1885982</b></td>
-          </tr>
-          <tr>
-            <td>2. Zarate Camargo Ignacio Josue</td>
-            <td><b>12392989</b></td>
-            <td><b>1886051</b></td>
-          </tr>
-          <tr>
-            <td>3. Zeballos Quiroz Luis Alejandro</td>
-            <td><b>12896709</b></td>
-            <td><b>1886052</b></td>
-          </tr>
-          <tr>
-            <td>4. González Herrera Jhoel Percy</td>
-            <td><b>9990880</b></td>
-            <td><b>1886116</b></td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- ESFERA FLOTANTE ARRASTRABLE (DRAGGABLE SPHERE BUTTON) -->
+    <div id="floatingSphereBtn" class="floating-sphere-btn" title="Arrastra la esfera o haz clic para ver Integrantes">
+        <span class="sphere-icon">👥</span>
+        <span class="sphere-tooltip">Grupo</span>
     </div>
 
-    <div style="margin-top:14px; font-size:12px; line-height:1.5;">
-      <p style="margin:4px 0;"><b>📂 REPOSITORIO GITHUB:</b><br>
-        <a href="https://github.com/LuisFuturo01/desafio2_met_num" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:none;">github.com/LuisFuturo01/desafio2_met_num ↗</a>
-      </p>
-      <p style="margin:6px 0 0;"><b>🌐 SITIO WEB EN VERCEL:</b><br>
-        <a href="https://desafio2-met-num.vercel.app/" target="_blank" style="color:var(--secondary); font-weight:700; text-decoration:none;">desafio2-met-num.vercel.app ↗</a>
-      </p>
+    <!-- MODAL CENTRADO EN PANTALLA Y BACKDROP -->
+    <div id="modalBackdrop" class="modal-backdrop" onclick="cerrarModalIntegrantes()"></div>
+    <div id="modalIntegrantes" class="modal-dialog">
+        <div class="modal-header-dialog">
+            <span style="font-weight:700;">🎓 INTEGRANTES DEL GRUPO (UMSA)</span>
+            <button class="modal-close-btn" onclick="cerrarModalIntegrantes()" title="Cerrar">✕</button>
+        </div>
+        <div class="modal-body-dialog">
+            <div style="font-weight:800; margin-bottom:8px; color:var(--primary);">NÓMINA DE INTEGRANTES:</div>
+            <div class="scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align:left">NOMBRE</th>
+                            <th>CI</th>
+                            <th>RU</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Callisaya Sumi Saúl Walter</td>
+                            <td><b>15074779</b></td>
+                            <td><b>1885982</b></td>
+                        </tr>
+                        <tr>
+                            <td>2. Zarate Camargo Ignacio Josue</td>
+                            <td><b>12392989</b></td>
+                            <td><b>1886051</b></td>
+                        </tr>
+                        <tr>
+                            <td>3. Zeballos Quiroz Luis Alejandro</td>
+                            <td><b>12896709</b></td>
+                            <td><b>1886052</b></td>
+                        </tr>
+                        <tr>
+                            <td>4. González Herrera Jhoel Percy</td>
+                            <td><b>9990880</b></td>
+                            <td><b>1886116</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:14px; font-size:12px; line-height:1.5;">
+                <p style="margin:4px 0;"><b>📂 REPOSITORIO GITHUB:</b><br>
+                    <a href="https://github.com/LuisFuturo01/desafio2_met_num" target="_blank"
+                        style="color:var(--primary); font-weight:700; text-decoration:none;">github.com/LuisFuturo01/desafio2_met_num
+                        ↗</a>
+                </p>
+                <p style="margin:6px 0 0;"><b>🌐 SITIO WEB EN VERCEL:</b><br>
+                    <a href="https://desafio2-met-num.vercel.app/" target="_blank"
+                        style="color:var(--secondary); font-weight:700; text-decoration:none;">desafio2-met-num.vercel.app
+                        ↗</a>
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-      <p style="margin:6px 0 0;"><b>🌐 SITIO WEB EN VERCEL:</b><br>
-        <a href="https://desafio2-met-num.vercel.app/" target="_blank" style="color:var(--secondary); font-weight:700; text-decoration:none;">desafio2-met-num.vercel.app ↗</a>
-      </p>
+
+    <main>
+
+        <!-- ENUNCIADO OFICIAL -->
+        <!-- ENUNCIADO Y CONTEXTO FINANCIERO INTEGRAL -->
+        <section id="enunciado" class="banner-box">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+                <div>
+                    <span class="badge" style="background:var(--primary); color:white; margin-bottom:8px; display:inline-block;">CASO DE APLICACIÓN FINANCIERA • BANCA & FINTECH</span>
+                    <h1 style="margin-top:4px;">Planificación Financiera Integral, Auditoría de Riesgos y Asignación de Capital</h1>
+                </div>
+            </div>
+            <p style="font-size:14.5px; line-height:1.6; color:var(--text); margin-top:8px;">
+                Plataforma interactiva para la modelación cuantitativa de un plan financiero corporativo. Integra el <b>control y propagación de errores contables</b>, la <b>estimación continua de fondos de capital mediante Series de Taylor</b> y la <b>resolución de sistemas de interdependencia departamental</b> (Sistemas lineales 3×3 y 4×4 por <b>Factorización LU</b>, <b>Jacobi</b> y <b>Gauss-Seidel</b>) con evaluación de sensibilidad en tiempo real.
+            </p>
+
+            <div class="case-statement" style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; margin-top:14px;">
+                <div style="font-size:14px; font-weight:800; color:var(--primary); margin-bottom:8px;">
+                    🏢 Contexto Empresarial y Descripción del Escenario Financiero:
+                </div>
+                <p style="margin:4px 0 10px; font-size:13.5px; line-height:1.6;">
+                    Una entidad financiera y de banca digital (Fintech) optimiza su distribución anual de recursos presupuestarios y evalúa su cartera institucional. La organización opera mediante <b>unidades estratégicas interconectadas</b> que transfieren flujos y servicios recíprocos:
+                </p>
+                <div class="grid4" style="margin:12px 0;">
+                    <div style="background:var(--card-inner); padding:10px 12px; border-radius:8px; border-left:3px solid #0284c7;">
+                        <b style="font-size:12px; color:var(--text);">1. Operaciones & Crédito (<i>x</i>₁)</b>
+                        <p style="margin:2px 0 0; font-size:11.5px; color:var(--muted);">Colocación de cartera crediticia, tesorería de préstamos y cobranzas.</p>
+                    </div>
+                    <div style="background:var(--card-inner); padding:10px 12px; border-radius:8px; border-left:3px solid #16a34a;">
+                        <b style="font-size:12px; color:var(--text);">2. Comercial & Captación (<i>x</i>₂)</b>
+                        <p style="margin:2px 0 0; font-size:11.5px; color:var(--muted);">Fuerza de ventas, canales digitales y captación de depósitos.</p>
+                    </div>
+                    <div style="background:var(--card-inner); padding:10px 12px; border-radius:8px; border-left:3px solid #ea580c;">
+                        <b style="font-size:12px; color:var(--text);">3. Tecnología & Ciberseguridad (<i>x</i>₃)</b>
+                        <p style="margin:2px 0 0; font-size:11.5px; color:var(--muted);">Infraestructura en la nube, servidores y pasarelas de pago seguras.</p>
+                    </div>
+                    <div style="background:var(--card-inner); padding:10px 12px; border-radius:8px; border-left:3px solid #8b5cf6;">
+                        <b style="font-size:12px; color:var(--text);">4. Innovación & IA Financiera (<i>x</i>₄)</b>
+                        <p style="margin:2px 0 0; font-size:11.5px; color:var(--muted);">Modelos predictivos de scoring crediticio y tokenización de activos.</p>
+                    </div>
+                </div>
+
+                <div style="font-size:13px; line-height:1.6; border-top:1px dashed var(--border); padding-top:10px; margin-top:8px;">
+                    <b>🎯 Objetivos Numéricos del Desafío Integrador:</b>
+                    <ul style="margin:4px 0 0; padding-left:18px;">
+                        <li><b>Módulo I (Teoría de Errores):</b> Auditar las discrepancias entre los recursos reales demandados por las áreas (<i>x</i><sub>real</sub>) y los saldos preliminares registrados (<i>x</i><sub>aprox</sub>) en miles de Bs., cuantificando <i>E</i><sub>a</sub>, <i>E</i><sub>r</sub> y <i>E</i><sub>p</sub>%.</li>
+                        <li><b>Módulo II (Series de Taylor):</b> Pronosticar el valor futuro del fondo de capital líquido continuo <i>C</i>(<i>t</i>) = <i>C</i>₀ · <i>e</i><sup><i>r·t</i></sup> expandido alrededor del corte fiscal base <i>t</i>₀, analizando el error de truncamiento desde el orden <i>n</i>=0 hasta <i>n</i>=4.</li>
+                        <li><b>Módulo III & IV (Sistemas Lineales 3×3 y 4×4):</b> Modelar la matriz de transferencias y consumos interdepartamentales <i>A</i> · <i>x</i> = <i>b</i> mediante Factorización Directa LU (<i>PA = LU</i>) y los métodos iterativos de Jacobi y Gauss-Seidel con desglose analítico paso a paso.</li>
+                        <li><b>Módulo V (Diagnóstico de Sensibilidad):</b> Evaluar la estabilidad matricial frente a perturbaciones y emitir dictamen financiero en tiempo real.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARTE I: TEORÍA DE ERRORES -->
+        <section class="card" id="errores">
+            <div class="card-header">
+                <h2>Parte I – Auditoría de Errores en Registros Contables Departamentales</h2>
+                <span class="badge">Módulo 1</span>
+            </div>
+            <p style="color:var(--muted); font-size:13.5px; margin-top:0;">
+                Evaluación de discrepancias financieras entre los requerimientos reales de capital de cada departamento (<i>x</i><sub>real</sub>) vs. los saldos contables preliminares registrados (<i>x</i><sub>aprox</sub>) en miles de Bolivianos (Bs.).
+            </p>
+
+            <div class="scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align:left">Unidad Estratégica / Departamento</th>
+                            <th>Flujo Real Demandado <i>x</i> (Bs)</th>
+                            <th>Monto Registrado <i>x</i><sub>aprox</sub> (Bs)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bodyErrores"></tbody>
+                </table>
+            </div>
+
+            <h3>Gráfico de Errores Porcentuales por Concepto (<i>E</i><sub>p</sub>%)</h3>
+            <div class="chart-box">
+                <svg id="svgChartErrores" width="100%" height="100%" viewBox="0 0 600 180"
+                    preserveAspectRatio="none"></svg>
+            </div>
+
+            <div id="resultadoErrores"></div>
+        </section>
+
+        <!-- PARTE II: SERIES DE TAYLOR -->
+        <section class="card" id="taylor">
+            <div class="card-header">
+                <h2>Parte II – Proyección de Fondos de Capital mediante Series de Taylor</h2>
+                <span class="badge">Módulo 2</span>
+            </div>
+            <p style="color:var(--muted); font-size:13.5px; margin-top:0;">Estimación del modelo de crecimiento de
+                capital continuo <i>C</i>(<i>t</i>) = <i>C</i>₀ · <i>e</i><sup><i>r·t</i></sup> mediante la Serie infinita de Taylor expandida
+                alrededor del corte fiscal base <i>t</i>₀ para evaluar el horizonte <i>t</i>.</p>
+
+            <div class="math-box">
+                $$C(t) \approx C(t_0) + C'(t_0)(t - t_0) + \frac{C''(t_0)}{2!}(t - t_0)^2 + \frac{C'''(t_0)}{3!}(t -
+                t_0)^3 + \frac{C^{(4)}(t_0)}{4!}(t - t_0)^4$$
+                <div style="font-size:12px; color:var(--muted); margin-top:4px;">
+                    Fórmula General de Serie de Taylor: $$C(t) = \sum_{n=0}^{\infty} \frac{C^{(n)}(t_0)}{n!} (t -
+                    t_0)^n$$
+                </div>
+            </div>
+
+            <div class="grid4">
+                <div><label>Capital Inicial C₀ (Bs)</label><input id="taylor_C0" type="number" value="10000"
+                        oninput="calcularTaylorWord()"></div>
+                <div><label>Tasa continua r</label><input id="taylor_r" type="number" value="0.05" step="0.005"
+                        oninput="calcularTaylorWord()"></div>
+                <div><label>Punto Expansión t₀ (años)</label><input id="taylor_t0" type="number" value="1" step="0.1"
+                        oninput="calcularTaylorWord()"></div>
+                <div><label>Tiempo a Evaluar t (años)</label><input id="taylor_t" type="number" value="1.5" step="0.1"
+                        oninput="calcularTaylorWord()"></div>
+            </div>
+
+            <h3>Gráfico de Convergencia de la Serie de Taylor (Truncamiento n=0 a n=4)</h3>
+            <div class="chart-box">
+                <svg id="svgChartTaylor" width="100%" height="100%" viewBox="0 0 600 180"
+                    preserveAspectRatio="none"></svg>
+            </div>
+
+            <div id="resultadoTaylor"></div>
+        </section>
+
+        <!-- PARTE III: SISTEMAS LINEALES CUADRADOS -->
+        <section class="card" id="sistemas">
+            <div class="card-header">
+                <h2>Parte III – Asignación de Recursos Departamentales (Sistemas Cuadrados <i>N</i> × <i>N</i>)
+                </h2>
+                <span class="badge">Módulo 3</span>
+            </div>
+            <p style="color:var(--muted); font-size:13.5px; margin-top:0;">
+                La matriz de coeficientes <i>A</i> representa las tasas de transferencia y consumo mutuo entre departamentos, con vector <i>b</i> correspondiente a los presupuestos netos externos.
+            </p>
+
+            <div class="grid3">
+                <div>
+                    <label>Dimensión Cuadrada (N × N)</label>
+                    <select id="matrixSizeSelect" onchange="cambiarDimensionMatriz()">
+                        <option value="3" selected>3 × 3 (Operaciones, Comercial, Tecnología)</option>
+                        <option value="4">4 × 4 (Operaciones, Comercial, Tecnología, Innovación)</option>
+                    </select>
+                </div>
+                <div><label>Tolerancia (Tol)</label><input type="number" id="sysTol" value="0.000001" step="any"
+                        oninput="resolverSistemas()"></div>
+                <div><label>Máx. Iteraciones</label><input type="number" id="sysMaxIt" value="50"
+                        oninput="resolverSistemas()"></div>
+            </div>
+
+            <div style="margin-top:16px;">
+                <div style="font-size:12px; font-weight:800; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">
+                    📂 Escenarios Financieros Preestablecidos (Carga con 1 Clic):
+                </div>
+                <div class="actions" style="margin-top:4px;">
+                    <span style="font-size:12px; font-weight:800; color:var(--primary); align-self:center; min-width:85px;">Casos 3×3:</span>
+                    <button class="secondary" onclick="cargarCaso('ideal3')">🟢 3×3 Portafolio Equilibrado (Base)</button>
+                    <button class="secondary" onclick="cargarCaso('estres3')">🔵 3×3 Estrés de Tesorería</button>
+                    <button class="warning" onclick="cargarCaso('mal_condicionado3')">🟠 3×3 Mal Condicionado (κ Alto)</button>
+                    <button class="danger" onclick="cargarCaso('mal_condicionado_pert3')">🔴 3×3 Perturbado (b₃=6.003)</button>
+                </div>
+                <div class="actions" style="margin-top:8px;">
+                    <span style="font-size:12px; font-weight:800; color:#8b5cf6; align-self:center; min-width:85px;">Casos 4×4:</span>
+                    <button class="secondary" onclick="cargarCaso('ideal4')">🟣 4×4 Corporativo (4 Departamentos)</button>
+                    <button class="secondary" onclick="cargarCaso('estres4')">🔷 4×4 Expansión & Estrés de Crédito</button>
+                    <button class="warning" onclick="cargarCaso('mal_condicionado4')">🔶 4×4 Interdependencia Crítica</button>
+                    <button class="danger" onclick="cargarCaso('mal_condicionado_pert4')">⚡ 4×4 Perturbado (b₄=8.005)</button>
+                </div>
+            </div>
+
+            <div style="margin-top:20px;">
+                <b>Estructura Matricial Cuadrada (<i>A</i> · <i>x</i> = <i>b</i>):</b>
+                <div class="square-system-wrapper">
+                    <div>
+                        <label id="lblMatA">Matriz Cuadrada A (N × N)</label>
+                        <div id="containerA" class="matrix-square-grid"></div>
+                    </div>
+                    <div style="font-size:1.5rem; font-weight:800; color:var(--muted)">× x =</div>
+                    <div>
+                        <label>Vector b (N × 1)</label>
+                        <div id="containerB" class="vector-column"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARTE IV: PROCEDIMIENTO Y OPERACIONES FILA DETALLADAS METODOS NUMERICOS -->
+        <section class="card" id="procedimiento">
+            <div class="card-header">
+                <h2>Parte IV – Desglose Obligatorio Paso a Paso, Factorización LU & Métodos Iterativos</h2>
+                <span class="badge">Módulo 4</span>
+            </div>
+
+            <div class="grid2">
+                <div>
+                    <h3>1. Procedimiento Paso a Paso & Operaciones Fila (<i>PA</i> = <i>LU</i>)</h3>
+                    <div id="pasosLU"></div>
+                </div>
+                <div>
+                    <h3>2. Resumen Comparativo & Condicionamiento κ(<i>A</i>)</h3>
+                    <div id="resComparacion"></div>
+                </div>
+            </div>
+
+            <h3 style="margin-top:24px;">3. Gráfico de Convergencia Iterativa (Jacobi vs. Gauss-Seidel)</h3>
+            <div class="chart-box">
+                <svg id="convergenceSvg" width="100%" height="100%" viewBox="0 0 600 180"
+                    preserveAspectRatio="none"></svg>
+            </div>
+
+            <h3 style="margin-top:28px;">4. Resolución Detallada Paso a Paso (Jacobi & Gauss-Seidel)</h3>
+            <p style="color:var(--muted); font-size:13.5px; margin-top:0;">
+                Desarrollo interactivo y detallado para el cálculo iterativo de recursos financieros mediante los métodos de <b>Jacobi</b> y <b>Gauss-Seidel</b>, con verificación de convergencia, sustitución explícita y desglose numérico completo.
+            </p>
+
+            <!-- PASO 1 Y PASO 2 ESTILO EXCEL -->
+            <div id="resPaso1Diagonal" style="margin-bottom:16px;"></div>
+            <div id="resPaso2Despeje" style="margin-bottom:20px;"></div>
+
+            <div class="grid2">
+                <div>
+                    <div id="resJacobi"></div>
+                </div>
+                <div>
+                    <div id="resSeidel"></div>
+                </div>
+            </div>
+
+            <!-- CUADRO COMPARATIVO DIDACTICO -->
+            <div id="resComparativoIterativo" style="margin-top:20px;"></div>
+        </section>
+
+        <!-- PARTE V: CONCLUSIONES -->
+        <section class="card" id="conclusiones">
+            <div class="card-header">
+                <h2>Parte V – Integración Final & Diagnóstico Financiero de Sensibilidad en Tiempo Real</h2>
+                <span class="badge">Módulo 5</span>
+            </div>
+            <div id="conclusionBox"></div>
+
+            <div class="actions" style="margin-top:16px;">
+                <button onclick="window.print()">🖨️ Imprimir Reporte Académico PDF</button>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="footer">
+        Desafío Integrador de Métodos Numéricos Financieros • Universidad Mayor de San Andrés (UMSA)
     </div>
-  </div>
-</div>
 
-<main>
+    <script>
+        let N = 3;
+        let currentA = [[10, 2, 1], [1, 9, 2], [2, 1, 8]];
+        let currentB = [29, 25, 28];
+        let deptNames = ["Operaciones & Crédito (x1)", "Comercial & Captación (x2)", "Tecnología & Ciberseguridad (x3)", "Innovación & IA Financiera (x4)"];
 
-<!-- ENUNCIADO OFICIAL -->
-<section id="enunciado" class="banner-box">
-  <h1>Desafío Integrador • Área Financiera (Duración 90 min)</h1>
-  <p>Herramienta interactiva para la evaluación de sensibilidad financiera, propagación de errores contables, estimación de capital mediante Series de Taylor y resolución paso a paso con operaciones fila explícitas de sistemas lineales cuadrados 3×3 y 4×4.</p>
+        // Global Live State para actualización en tiempo real del diagnóstico
+        let liveState = {
+            errorMaxItem: "Tecnología (x3)",
+            errorMaxEp: 3.0,
+            taylorValExacto: 10778.84,
+            taylorEp3: 0.00017,
+            matrixCond: 1.5,
+            matrixJacobiIt: 6,
+            matrixSeidelIt: 4,
+            matrixDimension: 3
+        };
 
-  <div class="case-statement">
-    <b>📋 Enunciado del Ejercicio Integrador (Evaluación 90 min):</b>
-    <div style="margin-top:6px;">
-      "Ejercicio integrador en el área financiera que incluye cálculo de errores, aproximación por Series de Taylor (<i>t</i><sub>0</sub>) y métodos numéricos para resolver sistemas de ecuaciones lineales cuadrados 3×3 y 4×4 (Factorización LU, Jacobi y Gauss-Seidel) con diagnóstico de sensibilidad en tiempo real, operaciones fila explícitas y datos dinámicos manipulables por teclado."
-    </div>
-  </div>
-</section>
+        function fmt(x, d = 6) {
+            if (!Number.isFinite(x)) return "—";
+            return Number(x).toFixed(d).replace(/\.?0+$/, "");
+        }
 
-<!-- PARTE I: TEORÍA DE ERRORES -->
-<section class="card" id="errores">
-  <div class="card-header">
-    <h2>Parte I – Teoría de Errores en Registros Financieros (Paso a Paso)</h2>
-    <span class="badge">Módulo 1</span>
-  </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">
-    Evaluación de errores contables entre los requerimientos de recursos reales del sistema <i>A</i> · <i>x</i> = <i>b</i> (<i>x</i><sub>real</sub>) vs los valores contables registrados (<i>x</i><sub>aprox</sub>) en miles de Bolivianos (Bs.).
-  </p>
-  
-  <div class="scroll">
-    <table>
-      <thead>
-        <tr>
-          <th style="text-align:left">Departamento / Rubro</th>
-          <th>Recurso Real <i>x</i> (Bs)</th>
-          <th>Monto Registrado <i>x</i><sub>aprox</sub> (Bs)</th>
-        </tr>
-      </thead>
-      <tbody id="bodyErrores"></tbody>
-    </table>
-  </div>
+        function triggerMathRender() {
+            if (window.renderMathInElement) {
+                window.renderMathInElement(document.body, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false }
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
 
-  <h3>Gráfico de Errores Porcentuales por Concepto (<i>E</i><sub>p</sub>%)</h3>
-  <div class="chart-box">
-    <svg id="svgChartErrores" width="100%" height="100%" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
-  </div>
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById("themeBtn");
+            if (body.getAttribute("data-theme") === "dark") {
+                body.setAttribute("data-theme", "light");
+                btn.innerHTML = "🌙 Modo Oscuro";
+            } else {
+                body.setAttribute("data-theme", "dark");
+                btn.innerHTML = "☀️ Modo Claro";
+            }
+        }
 
-  <div id="resultadoErrores"></div>
-</section>
+        // ---------------------------
+        // DIAGNÓSTICO EN TIEMPO REAL (PARTE V)
+        // ---------------------------
+        function actualizarDiagnosticoEnTiempoReal() {
+            const box = document.getElementById("conclusionBox");
+            if (!box) return;
 
-<!-- PARTE II: SERIES DE TAYLOR -->
-<section class="card" id="taylor">
-  <div class="card-header">
-    <h2>Parte II – Aproximación de Capital mediante Series de Taylor</h2>
-    <span class="badge">Módulo 2</span>
-  </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">Estimación del modelo de crecimiento de capital continuo $C(t) = C_0 \cdot e^{r \cdot t}$ mediante la Serie infinita de Taylor expandida alrededor del punto base $t_0$ para evaluar a $t$.</p>
-  
-  <div class="math-box">
-    $$C(t) \approx C(t_0) + C'(t_0)(t - t_0) + \frac{C''(t_0)}{2!}(t - t_0)^2 + \frac{C'''(t_0)}{3!}(t - t_0)^3 + \frac{C^{(4)}(t_0)}{4!}(t - t_0)^4$$
-    <div style="font-size:12px; color:var(--muted); margin-top:4px;">
-      Fórmula General de Serie de Taylor: $$C(t) = \sum_{n=0}^{\infty} \frac{C^{(n)}(t_0)}{n!} (t - t_0)^n$$
-    </div>
-  </div>
+            const cond = liveState.matrixCond;
+            let diagSensibilidad = "";
 
-  <div class="grid4">
-    <div><label>Capital Inicial C₀ (Bs)</label><input id="taylor_C0" type="number" value="10000" oninput="calcularTaylorWord()"></div>
-    <div><label>Tasa continua r</label><input id="taylor_r" type="number" value="0.05" step="0.005" oninput="calcularTaylorWord()"></div>
-    <div><label>Punto Expansión t₀ (años)</label><input id="taylor_t0" type="number" value="1" step="0.1" oninput="calcularTaylorWord()"></div>
-    <div><label>Tiempo a Evaluar t (años)</label><input id="taylor_t" type="number" value="1.5" step="0.1" oninput="calcularTaylorWord()"></div>
-  </div>
-
-  <h3>Gráfico de Convergencia de la Serie de Taylor (Truncamiento n=0 a n=4)</h3>
-  <div class="chart-box">
-    <svg id="svgChartTaylor" width="100%" height="100%" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
-  </div>
-
-  <div id="resultadoTaylor"></div>
-</section>
-
-<!-- PARTE III: SISTEMAS LINEALES CUADRADOS -->
-<section class="card" id="sistemas">
-  <div class="card-header">
-    <h2>Parte III – Distribución de Recursos Financieros (Sistemas Lineales Cuadrados <i>N</i> × <i>N</i>)</h2>
-    <span class="badge">Módulo 3</span>
-  </div>
-  <p style="color:var(--muted); font-size:13.5px; margin-top:0;">La matriz de coeficientes <i>A</i> es estrictamente cuadrada (<i>N</i> × <i>N</i>) con vector <i>b</i> (<i>N</i> × 1). Edita los valores por teclado en tiempo real para actualizar todo el modelo.</p>
-  
-  <div class="grid3">
-    <div>
-      <label>Dimensión Cuadrada (N × N)</label>
-      <select id="matrixSizeSelect" onchange="cambiarDimensionMatriz()">
-        <option value="3" selected>3 × 3 (Operaciones, Comercial, Tecnología)</option>
-        <option value="4">4 × 4 (Operaciones, Comercial, Tecnología, Innovación)</option>
-      </select>
-    </div>
-    <div><label>Tolerancia (Tol)</label><input type="number" id="sysTol" value="0.000001" step="any" oninput="resolverSistemas()"></div>
-    <div><label>Máx. Iteraciones</label><input type="number" id="sysMaxIt" value="50" oninput="resolverSistemas()"></div>
-  </div>
-
-  <div class="actions" style="margin-top:14px;">
-    <b>Cargar Casos del Desafío:</b>
-    <button class="secondary" onclick="cargarCaso('ideal')">🟢 Caso Ideal 3×3 (6.1)</button>
-    <button class="secondary" onclick="cargarCaso('estres')">🔵 Caso Estrés 3×3 (6.2)</button>
-    <button class="warning" onclick="cargarCaso('mal_condicionado')">🟠 Mal Condicionado 3×3 (6.3)</button>
-    <button class="danger" onclick="cargarCaso('mal_condicionado_pert')">🔴 6.3 Perturbado (b₃=6.003)</button>
-    <button class="secondary" id="btnPreset4x4" style="display:none;" onclick="cargarCaso('ejemplo4x4')">🟣 Ejemplo 4×4</button>
-  </div>
-
-  <div style="margin-top:18px;">
-    <b>Estructura Matricial Cuadrada (<i>A</i> · <i>x</i> = <i>b</i>):</b>
-    <div class="square-system-wrapper">
-      <div>
-        <label id="lblMatA">Matriz Cuadrada A (N × N)</label>
-        <div id="containerA" class="matrix-square-grid"></div>
-      </div>
-      <div style="font-size:1.5rem; font-weight:800; color:var(--muted)">× x =</div>
-      <div>
-        <label>Vector b (N × 1)</label>
-        <div id="containerB" class="vector-column"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PARTE IV: PROCEDIMIENTO Y OPERACIONES FILA DETALLADAS METODOS NUMERICOS -->
-<section class="card" id="procedimiento">
-  <div class="card-header">
-    <h2>Parte IV – Desglose Obligatorio Paso a Paso, Operaciones Fila & Sustituciones</h2>
-    <span class="badge">Módulo 4</span>
-  </div>
-
-  <div class="grid2">
-    <div>
-      <h3>Procedimiento Paso a Paso & Operaciones Fila (<i>PA</i> = <i>LU</i>)</h3>
-      <div id="pasosLU"></div>
-    </div>
-    <div>
-      <h3>Resumen Comparativo & Condicionamiento</h3>
-      <div id="resComparacion"></div>
-    </div>
-  </div>
-
-  <h3>Gráfico de Convergencia Iterativa (Jacobi vs. Gauss-Seidel)</h3>
-  <div class="chart-box">
-    <svg id="convergenceSvg" width="100%" height="100%" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
-  </div>
-
-  <h3 style="margin-top:18px;">Procedimiento e Iteraciones Dinámicas en Tiempo Real</h3>
-  <div class="grid2">
-    <div>
-      <h4>Método de Jacobi (Ecuación & Iteraciones)</h4>
-      <div id="resJacobi"></div>
-    </div>
-    <div>
-      <h4>Método de Gauss-Seidel (Ecuación & Iteraciones)</h4>
-      <div id="resSeidel"></div>
-    </div>
-  </div>
-</section>
-
-<!-- PARTE V: CONCLUSIONES -->
-<section class="card" id="conclusiones">
-  <div class="card-header">
-    <h2>Parte V – Integración Final & Diagnóstico Financiero de Sensibilidad en Tiempo Real</h2>
-    <span class="badge">Módulo 5</span>
-  </div>
-  <div id="conclusionBox"></div>
-  
-  <div class="actions" style="margin-top:16px;">
-    <button onclick="window.print()">🖨️ Imprimir Reporte Académico PDF</button>
-  </div>
-</section>
-
-</main>
-
-<div class="footer">
-  Desafío Integrador de Métodos Numéricos Financieros • Universidad Mayor de San Andrés (UMSA)
-</div>
-
-<script>
-let N = 3;
-let currentA = [[10, 2, 1], [1, 9, 2], [2, 1, 8]];
-let currentB = [29, 25, 28];
-let deptNames = ["Operaciones (x1)", "Comercialización (x2)", "Tecnología (x3)", "Innovación y Desarrollo (x4)"];
-
-// Global Live State para actualización en tiempo real del diagnóstico
-let liveState = {
-  errorMaxItem: "Tecnología (x3)",
-  errorMaxEp: 3.0,
-  taylorValExacto: 10778.84,
-  taylorEp3: 0.00017,
-  matrixCond: 1.5,
-  matrixJacobiIt: 6,
-  matrixSeidelIt: 4,
-  matrixDimension: 3
-};
-
-function fmt(x, d = 6) {
-  if (!Number.isFinite(x)) return "—";
-  return Number(x).toFixed(d).replace(/\.?0+$/, "");
-}
-
-function triggerMathRender() {
-  if (window.renderMathInElement) {
-    window.renderMathInElement(document.body, {
-      delimiters: [
-        {left: '$$', right: '$$', display: true},
-        {left: '$', right: '$', display: false}
-      ],
-      throwOnError: false
-    });
-  }
-}
-
-function toggleTheme() {
-  const body = document.body;
-  const btn = document.getElementById("themeBtn");
-  if (body.getAttribute("data-theme") === "dark") {
-    body.setAttribute("data-theme", "light");
-    btn.innerHTML = "🌙 Modo Oscuro";
-  } else {
-    body.setAttribute("data-theme", "dark");
-    btn.innerHTML = "☀️ Modo Claro";
-  }
-}
-
-// ---------------------------
-// DIAGNÓSTICO EN TIEMPO REAL (PARTE V)
-// ---------------------------
-function actualizarDiagnosticoEnTiempoReal() {
-  const box = document.getElementById("conclusionBox");
-  if (!box) return;
-
-  const cond = liveState.matrixCond;
-  let diagSensibilidad = "";
-
-  if (!Number.isFinite(cond) || isNaN(cond) || cond > 500) {
-    diagSensibilidad = `
+            if (!Number.isFinite(cond) || isNaN(cond) || cond > 500) {
+                diagSensibilidad = `
       <div style="border-left:4px solid var(--bad); padding-left:12px; margin-top:10px;">
         <b style="color:var(--bad)">⚠️ Diagnóstico de Mal Condicionamiento / Sensibilidad (Matriz ${liveState.matrixDimension}×${liveState.matrixDimension}):</b>
         <p style="margin:4px 0 0; font-size:13px;">
-          ${!Number.isFinite(cond) || isNaN(cond) 
-            ? 'La matriz actual es singular o indeterminada. El sistema no posee solución única o las iteraciones no convergen.'
-            : `El número de condición es elevado (κ ≈ ${fmt(cond, 2)}). Pequeñas variaciones de <b>0.001</b> en el vector de recursos <i>b</i> producen desvíos drásticos en la asignación <i>x</i>.`}
+          ${!Number.isFinite(cond) || isNaN(cond)
+                        ? 'La matriz actual es singular o indeterminada. El sistema no posee solución única o las iteraciones no convergen.'
+                        : `El número de condición es elevado (κ ≈ ${fmt(cond, 2)}). Pequeñas variaciones de <b>0.001</b> en el vector de recursos <i>b</i> producen desvíos drásticos en la asignación <i>x</i>.`}
         </p>
       </div>
     `;
-  } else {
-    diagSensibilidad = `
+            } else {
+                diagSensibilidad = `
       <div style="border-left:4px solid var(--good); padding-left:12px; margin-top:10px;">
         <b style="color:var(--good)">✅ Diagnóstico de Estabilidad Matricial (Matriz ${liveState.matrixDimension}×${liveState.matrixDimension}):</b>
         <p style="margin:4px 0 0; font-size:13px;">
@@ -878,9 +1278,9 @@ function actualizarDiagnosticoEnTiempoReal() {
         </p>
       </div>
     `;
-  }
+            }
 
-  box.innerHTML = `
+            box.innerHTML = `
     <div class="result-box">
       <h3 style="margin-top:0">Síntesis Ejecutiva Integradora en Tiempo Real (Evaluación 90 min)</h3>
       <p style="margin:6px 0">1. <b>Auditoría de Errores:</b> El desvío porcentual máximo registrado se presenta en <b>${liveState.errorMaxItem || 'N/A'}</b> con <b>${fmt(liveState.errorMaxEp || 0, 4)}%</b>.</p>
@@ -890,173 +1290,185 @@ function actualizarDiagnosticoEnTiempoReal() {
     </div>
   `;
 
-  triggerMathRender();
-}
+            triggerMathRender();
+        }
 
-// ---------------------------
-// ESFERA FLOTANTE ARRASTRABLE & MODAL INTEGRANTES
-// ---------------------------
-function abrirModalIntegrantes() {
-  document.getElementById("modalBackdrop").style.display = "block";
-  document.getElementById("modalIntegrantes").style.display = "block";
-}
+        // ---------------------------
+        // ESFERA FLOTANTE ARRASTRABLE & MODAL INTEGRANTES
+        // ---------------------------
+        function abrirModalIntegrantes() {
+            document.getElementById("modalBackdrop").style.display = "block";
+            document.getElementById("modalIntegrantes").style.display = "block";
+        }
 
-function cerrarModalIntegrantes() {
-  document.getElementById("modalBackdrop").style.display = "none";
-  document.getElementById("modalIntegrantes").style.display = "none";
-}
+        function cerrarModalIntegrantes() {
+            document.getElementById("modalBackdrop").style.display = "none";
+            document.getElementById("modalIntegrantes").style.display = "none";
+        }
 
-function makeSphereDraggable(sphereEl) {
-  let startX = 0, startY = 0;
-  let initialLeft = 0, initialTop = 0;
-  let isDragging = false;
-  let hasMoved = false;
+        function makeSphereDraggable(sphereEl) {
+            let startX = 0, startY = 0;
+            let initialLeft = 0, initialTop = 0;
+            let isDragging = false;
+            let hasMoved = false;
 
-  sphereEl.addEventListener('mousedown', onPointerDown);
-  sphereEl.addEventListener('touchstart', onPointerDown, { passive: false });
+            sphereEl.addEventListener('mousedown', onPointerDown);
+            sphereEl.addEventListener('touchstart', onPointerDown, { passive: false });
 
-  function onPointerDown(e) {
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            function onPointerDown(e) {
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-    startX = clientX;
-    startY = clientY;
+                startX = clientX;
+                startY = clientY;
 
-    const rect = sphereEl.getBoundingClientRect();
-    initialLeft = rect.left;
-    initialTop = rect.top;
+                const rect = sphereEl.getBoundingClientRect();
+                initialLeft = rect.left;
+                initialTop = rect.top;
 
-    hasMoved = false;
-    isDragging = true;
+                hasMoved = false;
+                isDragging = true;
 
-    document.addEventListener('mousemove', onPointerMove);
-    document.addEventListener('touchmove', onPointerMove, { passive: false });
-    document.addEventListener('mouseup', onPointerUp);
-    document.addEventListener('touchend', onPointerUp);
-  }
+                document.addEventListener('mousemove', onPointerMove);
+                document.addEventListener('touchmove', onPointerMove, { passive: false });
+                document.addEventListener('mouseup', onPointerUp);
+                document.addEventListener('touchend', onPointerUp);
+            }
 
-  function onPointerMove(e) {
-    if (!isDragging) return;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            function onPointerMove(e) {
+                if (!isDragging) return;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-    const dx = clientX - startX;
-    const dy = clientY - startY;
+                const dx = clientX - startX;
+                const dy = clientY - startY;
 
-    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
-      hasMoved = true;
-    }
+                if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+                    hasMoved = true;
+                }
 
-    if (hasMoved) {
-      if (e.cancelable) e.preventDefault();
-      let newLeft = initialLeft + dx;
-      let newTop = initialTop + dy;
+                if (hasMoved) {
+                    if (e.cancelable) e.preventDefault();
+                    let newLeft = initialLeft + dx;
+                    let newTop = initialTop + dy;
 
-      const maxLeft = window.innerWidth - sphereEl.offsetWidth - 10;
-      const maxTop = window.innerHeight - sphereEl.offsetHeight - 10;
-      newLeft = Math.max(10, Math.min(newLeft, maxLeft));
-      newTop = Math.max(10, Math.min(newTop, maxTop));
+                    const maxLeft = window.innerWidth - sphereEl.offsetWidth - 10;
+                    const maxTop = window.innerHeight - sphereEl.offsetHeight - 10;
+                    newLeft = Math.max(10, Math.min(newLeft, maxLeft));
+                    newTop = Math.max(10, Math.min(newTop, maxTop));
 
-      sphereEl.style.left = newLeft + 'px';
-      sphereEl.style.top = newTop + 'px';
-      sphereEl.style.bottom = 'auto';
-      sphereEl.style.right = 'auto';
-    }
-  }
+                    sphereEl.style.left = newLeft + 'px';
+                    sphereEl.style.top = newTop + 'px';
+                    sphereEl.style.bottom = 'auto';
+                    sphereEl.style.right = 'auto';
+                }
+            }
 
-  function onPointerUp(e) {
-    isDragging = false;
-    document.removeEventListener('mousemove', onPointerMove);
-    document.removeEventListener('touchmove', onPointerMove);
-    document.removeEventListener('mouseup', onPointerUp);
-    document.removeEventListener('touchend', onPointerUp);
+            function onPointerUp(e) {
+                isDragging = false;
+                document.removeEventListener('mousemove', onPointerMove);
+                document.removeEventListener('touchmove', onPointerMove);
+                document.removeEventListener('mouseup', onPointerUp);
+                document.removeEventListener('touchend', onPointerUp);
 
-    if (!hasMoved) {
-      abrirModalIntegrantes();
-    }
-  }
-}
+                if (!hasMoved) {
+                    abrirModalIntegrantes();
+                }
+            }
+        }
 
-// ---------------------------
-// PARTE 1: TEORÍA DE ERRORES CON PROCEDIMIENTO PASO A PASO EXPLÍCITO
-// ---------------------------
-function sincronizarConMatriz() {
-  const tbody = document.getElementById("bodyErrores");
-  tbody.innerHTML = "";
-  
-  for (let i = 0; i < N; i++) {
-    const vRef = currentB[i] !== undefined ? currentB[i] * 1000 : (i + 1) * 10000;
-    let factorDev = i === 2 ? 0.97 : i === 0 ? 0.9936 : 1.0077;
-    const vReg = Math.round(vRef * factorDev);
+        // ---------------------------
+        // PARTE 1: TEORÍA DE ERRORES CON PROCEDIMIENTO PASO A PASO EXPLÍCITO
+        // ---------------------------
+        function sincronizarConMatriz(fullRebuild = true) {
+            const tbody = document.getElementById("bodyErrores");
+            if (!tbody) return;
 
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><input type="text" value="${deptNames[i] || 'Departamento ' + (i+1)}" class="concepto-input" oninput="calcularParteErrores()"></td>
-      <td><input type="number" value="${vRef}" step="any" class="ref-input" oninput="calcularParteErrores()"></td>
-      <td><input type="number" value="${vReg}" step="any" class="reg-input" oninput="calcularParteErrores()"></td>
-    `;
-    tbody.appendChild(tr);
-  }
-  calcularParteErrores();
-}
+            const existingRows = tbody.querySelectorAll("tr");
+            if (fullRebuild || existingRows.length !== N) {
+                tbody.innerHTML = "";
+                for (let i = 0; i < N; i++) {
+                    const vRef = currentB[i] !== undefined ? currentB[i] * 1000 : (i + 1) * 10000;
+                    let factorDev = i === 2 ? 0.97 : i === 0 ? 0.9936 : i === 3 ? 0.985 : 1.0077;
+                    const vReg = Math.round(vRef * factorDev);
 
-function renderChartErrores(rows) {
-  const svg = document.getElementById("svgChartErrores");
-  if (!rows || rows.length === 0) return;
-  
-  const maxEp = Math.max(...rows.map(r => r.ep), 1);
-  const barWidth = Math.min(80, (500 / rows.length) - 20);
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+          <td><input type="text" value="${deptNames[i] || 'Departamento ' + (i + 1)}" class="concepto-input" oninput="calcularParteErrores()"></td>
+          <td><input type="number" value="${vRef}" step="any" class="ref-input" oninput="calcularParteErrores()"></td>
+          <td><input type="number" value="${vReg}" step="any" class="reg-input" oninput="calcularParteErrores()"></td>
+        `;
+                    tbody.appendChild(tr);
+                }
+            } else {
+                const refs = tbody.querySelectorAll(".ref-input");
+                for (let i = 0; i < N; i++) {
+                    if (refs[i]) {
+                        const vRef = currentB[i] !== undefined ? currentB[i] * 1000 : (i + 1) * 10000;
+                        refs[i].value = vRef;
+                    }
+                }
+            }
+            calcularParteErrores();
+        }
 
-  let barsHtml = rows.map((r, i) => {
-    const x = 70 + i * (500 / rows.length);
-    const h = (r.ep / maxEp) * 120;
-    const y = 140 - h;
-    const color = r.ep > 2 ? 'var(--bad)' : r.ep > 1 ? 'var(--warn)' : 'var(--good)';
-    return `
+        function renderChartErrores(rows) {
+            const svg = document.getElementById("svgChartErrores");
+            if (!rows || rows.length === 0) return;
+
+            const maxEp = Math.max(...rows.map(r => r.ep), 1);
+            const barWidth = Math.min(80, (500 / rows.length) - 20);
+
+            let barsHtml = rows.map((r, i) => {
+                const x = 70 + i * (500 / rows.length);
+                const h = (r.ep / maxEp) * 120;
+                const y = 140 - h;
+                const color = r.ep > 2 ? 'var(--bad)' : r.ep > 1 ? 'var(--warn)' : 'var(--good)';
+                return `
       <rect x="${x}" y="${y}" width="${barWidth}" height="${h}" fill="${color}" rx="4" />
-      <text x="${x + barWidth/2}" y="${y - 6}" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="700">${fmt(r.ep, 2)}%</text>
-      <text x="${x + barWidth/2}" y="158" text-anchor="middle" fill="var(--muted)" font-size="10">${r.concepto.substring(0, 14)}</text>
+      <text x="${x + barWidth / 2}" y="${y - 6}" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="700">${fmt(r.ep, 2)}%</text>
+      <text x="${x + barWidth / 2}" y="158" text-anchor="middle" fill="var(--muted)" font-size="10">${r.concepto.substring(0, 14)}</text>
     `;
-  }).join("");
+            }).join("");
 
-  svg.innerHTML = `
+            svg.innerHTML = `
     <line x1="50" y1="140" x2="570" y2="140" stroke="var(--border)"/>
     ${barsHtml}
   `;
-}
+        }
 
-function calcularParteErrores() {
-  const conceptos = document.querySelectorAll(".concepto-input");
-  const refs = document.querySelectorAll(".ref-input");
-  const regs = document.querySelectorAll(".reg-input");
+        function calcularParteErrores() {
+            const conceptos = document.querySelectorAll(".concepto-input");
+            const refs = document.querySelectorAll(".ref-input");
+            const regs = document.querySelectorAll(".reg-input");
 
-  let rows = [];
-  let maxPorc = -1;
-  let maxItem = "";
+            let rows = [];
+            let maxPorc = -1;
+            let maxItem = "";
 
-  for (let i = 0; i < conceptos.length; i++) {
-    const c = conceptos[i].value.trim() || `Item ${i+1}`;
-    const vRef = parseFloat(refs[i].value) || 0;
-    const vReg = parseFloat(regs[i].value) || 0;
-    
-    const ea = Math.abs(vRef - vReg);
-    const er = vRef !== 0 ? ea / Math.abs(vRef) : 0;
-    const ep = er * 100;
+            for (let i = 0; i < conceptos.length; i++) {
+                const c = conceptos[i].value.trim() || `Item ${i + 1}`;
+                const vRef = parseFloat(refs[i].value) || 0;
+                const vReg = parseFloat(regs[i].value) || 0;
 
-    if (ep > maxPorc) {
-      maxPorc = ep;
-      maxItem = c;
-    }
+                const ea = Math.abs(vRef - vReg);
+                const er = vRef !== 0 ? ea / Math.abs(vRef) : 0;
+                const ep = er * 100;
 
-    rows.push({ concepto: c, vRef, vReg, ea, er, ep });
-  }
+                if (ep > maxPorc) {
+                    maxPorc = ep;
+                    maxItem = c;
+                }
 
-  liveState.errorMaxItem = maxItem;
-  liveState.errorMaxEp = maxPorc;
+                rows.push({ concepto: c, vRef, vReg, ea, er, ep });
+            }
 
-  renderChartErrores(rows);
+            liveState.errorMaxItem = maxItem;
+            liveState.errorMaxEp = maxPorc;
 
-  let desglosePasosHtml = rows.map((r, idx) => `
+            renderChartErrores(rows);
+
+            let desglosePasosHtml = rows.map((r, idx) => `
     <div class="step-card">
       <div class="step-title">Paso a Paso (${r.concepto}):</div>
       <p style="margin:2px 0; font-size:12.5px;">• <b>Error Absoluto:</b> <i>E</i><sub>a</sub> = |<i>x</i> - <i>x</i><sub>aprox</sub>| = |${r.vRef} - ${r.vReg}| = <b>Bs ${fmt(r.ea, 2)}</b></p>
@@ -1065,7 +1477,7 @@ function calcularParteErrores() {
     </div>
   `).join("");
 
-  let html = `
+            let html = `
     <div class="result-box">
       <div class="scroll">
         <table>
@@ -1081,8 +1493,8 @@ function calcularParteErrores() {
           </thead>
           <tbody>
             ${rows.map(r => {
-              const isMax = r.concepto === maxItem && rows.length > 1;
-              return `
+                const isMax = r.concepto === maxItem && rows.length > 1;
+                return `
               <tr style="${isMax ? 'background: rgba(239, 68, 68, 0.08);' : ''}">
                 <td><b>${r.concepto}</b> ${isMax ? '<span class="pill pill-bad" style="margin-left:6px;">Mayor Desvío</span>' : ''}</td>
                 <td>Bs ${r.vRef.toLocaleString('es-BO')}</td>
@@ -1105,86 +1517,86 @@ function calcularParteErrores() {
       </div>
     </div>
   `;
-  document.getElementById("resultadoErrores").innerHTML = html;
-  actualizarDiagnosticoEnTiempoReal();
-}
+            document.getElementById("resultadoErrores").innerHTML = html;
+            actualizarDiagnosticoEnTiempoReal();
+        }
 
-// ---------------------------
-// PARTE 2: SERIES DE TAYLOR
-// ---------------------------
-function renderChartTaylor(arr, valExacto) {
-  const svg = document.getElementById("svgChartTaylor");
-  if (!arr || arr.length === 0) return;
+        // ---------------------------
+        // PARTE 2: SERIES DE TAYLOR
+        // ---------------------------
+        function renderChartTaylor(arr, valExacto) {
+            const svg = document.getElementById("svgChartTaylor");
+            if (!arr || arr.length === 0) return;
 
-  const points = arr.map((item, i) => {
-    const x = 70 + i * 110;
-    const y = 140 - Math.min(120, (item.prec / 100) * 120);
-    return { x, y, item };
-  });
+            const points = arr.map((item, i) => {
+                const x = 70 + i * 110;
+                const y = 140 - Math.min(120, (item.prec / 100) * 120);
+                return { x, y, item };
+            });
 
-  const polyPoints = points.map(p => `${p.x},${p.y}`).join(" ");
+            const polyPoints = points.map(p => `${p.x},${p.y}`).join(" ");
 
-  let nodesHtml = points.map(p => `
+            let nodesHtml = points.map(p => `
     <circle cx="${p.x}" cy="${p.y}" r="5" fill="var(--primary)"/>
     <text x="${p.x}" y="${p.y - 10}" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="700">${fmt(p.item.valor, 2)}</text>
     <text x="${p.x}" y="158" text-anchor="middle" fill="var(--muted)" font-size="10">Térm ${p.item.orden.split(" ")[1]}</text>
   `).join("");
 
-  svg.innerHTML = `
+            svg.innerHTML = `
     <line x1="50" y1="140" x2="570" y2="140" stroke="var(--border)"/>
     <polyline points="${polyPoints}" fill="none" stroke="var(--primary)" stroke-width="2.5"/>
     ${nodesHtml}
   `;
-}
+        }
 
-function calcularTaylorWord() {
-  const C0 = parseFloat(document.getElementById("taylor_C0").value) || 10000;
-  const r = parseFloat(document.getElementById("taylor_r").value) || 0.05;
-  const t0 = parseFloat(document.getElementById("taylor_t0").value) || 1;
-  const t = parseFloat(document.getElementById("taylor_t").value) || 1.5;
-  const dt = t - t0;
+        function calcularTaylorWord() {
+            const C0 = parseFloat(document.getElementById("taylor_C0").value) || 10000;
+            const r = parseFloat(document.getElementById("taylor_r").value) || 0.05;
+            const t0 = parseFloat(document.getElementById("taylor_t0").value) || 1;
+            const t = parseFloat(document.getElementById("taylor_t").value) || 1.5;
+            const dt = t - t0;
 
-  const valExacto = C0 * Math.exp(r * t);
+            const valExacto = C0 * Math.exp(r * t);
 
-  const f_t0 = C0 * Math.exp(r * t0);
-  const df_t0 = r * f_t0;
-  const d2f_t0 = (r ** 2) * f_t0;
-  const d3f_t0 = (r ** 3) * f_t0;
-  const d4f_t0 = (r ** 4) * f_t0;
+            const f_t0 = C0 * Math.exp(r * t0);
+            const df_t0 = r * f_t0;
+            const d2f_t0 = (r ** 2) * f_t0;
+            const d3f_t0 = (r ** 3) * f_t0;
+            const d4f_t0 = (r ** 4) * f_t0;
 
-  const term0 = f_t0;
-  const term1 = df_t0 * dt;
-  const term2 = (d2f_t0 / 2) * (dt ** 2);
-  const term3 = (d3f_t0 / 6) * (dt ** 3);
-  const term4 = (d4f_t0 / 24) * (dt ** 4);
+            const term0 = f_t0;
+            const term1 = df_t0 * dt;
+            const term2 = (d2f_t0 / 2) * (dt ** 2);
+            const term3 = (d3f_t0 / 6) * (dt ** 3);
+            const term4 = (d4f_t0 / 24) * (dt ** 4);
 
-  const T0 = term0;
-  const T1 = T0 + term1;
-  const T2 = T1 + term2;
-  const T3 = T2 + term3;
-  const T4 = T3 + term4;
+            const T0 = term0;
+            const T1 = T0 + term1;
+            const T2 = T1 + term2;
+            const T3 = T2 + term3;
+            const T4 = T3 + term4;
 
-  const arr = [
-    { orden: "n=0 (Base t₀)", termVal: term0, sumaVal: T0, formula: `C(t₀)` },
-    { orden: "n=1 (Lineal)", termVal: term1, sumaVal: T1, formula: `C'(t₀) · (t - t₀)` },
-    { orden: "n=2 (Cuadrático)", termVal: term2, sumaVal: T2, formula: `[C''(t₀) / 2!] · (t - t₀)²` },
-    { orden: "n=3 (Cúbico)", termVal: term3, sumaVal: T3, formula: `[C'''(t₀) / 3!] · (t - t₀)³` },
-    { orden: "n=4 (Cuártico)", termVal: term4, sumaVal: T4, formula: `[C^{(4)}(t₀) / 4!] · (t - t₀)⁴` }
-  ].map((item, idx) => {
-    const valor = item.sumaVal;
-    const ea = Math.abs(valExacto - valor);
-    const er = valExacto !== 0 ? ea / valExacto : 0;
-    const ep = er * 100;
-    const prec = Math.max(0, 100 - ep);
-    return { ...item, valor, ea, er, ep, prec, idx };
-  });
+            const arr = [
+                { orden: "n=0 (Base t₀)", termVal: term0, sumaVal: T0, formula: `C(t₀)` },
+                { orden: "n=1 (Lineal)", termVal: term1, sumaVal: T1, formula: `C'(t₀) · (t - t₀)` },
+                { orden: "n=2 (Cuadrático)", termVal: term2, sumaVal: T2, formula: `[C''(t₀) / 2!] · (t - t₀)²` },
+                { orden: "n=3 (Cúbico)", termVal: term3, sumaVal: T3, formula: `[C'''(t₀) / 3!] · (t - t₀)³` },
+                { orden: "n=4 (Cuártico)", termVal: term4, sumaVal: T4, formula: `[C^{(4)}(t₀) / 4!] · (t - t₀)⁴` }
+            ].map((item, idx) => {
+                const valor = item.sumaVal;
+                const ea = Math.abs(valExacto - valor);
+                const er = valExacto !== 0 ? ea / valExacto : 0;
+                const ep = er * 100;
+                const prec = Math.max(0, 100 - ep);
+                return { ...item, valor, ea, er, ep, prec, idx };
+            });
 
-  liveState.taylorValExacto = valExacto;
-  liveState.taylorEp3 = arr[3].ep;
+            liveState.taylorValExacto = valExacto;
+            liveState.taylorEp3 = arr[3].ep;
 
-  renderChartTaylor(arr, valExacto);
+            renderChartTaylor(arr, valExacto);
 
-  let pasosDetalleHtml = `
+            let pasosDetalleHtml = `
     <div class="step-card">
       <div class="step-title">1. Evaluación de Derivadas de C(t) = C₀ · e^{r·t} en t₀ = ${t0}:</div>
       <p style="margin:2px 0; font-size:12.5px">• <b>Derivada 0:</b> <i>C</i>(${t0}) = ${C0} · <i>e</i><sup>${r}×${t0}</sup> = <b>Bs ${fmt(f_t0, 6)}</b></p>
@@ -1204,7 +1616,7 @@ function calcularTaylorWord() {
     </div>
   `;
 
-  let html = `
+            let html = `
     <div class="result-box">
       <div style="display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
         <div>Valor Exacto Continuo <i>C</i>(${t}) = <i>C</i><sub>0</sub> · <i>e</i><sup><i>r·t</i></sup>: <b style="font-size:1.05em; color:var(--primary)">Bs ${fmt(valExacto, 6)}</b></div>
@@ -1242,288 +1654,854 @@ function calcularTaylorWord() {
       ${pasosDetalleHtml}
     </div>
   `;
-  document.getElementById("resultadoTaylor").innerHTML = html;
-  actualizarDiagnosticoEnTiempoReal();
-}
-
-// ---------------------------
-// PARTE 3: SISTEMAS LINEALES CUADRADOS (3x3 y 4x4)
-// ---------------------------
-function cambiarDimensionMatriz() {
-  N = parseInt(document.getElementById("matrixSizeSelect").value);
-  const btn4x4 = document.getElementById("btnPreset4x4");
-  if (N === 4) {
-    btn4x4.style.display = "inline-flex";
-    currentA = [
-      [10, 1, 2, 1],
-      [1, 12, 1, 2],
-      [2, 1, 10, 1],
-      [1, 2, 1, 8]
-    ];
-    currentB = [40, 50, 45, 35];
-  } else {
-    btn4x4.style.display = "none";
-    currentA = [[10, 2, 1], [1, 9, 2], [2, 1, 8]];
-    currentB = [29, 25, 28];
-  }
-  renderInputsMatriz();
-  sincronizarConMatriz();
-  resolverSistemas();
-}
-
-function renderInputsMatriz() {
-  const contA = document.getElementById("containerA");
-  const contB = document.getElementById("containerB");
-  contA.innerHTML = ""; contB.innerHTML = "";
-  contA.className = "matrix-square-grid"; contA.style.setProperty("--n", N);
-  contB.className = "vector-column";
-
-  for (let i = 0; i < N; i++) {
-    const rowA = document.createElement("div");
-    rowA.className = "matrix-row";
-    rowA.style.setProperty("--n", N);
-    for (let j = 0; j < N; j++) {
-      const inp = document.createElement("input");
-      inp.type = "number"; inp.step = "any";
-      inp.id = `a_${i}_${j}`;
-      inp.value = currentA[i] && currentA[i][j] !== undefined ? currentA[i][j] : 0;
-      inp.oninput = () => { syncFromMatrizUI(); resolverSistemas(); };
-      rowA.appendChild(inp);
-    }
-    contA.appendChild(rowA);
-  }
-
-  for (let i = 0; i < N; i++) {
-    const inp = document.createElement("input");
-    inp.type = "number"; inp.step = "any";
-    inp.id = `b_${i}`;
-    inp.value = currentB[i] !== undefined ? currentB[i] : 0;
-    inp.oninput = () => { syncFromMatrizUI(); resolverSistemas(); };
-    contB.appendChild(inp);
-  }
-}
-
-function syncFromMatrizUI() {
-  const { A, b } = getMatrizUI();
-  currentA = A;
-  currentB = b;
-  sincronizarConMatriz();
-}
-
-function cargarCaso(tipo) {
-  if (tipo === "ideal") {
-    document.getElementById("matrixSizeSelect").value = "3";
-    N = 3;
-    currentA = [[10, 2, 1], [1, 9, 2], [2, 1, 8]];
-    currentB = [29, 25, 28];
-  } else if (tipo === "estres") {
-    document.getElementById("matrixSizeSelect").value = "3";
-    N = 3;
-    currentA = [[10, 2, 1], [1, 9, 2], [2, 1, 8]];
-    currentB = [29.5, 24.5, 28.4];
-  } else if (tipo === "mal_condicionado") {
-    document.getElementById("matrixSizeSelect").value = "3";
-    N = 3;
-    currentA = [[1, 1, 1], [1.001, 1, 1], [1, 1.001, 1]];
-    currentB = [6, 6.001, 6.002];
-  } else if (tipo === "mal_condicionado_pert") {
-    document.getElementById("matrixSizeSelect").value = "3";
-    N = 3;
-    currentA = [[1, 1, 1], [1.001, 1, 1], [1, 1.001, 1]];
-    currentB = [6, 6.001, 6.003];
-  } else if (tipo === "ejemplo4x4") {
-    document.getElementById("matrixSizeSelect").value = "4";
-    N = 4;
-    currentA = [
-      [10, 1, 2, 1],
-      [1, 12, 1, 2],
-      [2, 1, 10, 1],
-      [1, 2, 1, 8]
-    ];
-    currentB = [40, 50, 45, 35];
-  }
-  document.getElementById("btnPreset4x4").style.display = N === 4 ? "inline-flex" : "none";
-  renderInputsMatriz();
-  sincronizarConMatriz();
-  resolverSistemas();
-}
-
-function getMatrizUI() {
-  let A = [], b = [];
-  for (let i = 0; i < N; i++) {
-    A[i] = [];
-    for (let j = 0; j < N; j++) {
-      const el = document.getElementById(`a_${i}_${j}`);
-      A[i][j] = el ? parseFloat(el.value) || 0 : 0;
-    }
-    const elB = document.getElementById(`b_${i}`);
-    b[i] = elB ? parseFloat(elB.value) || 0 : 0;
-  }
-  return { A, b };
-}
-
-function factorizacionLU_Pasos(A_orig, b_orig) {
-  let n = A_orig.length;
-  let A = A_orig.map(r => r.slice());
-  let b = b_orig.slice();
-  let P = Array.from({length: n}, (_, i) => i);
-  let L = Array.from({length: n}, (_, i) => Array.from({length: n}, (_, j) => i === j ? 1 : 0));
-  let pasos = [];
-
-  for (let k = 0; k < n; k++) {
-    let maxVal = Math.abs(A[k][k]);
-    let maxIdx = k;
-    for (let i = k + 1; i < n; i++) {
-      if (Math.abs(A[i][k]) > maxVal) {
-        maxVal = Math.abs(A[i][k]);
-        maxIdx = i;
-      }
-    }
-
-    let intermSwapped = false;
-    if (maxIdx !== k) {
-      intermSwapped = true;
-      [A[k], A[maxIdx]] = [A[maxIdx], A[k]];
-      [P[k], P[maxIdx]] = [P[maxIdx], P[k]];
-      for (let j = 0; j < k; j++) {
-        [L[k][j], L[maxIdx][j]] = [L[maxIdx][j], L[k][j]];
-      }
-    }
-
-    let multsStep = [];
-    let opsFilaTxt = [];
-    for (let i = k + 1; i < n; i++) {
-      let factor = A[i][k] / A[k][k];
-      L[i][k] = factor;
-      multsStep.push({ fila: i + 1, col: k + 1, factor });
-      opsFilaTxt.push(`Fila_${i+1} ⟵ Fila_${i+1} - (${fmt(factor, 4)}) × Fila_${k+1}`);
-      for (let j = k; j < n; j++) {
-        A[i][j] -= factor * A[k][j];
-      }
-    }
-
-    pasos.push({
-      etapa: k + 1,
-      pivoteCol: k + 1,
-      sePermuto: intermSwapped,
-      filaPermutada: maxIdx + 1,
-      multiplicadores: multsStep,
-      operacionesFila: opsFilaTxt,
-      matrizA_parcial: A.map(r => r.slice())
-    });
-  }
-
-  let U = A;
-  let Pb = P.map(idx => b[idx]);
-  let y = Array(n).fill(0);
-  for (let i = 0; i < n; i++) {
-    let sum = 0;
-    for (let j = 0; j < i; j++) sum += L[i][j] * y[j];
-    y[i] = Pb[i] - sum;
-  }
-  let x = Array(n).fill(0);
-  for (let i = n - 1; i >= 0; i--) {
-    let sum = 0;
-    for (let j = i + 1; j < n; j++) sum += U[i][j] * x[j];
-    x[i] = (y[i] - sum) / U[i][i];
-  }
-  return { L, U, P, y, x, pasos };
-}
-
-function solverIterativo(A, b, metodo, tol, maxIt) {
-  let n = A.length;
-  let x = Array(n).fill(0);
-  let rows = [];
-  let conv = false;
-
-  for (let it = 1; it <= maxIt; it++) {
-    let x_prev = x.slice();
-    let x_curr = x.slice();
-
-    for (let i = 0; i < n; i++) {
-      let s = 0;
-      for (let j = 0; j < n; j++) {
-        if (j !== i) {
-          s += A[i][j] * (metodo === "jacobi" ? x_prev[j] : x_curr[j]);
+            document.getElementById("resultadoTaylor").innerHTML = html;
+            actualizarDiagnosticoEnTiempoReal();
         }
-      }
-      x_curr[i] = (b[i] - s) / A[i][i];
-    }
 
-    let err = Math.max(...x_curr.map((v, idx) => Math.abs(v - x_prev[idx])));
-    x = x_curr.slice();
-    rows.push({ it, x: x.slice(), err });
+        // ---------------------------
+        // PARTE 3: SISTEMAS LINEALES CUADRADOS (3x3 y 4x4)
+        // ---------------------------
+        const CASOS_FINANCIEROS = {
+            ideal3: {
+                dim: 3,
+                nombre: "3×3 Portafolio Equilibrado (Base)",
+                A: [[10, 2, 1], [1, 9, 2], [2, 1, 8]],
+                b: [29, 25, 28]
+            },
+            estres3: {
+                dim: 3,
+                nombre: "3×3 Estrés de Tesorería",
+                A: [[10, 2, 1], [1, 9, 2], [2, 1, 8]],
+                b: [29.5, 24.5, 28.4]
+            },
+            mal_condicionado3: {
+                dim: 3,
+                nombre: "3×3 Mal Condicionado (Alta Sensibilidad)",
+                A: [[1, 1, 1], [1.001, 1, 1], [1, 1.001, 1]],
+                b: [6, 6.001, 6.002]
+            },
+            mal_condicionado_pert3: {
+                dim: 3,
+                nombre: "3×3 Perturbado (+0.001 en b3)",
+                A: [[1, 1, 1], [1.001, 1, 1], [1, 1.001, 1]],
+                b: [6, 6.001, 6.003]
+            },
+            ideal4: {
+                dim: 4,
+                nombre: "4×4 Corporativo (4 Departamentos)",
+                A: [
+                    [10, 1, 2, 1],
+                    [1, 12, 1, 2],
+                    [2, 1, 10, 1],
+                    [1, 2, 1, 8]
+                ],
+                b: [40, 50, 45, 35]
+            },
+            estres4: {
+                dim: 4,
+                nombre: "4×4 Expansión & Estrés de Crédito",
+                A: [
+                    [10, 1, 2, 1],
+                    [1, 12, 1, 2],
+                    [2, 1, 10, 1],
+                    [1, 2, 1, 8]
+                ],
+                b: [45.2, 54.8, 48.0, 38.5]
+            },
+            mal_condicionado4: {
+                dim: 4,
+                nombre: "4×4 Interdependencia Crítica (κ Alto)",
+                A: [
+                    [2, 1, 1, 1],
+                    [2.001, 1, 1, 1],
+                    [1, 2.001, 1, 1],
+                    [1, 1, 2.001, 1]
+                ],
+                b: [8, 8.001, 8.002, 8.003]
+            },
+            mal_condicionado_pert4: {
+                dim: 4,
+                nombre: "4×4 Perturbado (+0.002 en b4)",
+                A: [
+                    [2, 1, 1, 1],
+                    [2.001, 1, 1, 1],
+                    [1, 2.001, 1, 1],
+                    [1, 1, 2.001, 1]
+                ],
+                b: [8, 8.001, 8.002, 8.005]
+            }
+        };
 
-    if (err < tol) {
-      conv = true;
-      break;
-    }
-  }
-  return { x, rows, conv };
-}
+        function cambiarDimensionMatriz() {
+            N = parseInt(document.getElementById("matrixSizeSelect").value) || 3;
+            if (N === 4) {
+                currentA = CASOS_FINANCIEROS.ideal4.A.map(r => r.slice());
+                currentB = CASOS_FINANCIEROS.ideal4.b.slice();
+            } else {
+                currentA = CASOS_FINANCIEROS.ideal3.A.map(r => r.slice());
+                currentB = CASOS_FINANCIEROS.ideal3.b.slice();
+            }
+            renderInputsMatriz();
+            sincronizarConMatriz(true);
+            resolverSistemas();
+        }
 
-function invertMatrix(A) {
-  const n = A.length;
-  let M = A.map((row, i) => row.concat(Array.from({length: n}, (_, j) => i === j ? 1 : 0)));
-  for (let k = 0; k < n; k++) {
-    let maxVal = Math.abs(M[k][k]);
-    let maxIdx = k;
-    for (let i = k + 1; i < n; i++) {
-      if (Math.abs(M[i][k]) > maxVal) {
-        maxVal = Math.abs(M[i][k]);
-        maxIdx = i;
-      }
-    }
-    if (maxVal < 1e-12) return null;
-    if (maxIdx !== k) [M[k], M[maxIdx]] = [M[maxIdx], M[k]];
-    let pivot = M[k][k];
-    for (let j = 0; j < 2 * n; j++) M[k][j] /= pivot;
-    for (let i = 0; i < n; i++) {
-      if (i !== k) {
-        let factor = M[i][k];
-        for (let j = 0; j < 2 * n; j++) M[i][j] -= factor * M[k][j];
-      }
-    }
-  }
-  return M.map(row => row.slice(n));
-}
+        function onMatrizInput() {
+            const { A, b } = getMatrizUI();
+            currentA = A;
+            currentB = b;
+            sincronizarConMatriz(false);
+            resolverSistemas();
+        }
 
-function normInfMat(M) {
-  return Math.max(...M.map(row => row.reduce((sum, val) => sum + Math.abs(val), 0)));
-}
+        function renderInputsMatriz() {
+            const contA = document.getElementById("containerA");
+            const contB = document.getElementById("containerB");
+            if (!contA || !contB) return;
 
-function calcularCondicion(A) {
-  const inv = invertMatrix(A);
-  if (!inv) return Infinity;
-  return normInfMat(A) * normInfMat(inv);
-}
+            contA.innerHTML = "";
+            contB.innerHTML = "";
+            contA.className = "matrix-square-grid";
+            contA.style.setProperty("--n", N);
+            contB.className = "vector-column";
 
-function vectorFormat(v) {
-  return `<div class="math-box">[ ${v.map((val, i) => `<i>x</i><sub>${i+1}</sub> = <b>${fmt(val, 4)}</b>`).join(" &nbsp;|&nbsp; ")} ]</div>`;
-}
+            for (let i = 0; i < N; i++) {
+                const rowA = document.createElement("div");
+                rowA.className = "matrix-row";
+                rowA.style.setProperty("--n", N);
+                for (let j = 0; j < N; j++) {
+                    const inp = document.createElement("input");
+                    inp.type = "number";
+                    inp.step = "any";
+                    inp.id = `a_${i}_${j}`;
+                    inp.value = currentA[i] && currentA[i][j] !== undefined ? currentA[i][j] : 0;
+                    inp.oninput = onMatrizInput;
+                    rowA.appendChild(inp);
+                }
+                contA.appendChild(rowA);
+            }
 
-function miniTablaMatriz(M) {
-  return `<div class="scroll"><table><tbody>${M.map(r => `<tr>${r.map(v => `<td>${fmt(v, 4)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
-}
+            for (let i = 0; i < N; i++) {
+                const inp = document.createElement("input");
+                inp.type = "number";
+                inp.step = "any";
+                inp.id = `b_${i}`;
+                inp.value = currentB[i] !== undefined ? currentB[i] : 0;
+                inp.oninput = onMatrizInput;
+                contB.appendChild(inp);
+            }
+        }
 
-function renderChartConvergencia(jacRows, gsRows) {
-  const svg = document.getElementById("convergenceSvg");
-  const maxIt = Math.max(jacRows.length, gsRows.length, 5);
-  
-  let jacPoints = [];
-  let gsPoints = [];
+        function syncFromMatrizUI() {
+            onMatrizInput();
+        }
 
-  function getPos(it, err) {
-    const x = 50 + ((it - 1) / (maxIt - 1 || 1)) * 520;
-    const logErr = Math.log10(Math.max(err, 1e-8));
-    const y = 150 - ((logErr - (-8)) / (1 - (-8))) * 120;
-    return `${x},${Math.max(15, Math.min(160, y))}`;
-  }
+        function cargarCaso(tipo) {
+            if (tipo === "ideal") tipo = "ideal3";
+            if (tipo === "estres") tipo = "estres3";
+            if (tipo === "mal_condicionado") tipo = "mal_condicionado3";
+            if (tipo === "mal_condicionado_pert") tipo = "mal_condicionado_pert3";
+            if (tipo === "ejemplo4x4") tipo = "ideal4";
 
-  jacRows.forEach(r => jacPoints.push(getPos(r.it, r.err)));
-  gsRows.forEach(r => gsPoints.push(getPos(r.it, r.err)));
+            const caso = CASOS_FINANCIEROS[tipo] || CASOS_FINANCIEROS.ideal3;
+            N = caso.dim;
+            currentA = caso.A.map(r => r.slice());
+            currentB = caso.b.slice();
 
-  svg.innerHTML = `
+            const sel = document.getElementById("matrixSizeSelect");
+            if (sel) sel.value = N.toString();
+
+            renderInputsMatriz();
+            sincronizarConMatriz(true);
+            resolverSistemas();
+        }
+
+        function getMatrizUI() {
+            let A = [], b = [];
+            for (let i = 0; i < N; i++) {
+                A[i] = [];
+                for (let j = 0; j < N; j++) {
+                    const el = document.getElementById(`a_${i}_${j}`);
+                    A[i][j] = el ? parseFloat(el.value) || 0 : 0;
+                }
+                const elB = document.getElementById(`b_${i}`);
+                b[i] = elB ? parseFloat(elB.value) || 0 : 0;
+            }
+            return { A, b };
+        }
+
+        function factorizacionLU_Pasos(A_orig, b_orig) {
+            let n = A_orig.length;
+            let A = A_orig.map(r => r.slice());
+            let b = b_orig.slice();
+            let P = Array.from({ length: n }, (_, i) => i);
+            let L = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => i === j ? 1 : 0));
+            let pasos = [];
+
+            for (let k = 0; k < n; k++) {
+                let maxVal = Math.abs(A[k][k]);
+                let maxIdx = k;
+                for (let i = k + 1; i < n; i++) {
+                    if (Math.abs(A[i][k]) > maxVal) {
+                        maxVal = Math.abs(A[i][k]);
+                        maxIdx = i;
+                    }
+                }
+
+                let intermSwapped = false;
+                if (maxIdx !== k) {
+                    intermSwapped = true;
+                    [A[k], A[maxIdx]] = [A[maxIdx], A[k]];
+                    [P[k], P[maxIdx]] = [P[maxIdx], P[k]];
+                    for (let j = 0; j < k; j++) {
+                        [L[k][j], L[maxIdx][j]] = [L[maxIdx][j], L[k][j]];
+                    }
+                }
+
+                let multsStep = [];
+                let opsFilaTxt = [];
+                for (let i = k + 1; i < n; i++) {
+                    let factor = A[i][k] / A[k][k];
+                    L[i][k] = factor;
+                    multsStep.push({ fila: i + 1, col: k + 1, factor });
+                    opsFilaTxt.push(`Fila_${i + 1} ⟵ Fila_${i + 1} - (${fmt(factor, 4)}) × Fila_${k + 1}`);
+                    for (let j = k; j < n; j++) {
+                        A[i][j] -= factor * A[k][j];
+                    }
+                }
+
+                pasos.push({
+                    etapa: k + 1,
+                    pivoteCol: k + 1,
+                    sePermuto: intermSwapped,
+                    filaPermutada: maxIdx + 1,
+                    multiplicadores: multsStep,
+                    operacionesFila: opsFilaTxt,
+                    matrizA_parcial: A.map(r => r.slice())
+                });
+            }
+
+            let U = A;
+            let Pb = P.map(idx => b[idx]);
+            let y = Array(n).fill(0);
+            for (let i = 0; i < n; i++) {
+                let sum = 0;
+                for (let j = 0; j < i; j++) sum += L[i][j] * y[j];
+                y[i] = Pb[i] - sum;
+            }
+            let x = Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i--) {
+                let sum = 0;
+                for (let j = i + 1; j < n; j++) sum += U[i][j] * x[j];
+                x[i] = (y[i] - sum) / U[i][i];
+            }
+            return { L, U, P, y, x, pasos };
+        }
+
+        // -------------------------------------------------------------
+        // MÉTODOS ITERATIVOS (JACOBI Y GAUSS-SEIDEL) DETALLADOS
+        // -------------------------------------------------------------
+
+        function solverIterativoDetallado(A, b, tol, maxIt) {
+            const n = A.length;
+
+            // ==========================================
+            // MÉTODO DE JACOBI (Desplazamientos simultáneos)
+            // ==========================================
+            let x_jac = Array(n).fill(0);
+            let jac_rows = [{ it: 0, x: x_jac.slice(), err: 0 }];
+            let jac_step_details = [];
+            let jac_conv = false;
+
+            for (let it = 1; it <= maxIt; it++) {
+                let x_prev = x_jac.slice();
+                let x_curr = Array(n).fill(0);
+                let current_step_eqs = [];
+
+                for (let i = 0; i < n; i++) {
+                    let sum = 0;
+                    let numFormulaParts = [];
+
+                    for (let j = 0; j < n; j++) {
+                        if (j !== i) {
+                            sum += A[i][j] * x_prev[j];
+                            let coef = A[i][j];
+                            let sign = coef >= 0 ? "-" : "+";
+                            let absVal = Math.abs(coef);
+                            numFormulaParts.push(`${sign} ${absVal !== 1 ? fmt(absVal, 2) + '·' : ''}(${fmt(x_prev[j], 4)})`);
+                        }
+                    }
+
+                    const denom = A[i][i];
+                    const num = b[i] - sum;
+                    const val = denom !== 0 ? num / denom : 0;
+                    x_curr[i] = val;
+
+                    let formulaText = `(${fmt(b[i], 2)} ${numFormulaParts.join(" ")}) / ${fmt(denom, 2)}`;
+                    current_step_eqs.push({
+                        varName: `x${i + 1}`,
+                        val: val,
+                        formulaNumeric: formulaText
+                    });
+                }
+
+                let err = Math.max(...x_curr.map((v, idx) => Math.abs(v - x_prev[idx])));
+                x_jac = x_curr.slice();
+                jac_rows.push({ it, x: x_jac.slice(), err });
+                jac_step_details.push(current_step_eqs);
+
+                if (err < tol) {
+                    jac_conv = true;
+                    break;
+                }
+            }
+
+            // ==========================================
+            // MÉTODO DE GAUSS-SEIDEL (Desplazamientos sucesivos)
+            // ==========================================
+            let x_gs = Array(n).fill(0);
+            let gs_rows = [{ it: 0, x: x_gs.slice(), err: 0 }];
+            let gs_step_details = [];
+            let gs_conv = false;
+
+            for (let it = 1; it <= maxIt; it++) {
+                let x_prev = x_gs.slice();
+                let x_curr = x_gs.slice(); // se actualiza dinámicamente en tiempo real
+                let current_step_eqs = [];
+
+                for (let i = 0; i < n; i++) {
+                    let sum = 0;
+                    let formulaSubParts = [];
+
+                    for (let j = 0; j < n; j++) {
+                        if (j !== i) {
+                            const isFresh = (j < i); // ¡Calculado en esta misma iteración!
+                            const valUsed = x_curr[j];
+                            sum += A[i][j] * valUsed;
+
+                            let coef = A[i][j];
+                            let sign = coef >= 0 ? "-" : "+";
+                            let absVal = Math.abs(coef);
+                            let prefix = absVal !== 1 ? fmt(absVal, 2) + '·' : '';
+
+                            if (isFresh) {
+                                formulaSubParts.push(`${sign} ${prefix}<b class="excel-highlight-text" title="Recién calculado en iteración ${it}">(${fmt(valUsed, 4)})⚡</b>`);
+                            } else {
+                                formulaSubParts.push(`${sign} ${prefix}<span style="color:var(--muted);" title="Valor de la iteración previa">(${fmt(valUsed, 4)})</span>`);
+                            }
+                        }
+                    }
+
+                    const denom = A[i][i];
+                    const num = b[i] - sum;
+                    const val = denom !== 0 ? num / denom : 0;
+                    x_curr[i] = val;
+
+                    let formulaText = `(${fmt(b[i], 2)} ${formulaSubParts.join(" ")}) / ${fmt(denom, 2)}`;
+                    current_step_eqs.push({
+                        varName: `x${i + 1}`,
+                        val: val,
+                        formulaHtml: formulaText
+                    });
+                }
+
+                let err = Math.max(...x_curr.map((v, idx) => Math.abs(v - x_prev[idx])));
+                x_gs = x_curr.slice();
+                gs_rows.push({ it, x: x_gs.slice(), err });
+                gs_step_details.push(current_step_eqs);
+
+                if (err < tol) {
+                    gs_conv = true;
+                    break;
+                }
+            }
+
+            return {
+                jac: { x: x_jac, rows: jac_rows, steps: jac_step_details, conv: jac_conv },
+                gs: { x: x_gs, rows: gs_rows, steps: gs_step_details, conv: gs_conv }
+            };
+        }
+
+        function verificarDiagonalDominante(A) {
+            const n = A.length;
+            let rowsEval = [];
+            let esDominante = true;
+
+            for (let i = 0; i < n; i++) {
+                const diag = Math.abs(A[i][i]);
+                let sumOther = 0;
+                for (let j = 0; j < n; j++) {
+                    if (j !== i) sumOther += Math.abs(A[i][j]);
+                }
+                const cumple = diag > sumOther;
+                if (!cumple) esDominante = false;
+                rowsEval.push({
+                    fila: i + 1,
+                    diagVal: diag,
+                    sumOther: sumOther,
+                    cumple: cumple,
+                    ineqText: `${fmt(diag, 2)} > ${fmt(sumOther, 2)}`
+                });
+            }
+            return { esDominante, rowsEval };
+        }
+
+        function renderExcelDiagonalDominante(A, b, solLU) {
+            const n = A.length;
+            const check = verificarDiagonalDominante(A);
+
+            let eqRows = A.map((row, i) => {
+                let terms = row.map((coef, j) => {
+                    let varName = `x${j + 1}`;
+                    let sign = j > 0 ? (coef >= 0 ? "+ " : "- ") : (coef < 0 ? "-" : "");
+                    let valAbs = Math.abs(coef);
+                    return `${sign}${valAbs !== 1 ? fmt(valAbs, 2) : ''}${varName}`;
+                }).join(" ");
+                return `${terms} = ${fmt(b[i], 2)}`;
+            });
+
+            let matrizRowsHtml = A.map((row, i) => {
+                let cells = row.map((val, j) => {
+                    let isDiag = (i === j);
+                    let cls = isDiag ? "excel-cell-yellow" : "";
+                    let varLabel = isDiag ? `<b>${fmt(val, 2)}x${j + 1}</b>` : `${fmt(val, 2)}x${j + 1}`;
+                    return `<td class="${cls}">${varLabel}</td>`;
+                }).join("");
+
+                let evalRow = check.rowsEval[i];
+                let checkBadge = evalRow.cumple 
+                    ? `<span class="excel-green-badge" style="margin-bottom:0;">${evalRow.ineqText} ✅ Cumple</span>`
+                    : `<span class="excel-red-badge" style="margin-bottom:0;">${evalRow.ineqText} ⚠️ No Dominante</span>`;
+
+                let solCell = (i === 0) 
+                    ? `<td rowspan="${n}" class="excel-cell-blue" style="vertical-align:middle; text-align:left; padding:10px 14px;">
+                         <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.04em; opacity:0.95;">Solución Referencia (LU):</div>
+                         ${solLU.x.map((v, idx) => `<div style="font-size:13.5px; font-weight:800; margin-top:3px;">x${idx + 1} = ${fmt(v, 4)}</div>`).join("")}
+                       </td>`
+                    : '';
+
+                return `
+                  <tr>
+                    <td style="font-weight:700; color:var(--muted);">${i + 1}</td>
+                    ${cells}
+                    <td style="font-weight:700;">=</td>
+                    <td style="font-weight:800;">${fmt(b[i], 2)}</td>
+                    <td>${checkBadge}</td>
+                    ${solCell}
+                  </tr>
+                `;
+            }).join("");
+
+            return `
+              <div class="excel-section-container">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                  <div>
+                    <span class="excel-banner-cyan">SISTEMAS DE ECUACIONES</span>
+                    <span style="font-weight:800; font-size:13px; margin-left:8px; color:var(--text);">
+                      ${eqRows.join(" &nbsp;|&nbsp; ")}
+                    </span>
+                  </div>
+                  <div>
+                    ${check.esDominante 
+                      ? '<span class="pill pill-good" style="font-size:12px;">✅ Diagonal Estrictamente Predominante: CONVERGE</span>'
+                      : '<span class="pill pill-warn" style="font-size:12px;">⚠️ Diagonal No Dominante: Convergencia no garantizada</span>'
+                    }
+                  </div>
+                </div>
+
+                <div style="font-weight:800; font-size:13px; color:var(--primary); margin-bottom:8px;">
+                  📋 PASO 1: Verificar si la diagonal de la matriz es predominante (|a<sub>ii</sub>| &gt; ∑<sub>j≠i</sub> |a<sub>ij</sub>|)
+                </div>
+
+                <div class="scroll">
+                  <table class="excel-table" style="width:100%;">
+                    <thead>
+                      <tr>
+                        <th>Fila</th>
+                        <th colspan="${n}">Coeficientes (Diagonal resaltada en Amarillo)</th>
+                        <th>=</th>
+                        <th>Vector b</th>
+                        <th>Condición (|a<sub>ii</sub>| &gt; Suma)</th>
+                        <th>Solución Exacta</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${matrizRowsHtml}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="excel-callout-didactic" style="margin-top:12px; margin-bottom:0;">
+                  💡 <b>Criterio Matemático de Convergencia:</b> Si la matriz $A$ es estrictamente dominante en su diagonal principal, los métodos iterativos de <b>Jacobi</b> y <b>Gauss-Seidel</b> convergen de forma garantizada a la solución única $x^*$ para cualquier vector inicial $x^{(0)}$.
+                </div>
+              </div>
+            `;
+        }
+
+        function renderExcelDespejes(A, b) {
+            const n = A.length;
+            let despejesHtml = [];
+
+            for (let i = 0; i < n; i++) {
+                let terms = [];
+                for (let j = 0; j < n; j++) {
+                    if (j !== i) {
+                        let coef = A[i][j];
+                        let sign = coef >= 0 ? "-" : "+";
+                        let absCoef = Math.abs(coef);
+                        terms.push(`${sign} ${absCoef !== 1 ? fmt(absCoef, 2) : ''}x${j + 1}`);
+                    }
+                }
+                let formulaStr = `x${i + 1} = (${fmt(b[i], 2)} ${terms.join(" ")}) / ${fmt(A[i][i], 2)}`;
+                despejesHtml.push(`
+                  <div style="background:var(--card); border:1px solid var(--border); border-radius:8px; padding:10px 14px; display:flex; align-items:center; gap:12px;">
+                    <span style="background:var(--primary); color:white; font-weight:800; border-radius:4px; padding:2px 8px; font-size:12px;">Eq ${i + 1}</span>
+                    <span style="font-family:'Fira Code', monospace; font-size:13px; font-weight:700; color:var(--text);">${formulaStr}</span>
+                  </div>
+                `);
+            }
+
+            let puntoPartidaStr = Array.from({ length: n }, (_, i) => `x${i + 1}<sup>(0)</sup> = 0`).join(" &nbsp;|&nbsp; ");
+
+            return `
+              <div class="excel-section-container" style="margin-top:14px;">
+                <div style="font-weight:800; font-size:13px; color:var(--primary); margin-bottom:10px;">
+                  📐 PASO 2: Despeje Algebraico de Incógnitas & Definición del Punto de Partida
+                </div>
+                
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:10px; margin-bottom:14px;">
+                  ${despejesHtml.join("")}
+                </div>
+
+                <div style="background:var(--card); border:1px dashed var(--secondary); border-radius:8px; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                  <div>
+                    <b style="color:var(--secondary); font-size:13px;">📍 Punto de Partida (Vector Inicial k=0):</b>
+                    <span style="margin-left:8px; font-family:'Fira Code', monospace; font-size:13px; font-weight:700;">${puntoPartidaStr}</span>
+                  </div>
+                  <span style="font-size:11.5px; color:var(--muted);">Vector nulo inicial estándar x<sup>(0)</sup> = [0, 0, 0...]</span>
+                </div>
+              </div>
+            `;
+        }
+
+        function renderExcelJacobi(A, b, jac) {
+            const n = A.length;
+            const maxCols = Math.min(jac.rows.length, 5); // INICIAL + 4 iteraciones horizontales como en Excel
+
+            let headerCols = `<th>Variable / Ecuación</th>`;
+            for (let k = 0; k < maxCols; k++) {
+                let colTitle = k === 0 ? "INICIAL (k=0)" : `k=${k} (${Array.from({ length: n }, (_, idx) => `x${idx + 1}`).join(",")})`;
+                headerCols += `<th>${colTitle}</th>`;
+            }
+
+            let valRowsHtml = "";
+            for (let i = 0; i < n; i++) {
+                let terms = [];
+                for (let j = 0; j < n; j++) {
+                    if (j !== i) {
+                        let coef = A[i][j];
+                        let sign = coef >= 0 ? "-" : "+";
+                        let absCoef = Math.abs(coef);
+                        terms.push(`${sign} ${absCoef !== 1 ? fmt(absCoef, 2) : ''}x${j + 1}`);
+                    }
+                }
+                let eqName = `x${i + 1} = (${fmt(b[i], 2)} ${terms.join(" ")}) / ${fmt(A[i][i], 2)}`;
+
+                let cells = "";
+                for (let k = 0; k < maxCols; k++) {
+                    let r = jac.rows[k];
+                    let val = r ? r.x[i] : 0;
+                    cells += `<td class="${k > 0 ? 'excel-cell-yellow' : ''}" style="font-weight:700;">${fmt(val, 4)}</td>`;
+                }
+
+                valRowsHtml += `<tr><td style="text-align:left; font-family:'Fira Code', monospace; font-size:12px; font-weight:700; color:var(--primary);">${eqName}</td>${cells}</tr>`;
+            }
+
+            let formulaRowsHtml = "";
+            for (let i = 0; i < n; i++) {
+                let cells = "";
+                for (let k = 0; k < maxCols; k++) {
+                    if (k === 0) {
+                        cells += `<td style="color:var(--muted); font-size:11px;">Punto inicial x<sup>(0)</sup> = 0</td>`;
+                    } else {
+                        let prevR = jac.rows[k - 1];
+                        let subParts = [];
+                        for (let j = 0; j < n; j++) {
+                            if (j !== i) {
+                                let coef = A[i][j];
+                                let sign = coef >= 0 ? "-" : "+";
+                                let absVal = Math.abs(coef);
+                                let prevVal = prevR ? prevR.x[j] : 0;
+                                subParts.push(`${sign} ${absVal !== 1 ? fmt(absVal, 1) + '·' : ''}(${fmt(prevVal, 2)})`);
+                            }
+                        }
+                        let fStr = `(${fmt(b[i], 1)} ${subParts.join(" ")}) / ${fmt(A[i][i], 1)}`;
+                        cells += `<td style="font-family:'Fira Code', monospace; font-size:11px; color:#0284c7; background:rgba(2,132,199,0.05);">${fStr}</td>`;
+                    }
+                }
+                formulaRowsHtml += `<tr><td style="text-align:left; font-size:11.5px; font-weight:700; color:var(--muted);">Fórmula Numérica x${i + 1}</td>${cells}</tr>`;
+            }
+
+            let allRowsHtml = jac.rows.map(r => `
+              <tr>
+                <td style="font-weight:700;">${r.it}</td>
+                ${r.x.map(v => `<td style="font-family:'Fira Code', monospace;">${fmt(v, 4)}</td>`).join("")}
+                <td style="font-family:'Fira Code', monospace; color:var(--muted);">${r.it === 0 ? "—" : fmt(r.err, 6)}</td>
+                <td><span class="pill ${r.it === 0 ? 'pill-warn' : jac.conv && r.it === jac.rows.length - 1 ? 'pill-good' : 'pill-good'}">${r.it === 0 ? 'Inicial' : jac.conv && r.it === jac.rows.length - 1 ? 'Solución Final' : 'Iterando'}</span></td>
+              </tr>
+            `).join("");
+
+            return `
+              <div class="excel-section-container">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                  <span class="excel-banner-yellow">MÉTODO DE JACOBI</span>
+                  <span class="pill ${jac.conv ? 'pill-good' : 'pill-warn'}">${jac.conv ? `Convergió en ${jac.rows.length - 1} iteraciones` : 'Límite de iteraciones'}</span>
+                </div>
+                
+                <div style="font-size:12.5px; color:var(--muted); margin-bottom:12px;">
+                  <b>💡 Regla Fundamental:</b> <i>"Usamos simultáneamente el valor del vector anterior <b>x<sup>(k-1)</sup></b> para calcular todas las componentes del nuevo vector <b>x<sup>(k)</sup></b>."</i>
+                </div>
+
+                <div style="font-weight:700; font-size:12.5px; margin-bottom:6px; color:var(--text);">
+                  📊 Tabla de Iteraciones Iniciales & Fórmulas Numéricas:
+                </div>
+
+                <div class="scroll">
+                  <table class="excel-table" style="width:100%; margin-bottom:14px;">
+                    <thead>
+                      <tr>${headerCols}</tr>
+                    </thead>
+                    <tbody>
+                      ${valRowsHtml}
+                      <tr><td colspan="${maxCols + 1}" style="background:var(--card-inner); font-weight:800; font-size:11.5px; text-align:left; color:var(--muted); padding:4px 10px;">Fórmulas Numéricas con Sustitución Explícita:</td></tr>
+                      ${formulaRowsHtml}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style="font-weight:700; font-size:12.5px; margin-top:14px; margin-bottom:6px; color:var(--text);">
+                  📋 Historial Completo de Convergencia (k=0 a k=${jac.rows.length - 1}):
+                </div>
+
+                <div class="scroll" style="max-height:240px;">
+                  <table class="excel-table" style="width:100%;">
+                    <thead>
+                      <tr>
+                        <th>k</th>
+                        ${Array.from({ length: n }, (_, i) => `<th><i>x</i><sub>${i + 1}</sub></th>`).join("")}
+                        <th>Error ||x<sup>(k)</sup> - x<sup>(k-1)</sup>||<sub>∞</sub></th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${allRowsHtml}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            `;
+        }
+
+        function renderExcelGaussSeidel(A, b, gs) {
+            const n = A.length;
+            const maxShowCards = Math.min(gs.rows.length - 1, 3);
+
+            let cascadeCardsHtml = "";
+            for (let it = 1; it <= maxShowCards; it++) {
+                let stepList = gs.steps[it - 1];
+
+                let rowsInsideCard = stepList.map((step, idx) => {
+                    return `
+                      <tr>
+                        <td style="font-weight:700; color:var(--primary); text-align:left; font-family:'Fira Code', monospace; width:90px;">
+                          x${idx + 1}<sup>(${it})</sup>
+                        </td>
+                        <td style="text-align:left; font-family:'Fira Code', monospace; font-size:12px;">
+                          ${step.formulaHtml}
+                        </td>
+                        <td class="excel-cell-orange" style="font-family:'Fira Code', monospace; font-size:13px; width:100px;">
+                          <b>${fmt(step.val, 4)}</b>
+                        </td>
+                      </tr>
+                    `;
+                }).join("");
+
+                cascadeCardsHtml += `
+                  <div class="excel-iter-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                      <span style="font-weight:800; font-size:12.5px; color:var(--text);">
+                        ⚡ Iteración ${it} <span style="color:var(--muted); font-weight:normal; font-size:11px;">(Encadenamiento inmediato)</span>
+                      </span>
+                      <span style="font-size:11px; font-family:'Fira Code', monospace; color:var(--muted);">
+                        Error: ${fmt(gs.rows[it].err, 6)}
+                      </span>
+                    </div>
+                    <table class="excel-table" style="width:100%;">
+                      <tbody>
+                        ${rowsInsideCard}
+                      </tbody>
+                    </table>
+                  </div>
+                `;
+            }
+
+            let allRowsHtml = gs.rows.map(r => `
+              <tr>
+                <td style="font-weight:700;">${r.it}</td>
+                ${r.x.map(v => `<td style="font-family:'Fira Code', monospace;">${fmt(v, 4)}</td>`).join("")}
+                <td style="font-family:'Fira Code', monospace; color:var(--muted);">${r.it === 0 ? "—" : fmt(r.err, 6)}</td>
+                <td><span class="pill ${r.it === 0 ? 'pill-warn' : gs.conv && r.it === gs.rows.length - 1 ? 'pill-good' : 'pill-good'}">${r.it === 0 ? 'Inicial' : gs.conv && r.it === gs.rows.length - 1 ? 'Solución Final' : 'Iterando'}</span></td>
+              </tr>
+            `).join("");
+
+            return `
+              <div class="excel-section-container">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                  <span class="excel-banner-amber">MÉTODO DE SEIDEL</span>
+                  <span class="pill ${gs.conv ? 'pill-good' : 'pill-warn'}">${gs.conv ? `Convergió en ${gs.rows.length - 1} iteraciones` : 'Límite de iteraciones'}</span>
+                </div>
+
+                <div style="font-size:12.5px; color:var(--muted); margin-bottom:12px;">
+                  <b>🔥 Regla Fundamental:</b> <i>"Se calcula cada valor y se usa <b>INMEDIATAMENTE</b> en la siguiente incógnita dentro de la misma iteración."</i>
+                </div>
+
+                <div style="font-weight:700; font-size:12.5px; margin-bottom:6px; color:var(--text);">
+                  🌊 Desglose en Cascada (Valores <b class="excel-highlight-text">naranja</b> recién calculados):
+                </div>
+
+                ${cascadeCardsHtml}
+
+                <div style="font-weight:700; font-size:12.5px; margin-top:14px; margin-bottom:6px; color:var(--text);">
+                  📋 Historial Completo de Convergencia (k=0 a k=${gs.rows.length - 1}):
+                </div>
+
+                <div class="scroll" style="max-height:240px;">
+                  <table class="excel-table" style="width:100%;">
+                    <thead>
+                      <tr>
+                        <th>k</th>
+                        ${Array.from({ length: n }, (_, i) => `<th><i>x</i><sub>${i + 1}</sub></th>`).join("")}
+                        <th>Error ||x<sup>(k)</sup> - x<sup>(k-1)</sup>||<sub>∞</sub></th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${allRowsHtml}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            `;
+        }
+
+        function renderExcelComparativo(A, b, jac, gs, lu) {
+            const itJac = jac.rows.length - 1;
+            const itGS = gs.rows.length - 1;
+            const ratio = (itJac / Math.max(itGS, 1)).toFixed(1);
+
+            return `
+              <div class="excel-section-container" style="background:linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(2, 132, 199, 0.05)); border:1.5px solid rgba(99, 102, 241, 0.3);">
+                <h4 style="margin:0 0 10px; font-size:14px; color:var(--primary); font-weight:800;">
+                  🎓 Síntesis Didáctica: Comparativa de Rendimiento Jacobi vs. Gauss-Seidel
+                </h4>
+                
+                <div class="grid3" style="margin-bottom:12px;">
+                  <div style="background:var(--card); padding:12px; border-radius:8px; border:1px solid var(--border);">
+                    <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase;">Jacobi (Simultáneo)</div>
+                    <div style="font-size:1.4rem; font-weight:800; color:var(--secondary); margin-top:4px;">${itJac} <span style="font-size:12px; font-weight:600;">iteraciones</span></div>
+                    <div style="font-size:11.5px; color:var(--muted); margin-top:4px;">Usa únicamente valores x<sup>(k-1)</sup></div>
+                  </div>
+
+                  <div style="background:var(--card); padding:12px; border-radius:8px; border:1px solid var(--border);">
+                    <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase;">Gauss-Seidel (Sucesivo)</div>
+                    <div style="font-size:1.4rem; font-weight:800; color:var(--good); margin-top:4px;">${itGS} <span style="font-size:12px; font-weight:600;">iteraciones</span></div>
+                    <div style="font-size:11.5px; color:var(--muted); margin-top:4px;">Usa valores recién calculados x<sup>(k)</sup></div>
+                  </div>
+
+                  <div style="background:var(--card); padding:12px; border-radius:8px; border:1px solid var(--border);">
+                    <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase;">Aceleración de Convergencia</div>
+                    <div style="font-size:1.4rem; font-weight:800; color:var(--primary); margin-top:4px;">${ratio}× <span style="font-size:12px; font-weight:600;">más rápido</span></div>
+                    <div style="font-size:11.5px; color:var(--muted); margin-top:4px;">Gauss-Seidel converge en aprox. la mitad de pasos</div>
+                  </div>
+                </div>
+
+                <div style="font-size:13px; line-height:1.6; color:var(--text);">
+                  <p style="margin:4px 0;">
+                    • <b>¿Por qué Gauss-Seidel converge más rápido?</b> Al calcular $x_1^{(k)}$, en lugar de esperar a la siguiente iteración, lo inyecta <i>inmediatamente</i> en el cálculo de $x_2^{(k)}$. Esto propaga información de menor error residual a través de la matriz en una misma vuelta.
+                  </p>
+                  <p style="margin:4px 0;">
+                    • <b>¿Por qué se sigue usando Jacobi en la industria?</b> Aunque requiere más iteraciones, todas las ecuaciones de Jacobi son <b>100% independientes</b> dentro de una misma iteración. Esto permite distribuirlas en paralelo sobre miles de núcleos de tarjetas gráficas (GPU) o clústeres masivos.
+                  </p>
+                  <p style="margin:4px 0;">
+                    • <b>Aplicación en el Desafío Financiero:</b> La solución final aproxima con exactitud milimétrica la asignación de recursos presupuestarios en miles de Bs. para cada departamento, garantizando equilibrio contable libre de discrepancias.
+                  </p>
+                </div>
+              </div>
+            `;
+        }
+
+        function invertMatrix(A) {
+            const n = A.length;
+            let M = A.map((row, i) => row.concat(Array.from({ length: n }, (_, j) => i === j ? 1 : 0)));
+            for (let k = 0; k < n; k++) {
+                let maxVal = Math.abs(M[k][k]);
+                let maxIdx = k;
+                for (let i = k + 1; i < n; i++) {
+                    if (Math.abs(M[i][k]) > maxVal) {
+                        maxVal = Math.abs(M[i][k]);
+                        maxIdx = i;
+                    }
+                }
+                if (maxVal < 1e-12) return null;
+                if (maxIdx !== k) [M[k], M[maxIdx]] = [M[maxIdx], M[k]];
+                let pivot = M[k][k];
+                for (let j = 0; j < 2 * n; j++) M[k][j] /= pivot;
+                for (let i = 0; i < n; i++) {
+                    if (i !== k) {
+                        let factor = M[i][k];
+                        for (let j = 0; j < 2 * n; j++) M[i][j] -= factor * M[k][j];
+                    }
+                }
+            }
+            return M.map(row => row.slice(n));
+        }
+
+        function normInfMat(M) {
+            return Math.max(...M.map(row => row.reduce((sum, val) => sum + Math.abs(val), 0)));
+        }
+
+        function calcularCondicion(A) {
+            const inv = invertMatrix(A);
+            if (!inv) return Infinity;
+            return normInfMat(A) * normInfMat(inv);
+        }
+
+        function vectorFormat(v) {
+            return `<div class="math-box">[ ${v.map((val, i) => `<i>x</i><sub>${i + 1}</sub> = <b>${fmt(val, 4)}</b>`).join(" &nbsp;|&nbsp; ")} ]</div>`;
+        }
+
+        function miniTablaMatriz(M) {
+            return `<div class="scroll"><table><tbody>${M.map(r => `<tr>${r.map(v => `<td>${fmt(v, 4)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+        }
+
+        function renderChartConvergencia(jacRows, gsRows) {
+            const svg = document.getElementById("convergenceSvg");
+            const maxIt = Math.max(jacRows.length, gsRows.length, 5);
+
+            let jacPoints = [];
+            let gsPoints = [];
+
+            function getPos(it, err) {
+                const x = 50 + ((it - 1) / (maxIt - 1 || 1)) * 520;
+                const logErr = Math.log10(Math.max(err, 1e-8));
+                const y = 150 - ((logErr - (-8)) / (1 - (-8))) * 120;
+                return `${x},${Math.max(15, Math.min(160, y))}`;
+            }
+
+            jacRows.forEach(r => { if (r.it > 0) jacPoints.push(getPos(r.it, r.err)); });
+            gsRows.forEach(r => { if (r.it > 0) gsPoints.push(getPos(r.it, r.err)); });
+
+            svg.innerHTML = `
     <line x1="50" y1="20" x2="570" y2="20" stroke="var(--border)" stroke-dasharray="4"/>
     <line x1="50" y1="85" x2="570" y2="85" stroke="var(--border)" stroke-dasharray="4"/>
     <line x1="50" y1="150" x2="570" y2="150" stroke="var(--border)"/>
@@ -1541,25 +2519,25 @@ function renderChartConvergencia(jacRows, gsRows) {
     <circle cx="500" cy="25" r="4" fill="var(--good)"/>
     <text x="510" y="28" fill="var(--text)" font-size="11" font-weight="600">Gauss-Seidel</text>
   `;
-}
+        }
 
-function renderExcelLU(lu, A_orig, b_orig) {
-  const n = A_orig.length;
+        function renderExcelLU(lu, A_orig, b_orig) {
+            const n = A_orig.length;
 
-  let tableAHtml = `
+            let tableAHtml = `
     <table class="excel-table">
       <tbody>
         ${A_orig.map((row, i) => `
           <tr>
             ${row.map(val => `<td class="excel-cell-yellow">${fmt(val, 4)}</td>`).join("")}
-            <td style="border:none; font-weight:700; color:var(--muted); padding-left:6px;">x${i+1}</td>
+            <td style="border:none; font-weight:700; color:var(--muted); padding-left:6px;">x${i + 1}</td>
           </tr>
         `).join("")}
       </tbody>
     </table>
   `;
 
-  let tableBHtml = `
+            let tableBHtml = `
     <table class="excel-table">
       <tbody>
         ${b_orig.map(val => `<tr><td class="excel-cell-yellow">${fmt(val, 4)}</td></tr>`).join("")}
@@ -1567,7 +2545,7 @@ function renderExcelLU(lu, A_orig, b_orig) {
     </table>
   `;
 
-  let initBlock = `
+            let initBlock = `
     <div style="margin-bottom:18px;">
       <div class="excel-banner">FACTORIZACION LU</div>
       <div class="excel-grid-flex" style="margin-top:10px;">
@@ -1580,30 +2558,30 @@ function renderExcelLU(lu, A_orig, b_orig) {
     </div>
   `;
 
-  let etapasHtml = lu.pasos.map((p, k) => {
-    let rowFormulas = {};
-    p.operacionesFila.forEach((op) => {
-      let match = op.match(/Fila_(\d+)\s*⟵\s*Fila_\d+\s*-\s*\(([^)]+)\)\s*×\s*Fila_(\d+)/);
-      if (match) {
-        let fTarget = match[1];
-        let multVal = match[2];
-        let fRef = match[3];
-        rowFormulas[parseInt(fTarget) - 1] = `f${fTarget} = f${fTarget} - (${multVal})*f${fRef}`;
-      }
-    });
+            let etapasHtml = lu.pasos.map((p, k) => {
+                let rowFormulas = {};
+                p.operacionesFila.forEach((op) => {
+                    let match = op.match(/Fila_(\d+)\s*⟵\s*Fila_\d+\s*-\s*\(([^)]+)\)\s*×\s*Fila_(\d+)/);
+                    if (match) {
+                        let fTarget = match[1];
+                        let multVal = match[2];
+                        let fRef = match[3];
+                        rowFormulas[parseInt(fTarget) - 1] = `f${fTarget} = f${fTarget} - (${multVal})*f${fRef}`;
+                    }
+                });
 
-    let matrixRowsHtml = p.matrizA_parcial.map((row, i) => {
-      let cells = row.map((val, j) => {
-        let isZeroed = (j < p.etapa && i > j);
-        let cellClass = isZeroed ? "excel-cell-blue" : (i <= j && i < p.etapa ? "excel-cell-yellow" : "");
-        return `<td class="${cellClass}">${fmt(val, 4)}</td>`;
-      }).join("");
+                let matrixRowsHtml = p.matrizA_parcial.map((row, i) => {
+                    let cells = row.map((val, j) => {
+                        let isZeroed = (j < p.etapa && i > j);
+                        let cellClass = isZeroed ? "excel-cell-blue" : (i <= j && i < p.etapa ? "excel-cell-yellow" : "");
+                        return `<td class="${cellClass}">${fmt(val, 4)}</td>`;
+                    }).join("");
 
-      let fTxt = rowFormulas[i] ? `<span class="excel-formula-row">${rowFormulas[i]}</span>` : "";
-      return `<tr>${cells}<td style="border:none; text-align:left;">${fTxt}</td></tr>`;
-    }).join("");
+                    let fTxt = rowFormulas[i] ? `<span class="excel-formula-row">${rowFormulas[i]}</span>` : "";
+                    return `<tr>${cells}<td style="border:none; text-align:left;">${fTxt}</td></tr>`;
+                }).join("");
 
-    return `
+                return `
       <div style="margin-bottom:16px;">
         ${p.sePermuto ? `<div style="font-size:12px; color:var(--warn); margin-bottom:4px;">🔄 Pivoteo Parcial: Intercambio Fila ${p.etapa} ↔ Fila ${p.filaPermutada}</div>` : ''}
         <table class="excel-table">
@@ -1613,16 +2591,16 @@ function renderExcelLU(lu, A_orig, b_orig) {
         </table>
       </div>
     `;
-  }).join("");
+            }).join("");
 
-  let tableLHtml = `
+            let tableLHtml = `
     <table class="excel-table">
       <tbody>
         ${lu.L.map((row, i) => `
           <tr>
             ${row.map((val, j) => {
-              let cls = i === j ? "excel-cell-yellow" : (i > j ? "excel-cell-blue" : "excel-cell-grey");
-              return `<td class="${cls}">${fmt(val, 4)}</td>`;
+                let cls = i === j ? "excel-cell-yellow" : (i > j ? "excel-cell-blue" : "excel-cell-grey");
+                return `<td class="${cls}">${fmt(val, 4)}</td>`;
             }).join("")}
           </tr>
         `).join("")}
@@ -1630,7 +2608,7 @@ function renderExcelLU(lu, A_orig, b_orig) {
     </table>
   `;
 
-  let tableUHtml = `
+            let tableUHtml = `
     <table class="excel-table">
       <tbody>
         ${lu.U.map((row, i) => `
@@ -1642,7 +2620,7 @@ function renderExcelLU(lu, A_orig, b_orig) {
     </table>
   `;
 
-  let entoncesBlock = `
+            let entoncesBlock = `
     <div style="margin-top:20px; margin-bottom:16px;">
       <h4 style="margin:0 0 10px; color:var(--text); font-weight:800;">ENTONCES TENEMOS :</h4>
       <div class="excel-grid-flex">
@@ -1658,7 +2636,7 @@ function renderExcelLU(lu, A_orig, b_orig) {
     </div>
   `;
 
-  let tableYHtml = `
+            let tableYHtml = `
     <table class="excel-table">
       <tbody>
         ${lu.y.map(val => `<tr><td style="font-weight:700;">${fmt(val, 4)}</td></tr>`).join("")}
@@ -1666,7 +2644,7 @@ function renderExcelLU(lu, A_orig, b_orig) {
     </table>
   `;
 
-  let lyBlock = `
+            let lyBlock = `
     <div style="margin-top:18px;">
       <div class="excel-green-badge">Ly = b</div>
       <div style="font-size:12.5px; margin:4px 0 8px; color:var(--muted);">y = Inv(L)*b &nbsp;|&nbsp; Sustitución hacia adelante</div>
@@ -1677,7 +2655,7 @@ function renderExcelLU(lu, A_orig, b_orig) {
     </div>
   `;
 
-  let tableXHtml = `
+            let tableXHtml = `
     <table class="excel-table">
       <tbody>
         ${lu.x.map(val => `<tr><td class="excel-cell-yellow">${fmt(val, 4)}</td></tr>`).join("")}
@@ -1685,7 +2663,7 @@ function renderExcelLU(lu, A_orig, b_orig) {
     </table>
   `;
 
-  let uxBlock = `
+            let uxBlock = `
     <div style="margin-top:18px;">
       <div class="excel-green-badge">Ux = y</div>
       <div style="font-size:12.5px; margin:4px 0 8px; color:var(--muted);">x = inv(U)*y &nbsp;|&nbsp; Sustitución hacia atrás (Solución Final)</div>
@@ -1696,7 +2674,7 @@ function renderExcelLU(lu, A_orig, b_orig) {
     </div>
   `;
 
-  return `
+            return `
     <div class="excel-lu-container">
       ${initBlock}
       ${etapasHtml}
@@ -1705,32 +2683,35 @@ function renderExcelLU(lu, A_orig, b_orig) {
       ${uxBlock}
     </div>
   `;
-}
+        }
 
-function resolverSistemas() {
-  const { A, b } = getMatrizUI();
-  const tol = parseFloat(document.getElementById("sysTol").value) || 1e-6;
-  const maxIt = parseInt(document.getElementById("sysMaxIt").value) || 50;
+        function resolverSistemas() {
+            const { A, b } = getMatrizUI();
+            const tol = parseFloat(document.getElementById("sysTol").value) || 1e-6;
+            const maxIt = parseInt(document.getElementById("sysMaxIt").value) || 50;
 
-  const lu = factorizacionLU_Pasos(A, b);
-  const jac = solverIterativo(A, b, "jacobi", tol, maxIt);
-  const gs = solverIterativo(A, b, "seidel", tol, maxIt);
-  const cond = calcularCondicion(A);
+            const lu = factorizacionLU_Pasos(A, b);
+            const iterResult = solverIterativoDetallado(A, b, tol, maxIt);
+            const jac = iterResult.jac;
+            const gs = iterResult.gs;
+            const cond = calcularCondicion(A);
 
-  liveState.matrixCond = cond;
-  liveState.matrixJacobiIt = jac.rows.length;
-  liveState.matrixSeidelIt = gs.rows.length;
-  liveState.matrixDimension = N;
+            liveState.matrixCond = cond;
+            liveState.matrixJacobiIt = jac.rows.length - 1;
+            liveState.matrixSeidelIt = gs.rows.length - 1;
+            liveState.matrixDimension = N;
 
-  document.getElementById("pasosLU").innerHTML = renderExcelLU(lu, A, b);
+            // Bloque 1: LU
+            document.getElementById("pasosLU").innerHTML = renderExcelLU(lu, A, b);
 
-  document.getElementById("resComparacion").innerHTML = `
+            // Bloque 2: Comparación
+            document.getElementById("resComparacion").innerHTML = `
     <div class="scroll">
       <table>
         <thead>
           <tr>
             <th>Método</th>
-            ${Array.from({length: N}, (_, i) => `<th><i>x</i><sub>${i+1}</sub></th>`).join("")}
+            ${Array.from({ length: N }, (_, i) => `<th><i>x</i><sub>${i + 1}</sub></th>`).join("")}
             <th>Iteraciones</th>
             <th>Estado</th>
           </tr>
@@ -1745,13 +2726,13 @@ function resolverSistemas() {
           <tr>
             <td><b>Jacobi</b></td>
             ${jac.x.map(v => `<td>${fmt(v, 4)}</td>`).join("")}
-            <td><b>${jac.rows.length}</b> iter.</td>
+            <td><b>${jac.rows.length - 1}</b> iter.</td>
             <td><span class="pill ${jac.conv ? 'pill-good' : 'pill-warn'}">${jac.conv ? 'Convergió' : 'Máx Iter'}</span></td>
           </tr>
           <tr>
             <td><b>Gauss-Seidel</b></td>
             ${gs.x.map(v => `<td>${fmt(v, 4)}</td>`).join("")}
-            <td><b>${gs.rows.length}</b> iter.</td>
+            <td><b>${gs.rows.length - 1}</b> iter.</td>
             <td><span class="pill ${gs.conv ? 'pill-good' : 'pill-warn'}">${gs.conv ? 'Convergió' : 'Máx Iter'}</span></td>
           </tr>
         </tbody>
@@ -1764,71 +2745,26 @@ function resolverSistemas() {
     </div>
   `;
 
-  renderChartConvergencia(jac.rows, gs.rows);
+            renderChartConvergencia(jac.rows, gs.rows);
 
-  function renderDetalleIterativo(res, titulo, formulaEq, despejesExplicit) {
-    let iter1Detail = "";
-    if (res.rows.length > 0) {
-      let r1 = res.rows[0];
-      iter1Detail = `<div class="step-card">
-        <div class="step-title">Sustitución Numérica Explícita (Iteración 1):</div>
-        ${r1.x.map((v, idx) => `<p style="margin:2px 0; font-size:12px;">• <i>x</i><sub>${idx+1}</sub><sup>(1)</sup> = ${fmt(v, 4)}</p>`).join("")}
-      </div>`;
-    }
+            // Bloque 4: Paso a Paso Estilo Excel (Jacobi & Gauss-Seidel)
+            document.getElementById("resPaso1Diagonal").innerHTML = renderExcelDiagonalDominante(A, b, lu);
+            document.getElementById("resPaso2Despeje").innerHTML = renderExcelDespejes(A, b);
+            document.getElementById("resJacobi").innerHTML = renderExcelJacobi(A, b, jac);
+            document.getElementById("resSeidel").innerHTML = renderExcelGaussSeidel(A, b, gs);
+            document.getElementById("resComparativoIterativo").innerHTML = renderExcelComparativo(A, b, jac, gs, lu);
 
-    return `
-      <div class="result-box">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <b>${titulo}</b>
-          <span class="${res.conv ? 'pill pill-good' : 'pill pill-warn'}">${res.conv ? `CONVERGIÓ EN ${res.rows.length} ITER.` : `LÍMITE (${res.rows.length})`}</span>
-        </div>
-        <p style="font-size:11.5px; color:var(--muted); margin:4px 0 6px;">Fórmula General: ${formulaEq}</p>
-        ${despejesExplicit}
-        ${iter1Detail}
-        
-        <div class="scroll" style="max-height:220px; margin-top:8px;">
-          <table>
-            <thead>
-              <tr>
-                <th>k</th>
-                ${Array.from({length: N}, (_, i) => `<th><i>x</i><sub>${i+1}</sub><sup>(${i})</sup></th>`).join("")}
-                <th>Error ||<i>x</i><sup>(k)</sup> - <i>x</i><sup>(k-1)</sup>||<sub>∞</sub></th>
-              </tr>
-            </thead>
-            <tbody>
-              ${res.rows.map(r => `
-                <tr>
-                  <td>${r.it}</td>
-                  ${r.x.map(v => `<td>${fmt(v, 4)}</td>`).join("")}
-                  <td>${fmt(r.err, 6)}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    `;
-  }
+            actualizarDiagnosticoEnTiempoReal();
+        }
 
-  const formulaJac = "<i>x</i><sub><i>i</i></sub><sup>(<i>k</i>)</sup> = (1 / <i>a</i><sub><i>ii</i></sub>) [ <i>b</i><sub><i>i</i></sub> - ∑<sub><i>j</i> ≠ <i>i</i></sub> <i>a</i><sub><i>ij</i></sub> <i>x</i><sub><i>j</i></sub><sup>(<i>k</i>-1)</sup> ]";
-  const formulaSeidel = "<i>x</i><sub><i>i</i></sub><sup>(<i>k</i>)</sup> = (1 / <i>a</i><sub><i>ii</i></sub>) [ <i>b</i><sub><i>i</i></sub> - ∑<sub><i>j</i> &lt; <i>i</i></sub> <i>a</i><sub><i>ij</i></sub> <i>x</i><sub><i>j</i></sub><sup>(<i>k</i>)</sup> - ∑<sub><i>j</i> &gt; <i>i</i></sub> <i>a</i><sub><i>ij</i></sub> <i>x</i><sub><i>j</i></sub><sup>(<i>k</i>-1)</sup> ]";
-
-  let despejesJacTxt = `<div style="font-size:11.5px; color:var(--muted);"><b>Despejes por fila:</b><br>${Array.from({length: N}, (_, i) => `• <i>x</i><sub>${i+1}</sub><sup>(k)</sup> = (${b[i]} - ∑<sub>j≠${i+1}</sub> ${A[i][(i+1)%N]}<i>x</i><sub>j</sub><sup>(k-1)</sup>) / ${A[i][i]}`).slice(0, 3).join("<br>")}</div>`;
-  let despejesSeidelTxt = `<div style="font-size:11.5px; color:var(--muted);"><b>Despejes por fila:</b><br>${Array.from({length: N}, (_, i) => `• <i>x</i><sub>${i+1}</sub><sup>(k)</sup> = (${b[i]} - ∑<sub>j&lt;${i+1}</sub> ${A[i][0]}<i>x</i><sub>j</sub><sup>(k)</sup> - ∑<sub>j&gt;${i+1}</sub> ${A[i][(i+1)%N]}<i>x</i><sub>j</sub><sup>(k-1)</sup>) / ${A[i][i]}`).slice(0, 3).join("<br>")}</div>`;
-
-  document.getElementById("resJacobi").innerHTML = renderDetalleIterativo(jac, "Método de Jacobi", formulaJac, despejesJacTxt);
-  document.getElementById("resSeidel").innerHTML = renderDetalleIterativo(gs, "Método de Gauss-Seidel", formulaSeidel, despejesSeidelTxt);
-
-  actualizarDiagnosticoEnTiempoReal();
-}
-
-window.onload = () => {
-  renderInputsMatriz();
-  sincronizarConMatriz();
-  calcularTaylorWord();
-  resolverSistemas();
-  makeSphereDraggable(document.getElementById("floatingSphereBtn"));
-};
-</script>
+        window.onload = () => {
+            renderInputsMatriz();
+            sincronizarConMatriz();
+            calcularTaylorWord();
+            resolverSistemas();
+            makeSphereDraggable(document.getElementById("floatingSphereBtn"));
+        };
+    </script>
 </body>
+
 </html>
